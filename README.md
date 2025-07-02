@@ -1,1 +1,1 @@
-# next-blog
+# blog-next
