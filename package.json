@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "clsx": "^2.1.1",
     "mongoose": "^8.16.1",
     "next": "15.3.4",
     "next-auth": "^5.0.0-beta.29",

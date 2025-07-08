@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Outfit, Doto } from "next/font/google";
 import "./globals.css";
 import Nav from "@/components/nav";
+import Topbar from "@/components/Topbar";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const outfit = Outfit({
+  variable: "--font-outfit",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const doto = Doto({
+  variable: "--font-doto",
   subsets: ["latin"],
 });
 
@@ -20,20 +21,19 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <div id="main-wrapper" className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-          <Nav />
-          <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
+    <html lang="en" className={`${outfit.variable} ${doto.variable}`}>
+      <body className={`font-outfit bg-background`}>
+        <div id="main-wrapper">
+          <Topbar />
+          <h1>a</h1>
+          <main>
             <header><h1>Blogify your self</h1></header>
             <article> {children} </article>
             <aside>Sidebar goes here</aside>
           </main>
 
 
-          <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
+          <footer className="bg-gray-200">
             <h4>Footer goes here..</h4>
           </footer>
         </div>

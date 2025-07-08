@@ -1,26 +1,61 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --font-doto: var(--font-doto), ui-sans-serif, sans-serif;
+  --font-outfit: var(--font-outfit), ui-sans-serif, sans-serif;
+
+  --color-primary: #9C27B0;
+  --color-secondary: #A5D6A7;
+  --color-accent: #FFC0CB;
+  --color-accent-secondary: #FF5555;
+  --color-background: #F7E5E5;
+  --color-surface: #FFFFFF;
+  --color-text-primary: #1A1A1A;
+  --color-text-muted: #757575;
+  --color-text-secondary: #62748e;
+  --color-error: #F44336;
+  --color-success: #4CAF50;
+  --color-warning: #FF9800;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/*
+| Role             | Color Name        | Hex       |
+| ---------------- | ----------------- | --------- |
+| `--primary`      | Royal Purple      | `#9C27B0` |
+| `--secondary`    | Mint Green        | `#A5D6A7` |
+| `--accent`       | Cotton Candy Pink | `#FFC0CB` |
+| `--background`   | Pale Yellow       | `#FFF9C4` |
+| `--surface`      | White             | `#FFFFFF` |
+| `--text-primary` | Dark Charcoal     | `#1A1A1A` |
+| `--text-muted`   | Gray              | `#757575` |
+| `--text-secondary` | Light Gray       | `#BDBDBD` |
+| `--error`        | Red               | `#F44336` |
+| `--success`      | Green             | `#4CAF50` |
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
+| Role             | Dark Mode Equivalent | Hex       |
+| ---------------- | -------------------- | --------- |
+| `--primary`      | Deep Orchid Purple   | `#BA68C8` |
+| `--secondary`    | Deep Mint Green      | `#388E3C` |
+| `--accent`       | Soft Coral Pink      | `#F48FB1` |
+| `--background`   | Charcoal Gray        | `#121212` |
+| `--surface`      | Deep Slate           | `#1E1E1E` |
+| `--text-primary` | Light Gray           | `#E0E0E0` |
+| `--text-muted`   | Medium Gray          | `#9E9E9E` |
+| `--text-secondary` | Light Silver       | `#BDBDBD` |
+| `--error`        | Bright Red           | `#F44336` |
+| `--success`      | Bright Green         | `#4CAF50` |
+
+
+
+Background Colors:  #FDFDFD or #FCFCFB
+Primary Text Color: #333333 or #282828
+Section Background Color: #F8EEEC or #F7E5E5
+Hero Card Background Color: #CDEAE7 or #BEE2DF
+Main Action/Highlight Accent: #FF8855 or #FF7043
+Secondary Accent: #FF5555 or #FF6347
+Subtle UI Accent : #505070 or #404060
+Tertiary Accents
+  Light Lavender (for "Beauty" tag): Approx. Hex: #E0CFF2 or #D1C4E9
+  Light Green (for "Art & Design" tag): Approx. Hex: #D6F5D6 or #C0E090
+*/
