@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { Outfit, Doto } from "next/font/google";
 import "./globals.css";
-import Nav from "@/components/nav";
 import Topbar from "@/components/Topbar";
 
 const outfit = Outfit({
@@ -19,23 +19,32 @@ export const metadata: Metadata = {
   description: "Next generation blogging platform, express your thoughts using AI assistant.",
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
+  const authRegex = /^\/(sign-in|sign-up)$/i;
+  const headerList = await headers();
+  const isAuthPage = authRegex.test(headerList.get("x-request-path") || "");
+
   return (
     <html lang="en" className={`${outfit.variable} ${doto.variable}`}>
       <body className={`font-outfit bg-background`}>
         <div id="main-wrapper">
-          <Topbar />
-          <h1>a</h1>
-          <main>
-            <header><h1>Blogify your self</h1></header>
-            <article> {children} </article>
-            <aside>Sidebar goes here</aside>
-          </main>
-
-
-          <footer className="bg-gray-200">
-            <h4>Footer goes here..</h4>
-          </footer>
+          {isAuthPage ? (
+            <main>
+              <article> {children} </article>
+            </main>
+          ) : (
+            <>
+              <Topbar />
+              <main className="mt-17">~
+                <header><h1>Blogify your self</h1></header>
+                <article> {children} </article>
+                <aside>Sidebar goes here</aside>
+              </main>
+              <footer className="bg-gray-200">
+                <h4>Footer goes here..</h4>
+              </footer>
+            </>
+          )}
         </div>
       </body>
     </html>

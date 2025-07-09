@@ -9,12 +9,17 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.1.1",
+    "@types/bcrypt": "^5.0.2",
+    "bcrypt": "^6.0.0",
     "clsx": "^2.1.1",
     "mongoose": "^8.16.1",
     "next": "15.3.4",
     "next-auth": "^5.0.0-beta.29",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-hook-form": "^7.60.0",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

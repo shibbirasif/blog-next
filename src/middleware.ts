@@ -5,7 +5,7 @@ export function middleware(request: NextRequest) {
     const headers = new Headers(request.headers);
     headers.set("x-request-path", request.nextUrl.pathname);
     headers.set("x-request-method", request.method);
-    NextResponse.next({ headers });
+    return NextResponse.next({ headers });
 }
 
 export const config = {

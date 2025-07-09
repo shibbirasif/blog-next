@@ -19,6 +19,7 @@ export default function Topbar() {
 
                 <div className="flex flex-row items-center justify-end gap-3 md:gap-4">
                     <button
+                        type="button"
                         aria-label="Search"
                         className="p-1 rounded-md text-text-secondary hover:text-accent-secondary transition-colors duration-200"
                     >

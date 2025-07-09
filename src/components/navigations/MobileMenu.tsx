@@ -37,6 +37,8 @@ export default function MobileMenu() {
     return (
         <>
             <button onClick={toggleMenu}
+                type="button"
+                aria-label={isOpen ? "Close menu" : "Open menu"}
                 aria-expanded={isOpen}
                 aria-controls="mobile-menu"
                 className="md:hidden
@@ -74,6 +76,7 @@ export default function MobileMenu() {
                 <div className="md:hidden w-full flex items-start justify-end h-fit-content p-4">
                     <button
                         onClick={toggleMenu}
+                        type="button"
                         aria-label="Close menu"
                         aria-expanded={isOpen}
                         aria-controls="mobile-menu"
