@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
-  const authRegex = /^\/(sign-in|sign-up)$/i;
+  const authRegex = /^\/(signin|signup)$/i;
   const headerList = await headers();
   const isAuthPage = authRegex.test(headerList.get("x-request-path") || "");
 
@@ -35,7 +35,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           ) : (
             <>
               <Topbar />
-              <main className="mt-17">~
+              <main className="mt-17">
                 <header><h1>Blogify your self</h1></header>
                 <article> {children} </article>
                 <aside>Sidebar goes here</aside>

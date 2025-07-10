@@ -33,7 +33,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
                 try {
                     const baseUrl = process.env.BASE_URL || "http://localhost:3000";
-                    const res = await fetch(`${baseUrl}/api/auth/login`, {
+                    const res = await fetch(`${baseUrl}/api/auth/signin`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
                     if (!res.ok) {
                         const errorData = await res.json();
-                        console.error('Login API error:', errorData);
+                        console.error('Signin API error:', errorData);
                         throw new Error(errorData.message || 'Authentication failed');
                     }
 
@@ -63,7 +63,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 token.email = user.email;
                 token.name = user.name;
                 token.picture = user.image;
-                token.roles = (user as AuthUser).roles; 
+                token.roles = (user as AuthUser).roles;
                 token.bio = (user as AuthUser).bio;
                 token.isActive = (user as AuthUser).isActive;
                 token.isEmailVerified = (user as AuthUser).isEmailVerified;

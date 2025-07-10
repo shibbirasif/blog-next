@@ -1,25 +1,26 @@
 "use client";
 
-import { SignupInput, signupSchema } from "@/validations/auth";
+import { ClientSignupInput, clientSignupSchema } from "@/validations/auth";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function SignUpPage() {
     const {
         register,
         handleSubmit,
         formState: { errors, isSubmitting },
-        reset
-    } = useForm<SignupInput>({
-        resolver: zodResolver(signupSchema),
+    } = useForm<ClientSignupInput>({
+        resolver: zodResolver(clientSignupSchema),
     });
 
     const [signupSuccess, setSignupSuccess] = useState<string | null>(null);
     const [signupError, setSignupError] = useState<string | null>(null);
+    const router = useRouter();
 
-    const onSubmit = async (data: SignupInput) => {
+    const onSubmit = async (data: ClientSignupInput) => {
         setSignupSuccess(null);
         setSignupError(null);
 
@@ -40,9 +41,10 @@ export default function SignUpPage() {
                 console.error('Signup API error:', result);
             } else {
                 setSignupSuccess('Account created successfully! You can now sign in.');
-                reset(); // Clear the form
-              }
-        } catch(error) {
+                router.replace("/");
+                router.refresh();
+            }
+        } catch (error) {
             console.error('Signup error:', error);
             setSignupError('An unexpected error occurred. Please try again later.');
         }
@@ -80,7 +82,6 @@ export default function SignUpPage() {
                         {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>}
                     </div>
 
-                    {/* Email */}
                     <div>
                         <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
                         <input
@@ -92,7 +93,6 @@ export default function SignUpPage() {
                         {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>}
                     </div>
 
-                    {/* Password */}
                     <div>
                         <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
                         <input
@@ -104,7 +104,6 @@ export default function SignUpPage() {
                         {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>}
                     </div>
 
-                    {/* Confirm Password */}
                     <div>
                         <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">Confirm Password</label>
                         <input
@@ -127,7 +126,7 @@ export default function SignUpPage() {
 
                 <p className="mt-6 text-center text-sm text-gray-600">
                     Already have an account?{' '}
-                    <Link href="/auth/signin" className="font-medium text-accent hover:text-accent-dark">
+                    <Link href="/signin" className="font-medium text-accent hover:text-accent-dark">
                         Sign In
                     </Link>
                 </p>

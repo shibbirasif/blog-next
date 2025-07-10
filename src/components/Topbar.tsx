@@ -2,8 +2,11 @@ import Link from "next/link";
 import NavLinks from "./navigations/NavLinks";
 import SearchIcon from "./ui/icons/SearchIcon";
 import MobileMenu from "./navigations/MobileMenu";
+import { auth } from "@/lib/auth";
+import SignOutLink from "./auth/SignOutLink";
 
-export default function Topbar() {
+export default async function Topbar() {
+    const session = await auth();
     return (
         <header className="fixed top-0 left-0 w-full z-30 bg-surface shadow-xs font-semibold text-text-secondary">
             <nav className="flex flex-row justify-between items-center w-[90%] mx-auto sm:max-w-7xl h-16">
@@ -27,7 +30,14 @@ export default function Topbar() {
                     </button>
 
                     <div>
-                        <button className="px-5 mx-2 py-1.5 bg-accent rounded-full hover:bg-secondary hover:text-white duration-300">Sign In</button>
+                        {session?.user ? (
+                            <SignOutLink className="hover:text-accent-secondary" />
+                        ) : (
+                            <Link href="/signin" className="px-5 mx-2 py-1.5 bg-accent rounded-full hover:bg-secondary hover:text-white duration-300">
+                                Sign In
+                            </Link>
+                        )}
+                        {/* <button className="px-5 mx-2 py-1.5 bg-accent rounded-full hover:bg-secondary hover:text-white duration-300">Sign In</button> */}
                     </div>
                     <MobileMenu />
                 </div>

@@ -1,12 +1,12 @@
 import { signupUser } from "@/services/authService";
-import { signupSchema } from "@/validations/auth";
+import { serverSignupSchema } from "@/validations/auth";
 import { NextResponse } from "next/server";
 import z from "zod";
 
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const { name, email, password } = signupSchema.parse(body);
+        const { name, email, password } = serverSignupSchema.parse(body);
 
         const newUser = signupUser({ name, email, password });
         return NextResponse.json({ message: 'User registered successfully!', user: newUser }, { status: 201 });

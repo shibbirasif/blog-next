@@ -2,6 +2,7 @@ import mongoose, { Schema, Document, Model } from "mongoose";
 import UserRole from "@/models/UserRole";
 
 export interface IUser extends Document {
+    _id: mongoose.Types.ObjectId;
     name: string;
     email: string;
     isActive: boolean;
