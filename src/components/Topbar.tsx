@@ -31,7 +31,7 @@ export default async function Topbar() {
 
                     <div>
                         {session?.user ? (
-                            <SignOutLink className="hover:text-accent-secondary" />
+                            <SignOutLink className="hover:text-accent-secondary cursor-pointer" />
                         ) : (
                             <Link href="/signin" className="px-5 mx-2 py-1.5 bg-accent rounded-full hover:bg-secondary hover:text-white duration-300">
                                 Sign In

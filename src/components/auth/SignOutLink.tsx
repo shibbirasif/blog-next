@@ -11,7 +11,6 @@ export default function SignOutLink({ className }: SignOutLinkProps) {
     const router = useRouter();
 
     const handleSignOut = async (event: React.MouseEvent) => {
-        console.log("Sign out clicked");
         event.preventDefault();
         await signOut();
         router.push('/');
