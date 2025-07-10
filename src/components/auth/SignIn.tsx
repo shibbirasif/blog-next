@@ -1,21 +1,20 @@
 'use client';
-import { signOut } from 'next-auth/react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+
+import { useRouter } from "next/navigation";
 
 interface SignOutLinkProps {
     className?: string;
+    children?: React.ReactNode;
 }
 
-export default function SignOutLink({ className }: SignOutLinkProps) {
+export default function SignIn({ className, children }: SignOutLinkProps) {
     const router = useRouter();
 
-    const handleSignOut = async (event: React.MouseEvent) => {
+    function handleSignOut(event: React.MouseEvent): void {
         event.preventDefault();
-        await signOut();
-        router.push('/');
+        router.push("/signin");
         router.refresh();
-    };
+    }
 
     return (
         <button
@@ -23,7 +22,7 @@ export default function SignOutLink({ className }: SignOutLinkProps) {
             aria-label="Sign Out"
             onClick={handleSignOut}
             className={className || ""} >
-            Sign Out
+            {children}
         </button>
     );
 }

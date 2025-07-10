@@ -3,7 +3,8 @@ import NavLinks from "./navigations/NavLinks";
 import SearchIcon from "./ui/icons/SearchIcon";
 import MobileMenu from "./navigations/MobileMenu";
 import { auth } from "@/lib/auth";
-import SignOutLink from "./auth/SignOutLink";
+import SignOut from "./auth/SignOut";
+import SignIn from "./auth/SignIn";
 
 export default async function Topbar() {
     const session = await auth();
@@ -31,11 +32,11 @@ export default async function Topbar() {
 
                     <div>
                         {session?.user ? (
-                            <SignOutLink className="hover:text-accent-secondary cursor-pointer" />
+                            <SignOut className="hover:text-accent-secondary cursor-pointer" />
                         ) : (
-                            <Link href="/signin" className="px-5 mx-2 py-1.5 bg-accent rounded-full hover:bg-secondary hover:text-white duration-300">
+                            <SignIn className="px-5 mx-2 py-1.5 bg-accent rounded-full hover:bg-secondary hover:text-white duration-300">
                                 Sign In
-                            </Link>
+                            </SignIn>
                         )}
                         {/* <button className="px-5 mx-2 py-1.5 bg-accent rounded-full hover:bg-secondary hover:text-white duration-300">Sign In</button> */}
                     </div>
