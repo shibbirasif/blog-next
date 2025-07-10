@@ -2,6 +2,7 @@ import { dbConnect } from "@/lib/db";
 import bcrypt from "bcrypt";
 import User, { IUser } from "@/models/User";
 import UserSignupPayload from "@/dtos/UserSignupPayload";
+import { buildUserDto, UserDto } from "@/dtos/UserDto";
 
 const SALT_ROUNDS = 10;
 
@@ -16,14 +17,7 @@ async function comparePassword(plainPassword: string, storedHash: string): Promi
     return isMatch;
 }
 
-function buildUser(user: IUser): IUser {
-    const userObject = user.toObject() as IUser;
-    delete (userObject as any).password_salt;
-    delete (userObject as any).password_hash;
-    return userObject;
-}
-
-export async function loginUser(email: string, password: string): Promise<IUser | null> {
+export async function loginUser(email: string, password: string): Promise<UserDto | null> {
     await dbConnect();
 
     const user = await User.findOne({ email }).select('+password_hash +password_salt');
@@ -34,13 +28,13 @@ export async function loginUser(email: string, password: string): Promise<IUser 
 
     const isPasswordValid = await comparePassword(password, user.password_hash);
     if (isPasswordValid) {
-        return buildUser(user);
+        return buildUserDto(user);
     } else {
         return null;
     }
 }
 
-export async function signupUser(userData: UserSignupPayload): Promise<IUser | null> {
+export async function signupUser(userData: UserSignupPayload): Promise<UserDto | null> {
     await dbConnect();
 
     const { name, email, password } = userData;
@@ -59,5 +53,5 @@ export async function signupUser(userData: UserSignupPayload): Promise<IUser | n
         password_hash: hash
     }).save();
 
-    return buildUser(newUser);
+    return buildUserDto(newUser);
 }

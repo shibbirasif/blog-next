@@ -10,7 +10,7 @@ interface SignOutLinkProps {
 export default function SignIn({ className, children }: SignOutLinkProps) {
     const router = useRouter();
 
-    function handleSignOut(event: React.MouseEvent): void {
+    function handleSignIn(event: React.MouseEvent): void {
         event.preventDefault();
         router.push("/signin");
         router.refresh();
@@ -20,7 +20,7 @@ export default function SignIn({ className, children }: SignOutLinkProps) {
         <button
             type="button"
             aria-label="Sign Out"
-            onClick={handleSignOut}
+            onClick={handleSignIn}
             className={className || ""} >
             {children}
         </button>

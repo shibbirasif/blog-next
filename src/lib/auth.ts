@@ -76,7 +76,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             session.user.email = token.email as string;
             session.user.name = token.name as string;
             session.user.image = token.picture as string | null | undefined;
-            (session.user as any).roles = token.roles; // Add roles to session.user
+            (session.user as any).roles = token.roles;
             (session.user as any).bio = token.bio;
             (session.user as any).isActive = token.isActive;
             (session.user as any).isEmailVerified = token.isEmailVerified;
@@ -85,8 +85,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     // Optional: Configure pages for redirection
     pages: {
-        signIn: '/auth/signin', // Your custom sign-in page
-        error: '/auth/error',   // Your custom error page (e.g., for login failures)
+        signIn: '/signin', // Your custom sign-in page
+        error: '/error',   // Your custom error page (e.g., for login failures)
     },
 });
 

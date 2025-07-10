@@ -4,12 +4,16 @@ import UserRole from "@/models/UserRole";
 export interface IUser extends Document {
     _id: mongoose.Types.ObjectId;
     name: string;
-    email: string;
     isActive: boolean;
+    email: string;
     isEmailVerified: boolean;
-    roles: UserRole[];
+    emailVerificationToken?: string;
+    emailVerificationExpires?: Date;
     password_salt: string;
     password_hash: string;
+    resetPasswordToken?: string;
+    resetPasswordExpires?: Date;
+    roles: UserRole[];
     bio?: string;
     avatar?: string;
     createdAt: Date;
@@ -23,24 +27,35 @@ const UserSchema = new Schema<IUser>({
         trim: true,
         minlength: [3, "Name must be at least 3 characters long"],
     },
+    isActive: {
+        type: Boolean,
+        default: true,
+    },
     email: {
         type: String,
         required: [true, "Email is required"],
         unique: true,
         trim: true,
         lowercase: true,
+        index: true,
         validate: {
             validator: (v: string) => /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(v),
             message: "Invalid email format",
         },
     },
-    isActive: {
-        type: Boolean,
-        default: true,
-    },
     isEmailVerified: {
         type: Boolean,
         default: false,
+    },
+    emailVerificationToken: {
+        type: String,
+        required: false,
+        select: false,
+    },
+    emailVerificationExpires: {
+        type: Date,
+        required: false,
+        select: false,
     },
     roles: {
         type: [String],
@@ -55,6 +70,16 @@ const UserSchema = new Schema<IUser>({
     password_hash: {
         type: String,
         required: [true, "Password hash is required"],
+        select: false,
+    },
+    resetPasswordToken: {
+        type: String,
+        required: false,
+        select: false,
+    },
+    resetPasswordExpires: {
+        type: Date,
+        required: false,
         select: false,
     },
     bio: {
