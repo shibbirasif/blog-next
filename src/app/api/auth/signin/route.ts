@@ -1,7 +1,7 @@
 // app/api/auth/login/route.ts
 import { NextResponse } from 'next/server';
 import { dbConnect } from '@/lib/db';
-import { loginUser } from '@/services/authService';
+import { authService } from '@/services/authService';
 import { loginSchema } from '@/validations/auth';
 import z from 'zod';
 
@@ -12,7 +12,7 @@ export async function POST(request: Request) {
 
         await dbConnect();
 
-        const user = await loginUser(email, password);
+        const user = await authService.loginUser(email, password);
 
         if (!user) {
             return NextResponse.json({ message: 'Invalid credentials' }, { status: 401 });

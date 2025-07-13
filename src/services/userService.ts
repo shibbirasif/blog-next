@@ -4,8 +4,30 @@ import { dbConnect } from '@/lib/db';
 import User, { IUser } from '@/models/User';
 import mongoose from 'mongoose';
 
-export const userService = {
-    async getAllUsers(): Promise<Array<UserDto>> {
+export class UserService {
+    public async updateUser(id: string, updateData: Partial<IUser>): Promise<UserDto | null> {
+        await dbConnect();
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return null;
+        }
+
+        try {
+            const updatedUser = await User.findByIdAndUpdate(id, updateData, { new: true }).lean() as IUser | null;
+
+            if (!updatedUser) {
+                return null;
+            }
+
+            return buildUserDto(updatedUser);
+
+        } catch (error) {
+            console.error(`UserService.updateUser(${id}) error:`, error);
+            throw new Error(`Failed to update user with ID: ${id}.`);
+        }
+    }
+
+    public async getAllUsers(): Promise<Array<UserDto>> {
         await dbConnect();
 
         try {
@@ -16,9 +38,9 @@ export const userService = {
             console.error('UserService.getAllUsers error:', error);
             throw new Error('Failed to retrieve users.');
         }
-    },
+    }
 
-    async getUserById(id: string): Promise<UserDto | null> {
+    public async getUserById(id: string): Promise<UserDto | null> {
         await dbConnect();
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -26,7 +48,7 @@ export const userService = {
         }
 
         try {
-            const user = await User.findById(id);
+            const user = await User.findById(id).lean() as IUser | null; // Added .lean() for consistency with updateUser
 
             if (!user) {
                 return null;
@@ -38,13 +60,13 @@ export const userService = {
             console.error(`UserService.getUserById(${id}) error:`, error);
             throw new Error(`Failed to retrieve user with ID: ${id}.`);
         }
-    },
+    }
 
-    async getUserByEmail(email: string): Promise<UserDto | null> {
+    public async getUserByEmail(email: string): Promise<UserDto | null> {
         await dbConnect();
 
         try {
-            const user = await User.findOne({ email: email.toLowerCase() });
+            const user = await User.findOne({ email: email.toLowerCase() }).lean() as IUser | null; // Added .lean()
 
             if (!user) {
                 return null;
@@ -56,5 +78,7 @@ export const userService = {
             console.error(`UserService.getUserByEmail(${email}) error:`, error);
             throw new Error(`Failed to retrieve user with email: ${email}.`);
         }
-    },
-};
+    }
+}
+
+export const userService = new UserService();

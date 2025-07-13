@@ -1,4 +1,4 @@
-import { signupUser } from "@/services/authService";
+import { authService } from "@/services/authService";
 import { serverSignupSchema } from "@/validations/auth";
 import { NextResponse } from "next/server";
 import z from "zod";
@@ -8,7 +8,7 @@ export async function POST(request: Request) {
         const body = await request.json();
         const { name, email, password } = serverSignupSchema.parse(body);
 
-        const newUser = signupUser({ name, email, password });
+        const newUser = await authService.signupUser({ name, email, password });
         return NextResponse.json({ message: 'User registered successfully!', user: newUser }, { status: 201 });
     } catch (error) {
         if (error instanceof z.ZodError) {
