@@ -109,7 +109,7 @@ export const PasswordResetEmail: React.FC<PasswordResetEmailProps> = ({
                         <Text style={paragraph}>Hello {userName},</Text>
                         <Text style={paragraph}>
                             We received a request to reset your password for your {platformName} account.
-                            If you didn't make this request, please ignore this email.
+                            If you didn&apos;t make this request, please ignore this email.
                         </Text>
                         <Text style={paragraph}>
                             To reset your password, please click the button below:
@@ -120,7 +120,7 @@ export const PasswordResetEmail: React.FC<PasswordResetEmailProps> = ({
                             </Button>
                         </Section>
                         <Text style={paragraph}>
-                            If the button above doesn't work, you can also copy and paste the following link into your browser:
+                            If the button above doesn&apos;t work, you can also copy and paste the following link into your browser:
                             <br />
                             <Link href={resetUrl} style={link}>
                                 {resetUrl}

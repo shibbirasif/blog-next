@@ -118,7 +118,7 @@ export const EmailVerification: React.FC<EmailVerificationProps> = ({
                             </Button>
                         </Section>
                         <Text style={paragraph}>
-                            If the button above doesn't work, you can also copy and paste the following link into your browser:
+                            If the button above doesn&apos;t work, you can also copy and paste the following link into your browser:
                             <br />
                             <Link href={verificationUrl} style={link}>
                                 {verificationUrl}

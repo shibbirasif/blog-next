@@ -10,8 +10,8 @@ export async function POST(request: Request) {
         const { name, email, password } = serverSignupSchema.parse(body);
 
         const newUser = await authService.signupUser({ name, email, password });
-        emailSender.sendVerificationEmail(newUser, newUser.emailVerificationToken);
-        
+        emailSender.sendVerificationEmail(newUser, newUser.emailVerificationToken || "");
+
         return NextResponse.json({ message: 'User registered successfully!', user: newUser }, { status: 201 });
     } catch (error) {
         if (error instanceof z.ZodError) {

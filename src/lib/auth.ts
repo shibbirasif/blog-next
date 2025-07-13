@@ -48,9 +48,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     }
 
                     return (await res.json()) as AuthUser;
-                } catch (error: any) {
-                    console.error('NextAuth authorize error:', error.message);
-                    throw new Error("Authentication failed: " + error.message);
+                } catch (error: unknown) {
+                    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+                    console.error('NextAuth authorize error:', errorMessage);
+                    throw new Error("Authentication failed: " + errorMessage);
                 }
             },
         }),
@@ -76,10 +77,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             session.user.email = token.email as string;
             session.user.name = token.name as string;
             session.user.image = token.picture as string | null | undefined;
-            (session.user as any).roles = token.roles;
-            (session.user as any).bio = token.bio;
-            (session.user as any).isActive = token.isActive;
-            (session.user as any).isEmailVerified = token.isEmailVerified;
+            session.user.roles = token.roles as UserRole[];
+            session.user.bio = token.bio as string | null;
+            session.user.isActive = token.isActive as boolean;
+            session.user.isEmailVerified = token.isEmailVerified as boolean;
             return session;
         },
     },

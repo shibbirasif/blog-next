@@ -1,5 +1,4 @@
-// src/models/Post.ts
-import mongoose, { Schema, model, models, Document } from 'mongoose';
+import { Schema, model, models, Document } from 'mongoose';
 
 export interface IPost extends Document {
   title: string;

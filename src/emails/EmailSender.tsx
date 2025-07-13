@@ -5,12 +5,13 @@ import { UserDto } from '@/dtos/UserDto';
 import { EmailVerification } from '@/emails/components/EmailVerification';
 import { PasswordResetEmail } from '@/emails/components/PasswordResetEmail';
 import { PasswordChangedEmail } from '@/emails/components/PasswordChangedEmail';
+import { getBaseUrl, getPlatformName } from '@/utils/common';
 
 export interface TemplateData {
     userName: string;
     platformName: string;
     currentYear: number;
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
 export interface VerificationTemplateData extends TemplateData {
@@ -28,10 +29,6 @@ export interface PasswordChangedTemplateData extends TemplateData {
     supportUrl: string;
 }
 
-function getBaseUrl(): string {
-    return process.env.NEXTAUTH_URL || 'http://localhost:3000';
-}
-
 export class EmailSender {
     public async sendVerificationEmail(user: UserDto, verificationToken: string): Promise<void> {
         const verificationUrl = `${getBaseUrl()}/auth/verify-email?token=${verificationToken}`;
@@ -40,7 +37,7 @@ export class EmailSender {
             userName: user.name,
             verificationUrl,
             expirationHours: 24,
-            platformName: process.env.PLATFORM_NAME || 'Our Platform',
+            platformName: getPlatformName(),
             currentYear: new Date().getFullYear(),
         };
 
@@ -66,7 +63,7 @@ export class EmailSender {
             userName: user.name,
             resetUrl,
             expirationHours: 1,
-            platformName: process.env.PLATFORM_NAME || 'Our Platform',
+            platformName: getPlatformName(),
             currentYear: new Date().getFullYear(),
         };
 
@@ -90,7 +87,7 @@ export class EmailSender {
             userName: user.name,
             changeDate: new Date().toLocaleDateString(),
             supportUrl: `${getBaseUrl()}/support`,
-            platformName: process.env.PLATFORM_NAME || 'Our Platform',
+            platformName: getPlatformName(),
             currentYear: new Date().getFullYear(),
         };
 

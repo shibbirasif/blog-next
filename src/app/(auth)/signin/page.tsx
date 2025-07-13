@@ -52,6 +52,7 @@ export default function SignInPage() {
                 router.refresh();
             }
         } catch (error) {
+            console.error('Sign in error:', error);
             setGeneralError('An unexpected error occurred. Please try again.');
         }
     };
@@ -103,7 +104,7 @@ export default function SignInPage() {
                 </form>
 
                 <p className="mt-6 text-center text-sm text-gray-600">
-                    Don't have an account?{' '}
+                    Don&apos;t have an account?{' '}
                     <Link href="/signup" className="font-medium text-primary hover:text-secondary">
                         Sign Up
                     </Link>

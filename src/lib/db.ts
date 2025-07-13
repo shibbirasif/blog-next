@@ -6,12 +6,20 @@ if (!MONGODB_URI) {
     throw new Error("⚠️ MONGODB_URI not defined in .env.local");
 }
 
-let cached = (global as any).mongoose;
+interface CachedConnection {
+    conn: typeof import('mongoose') | null;
+    promise: Promise<typeof import('mongoose')> | null;
+}
+
+let cached = (global as { mongoose?: CachedConnection }).mongoose;
 if (!cached) {
-    cached = (global as any).mongoose = { conn: null, promise: null };
+    cached = (global as { mongoose?: CachedConnection }).mongoose = { conn: null, promise: null };
 }
 
 export async function dbConnect() {
+    if (!cached) {
+        throw new Error("Cached mongoose connection is undefined.");
+    }
     if (cached.conn) {
         return cached.conn;
     }
