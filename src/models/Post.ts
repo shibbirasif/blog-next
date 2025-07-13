@@ -52,10 +52,9 @@ const PostSchema = new Schema<IPost>({
     default: 0
   },
 }, {
-  timestamps: true // Adds createdAt and updatedAt fields
+  timestamps: true
 });
 
-// Use existing model if it exists, otherwise create a new one
 const Post = models.Post || model<IPost>('Post', PostSchema);
 
 export default Post;

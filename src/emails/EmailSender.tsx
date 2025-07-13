@@ -1,29 +1,52 @@
+import * as React from 'react';
 import { sendEmail } from '@/lib/email';
-import { IUser } from '@/models/User';
-import {
-    emailTemplateService,
-    EmailVerificationTemplateData,
-    PasswordResetTemplateData,
-    PasswordChangedTemplateData
-} from '@/services/emailTemplateService';
+import { render } from '@react-email/render';
+import { UserDto } from '@/dtos/UserDto';
+import { EmailVerification } from '@/emails/components/EmailVerification';
+import { PasswordResetEmail } from '@/emails/components/PasswordResetEmail';
+import { PasswordChangedEmail } from '@/emails/components/PasswordChangedEmail';
+
+export interface TemplateData {
+    userName: string;
+    platformName: string;
+    currentYear: number;
+    [key: string]: any;
+}
+
+export interface VerificationTemplateData extends TemplateData {
+    verificationUrl: string;
+    expirationHours: number;
+}
+
+export interface PasswordResetTemplateData extends TemplateData {
+    resetUrl: string;
+    expirationHours: number;
+}
+
+export interface PasswordChangedTemplateData extends TemplateData {
+    changeDate: string;
+    supportUrl: string;
+}
 
 function getBaseUrl(): string {
     return process.env.NEXTAUTH_URL || 'http://localhost:3000';
 }
 
-export class EmailService {
-    public async sendVerificationEmail(user: IUser, verificationToken: string): Promise<void> {
+export class EmailSender {
+    public async sendVerificationEmail(user: UserDto, verificationToken: string): Promise<void> {
         const verificationUrl = `${getBaseUrl()}/auth/verify-email?token=${verificationToken}`;
 
-        const templateData: EmailVerificationTemplateData = {
+        const templateData: VerificationTemplateData = {
             userName: user.name,
             verificationUrl,
             expirationHours: 24,
-            platformName: process.env.PLATFORM_NAME || 'Blog Next',
+            platformName: process.env.PLATFORM_NAME || 'Our Platform',
             currentYear: new Date().getFullYear(),
         };
 
-        const html = await emailTemplateService.renderEmailVerificationEmail(templateData);
+        const html = await render(<EmailVerification {...templateData} />, {
+            pretty: true,
+        });
 
         const result = await sendEmail({
             to: user.email,
@@ -36,7 +59,7 @@ export class EmailService {
         }
     }
 
-    public async sendPasswordResetEmail(user: IUser, resetToken: string): Promise<void> {
+    public async sendPasswordResetEmail(user: UserDto, resetToken: string): Promise<void> {
         const resetUrl = `${getBaseUrl()}/auth/reset-password?token=${resetToken}`;
 
         const templateData: PasswordResetTemplateData = {
@@ -47,7 +70,9 @@ export class EmailService {
             currentYear: new Date().getFullYear(),
         };
 
-        const html = await emailTemplateService.renderPasswordResetEmail(templateData);
+        const html = await render(<PasswordResetEmail {...templateData} />, {
+            pretty: true,
+        });
 
         const result = await sendEmail({
             to: user.email,
@@ -60,7 +85,7 @@ export class EmailService {
         }
     }
 
-    public async sendPasswordChangedNotification(user: IUser): Promise<void> {
+    public async sendPasswordChangedNotification(user: UserDto): Promise<void> {
         const templateData: PasswordChangedTemplateData = {
             userName: user.name,
             changeDate: new Date().toLocaleDateString(),
@@ -69,7 +94,9 @@ export class EmailService {
             currentYear: new Date().getFullYear(),
         };
 
-        const html = await emailTemplateService.renderPasswordChangedEmail(templateData);
+        const html = await render(<PasswordChangedEmail {...templateData} />, {
+            pretty: true,
+        });
 
         const result = await sendEmail({
             to: user.email,
@@ -83,4 +110,4 @@ export class EmailService {
     }
 }
 
-export const emailService = new EmailService();
+export const emailSender = new EmailSender();

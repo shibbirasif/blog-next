@@ -10,6 +10,7 @@ export interface UserDto {
     roles: string[];
     bio?: string;
     avatar?: string;
+    emailVerificationToken?: string;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -22,6 +23,7 @@ export function buildUserDto(userDoc: IUser): UserDto {
         email: userObject.email,
         isActive: userObject.isActive,
         isEmailVerified: userObject.isEmailVerified,
+        emailVerificationToken: userObject.isEmailVerified? undefined: userObject.emailVerificationToken,
         roles: userObject.roles as UserRole[],
         bio: userObject.bio || '',
         avatar: userObject.avatar || '',

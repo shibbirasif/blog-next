@@ -1,3 +1,4 @@
+import { emailSender } from "@/emails/EmailSender";
 import { authService } from "@/services/authService";
 import { serverSignupSchema } from "@/validations/auth";
 import { NextResponse } from "next/server";
@@ -9,6 +10,8 @@ export async function POST(request: Request) {
         const { name, email, password } = serverSignupSchema.parse(body);
 
         const newUser = await authService.signupUser({ name, email, password });
+        emailSender.sendVerificationEmail(newUser, newUser.emailVerificationToken);
+        
         return NextResponse.json({ message: 'User registered successfully!', user: newUser }, { status: 201 });
     } catch (error) {
         if (error instanceof z.ZodError) {
@@ -16,7 +19,6 @@ export async function POST(request: Request) {
             return NextResponse.json({ message: 'Validation Error', errors: error.errors }, { status: 400 });
         } else if (error instanceof Error) {
             console.error('Signup error:', error.message);
-            // Check for specific error messages (like from duplicate email)
             if (error.message.includes('email already exists')) {
                 return NextResponse.json({ message: 'User with this email already exists.' }, { status: 409 });
             }

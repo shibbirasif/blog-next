@@ -1,10 +1,9 @@
 import { dbConnect } from "@/lib/db";
 import bcrypt from "bcrypt";
-import User, { IUser } from "@/models/User";
+import User from "@/models/User";
 import UserSignupPayload from "@/dtos/UserSignupPayload";
 import { buildUserDto, UserDto } from "@/dtos/UserDto";
 import { generateRandomToken } from "@/lib/tokens";
-import { emailService } from "./emailService";
 
 const SALT_ROUNDS = 10;
 
@@ -18,23 +17,6 @@ export class AuthService {
     private async comparePassword(plainPassword: string, storedHash: string): Promise<boolean> {
         const isMatch = await bcrypt.compare(plainPassword, storedHash);
         return isMatch;
-    }
-
-    public async sendVerificationMail(user: IUser): Promise<void> {
-        try {
-            const verificationToken = generateRandomToken();
-            const verificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
-
-            await User.findByIdAndUpdate(user._id, {
-                emailVerificationToken: verificationToken,
-                emailVerificationExpires: verificationExpires,
-            });
-
-            await emailService.sendVerificationEmail(user, verificationToken);
-        } catch (error) {
-            console.error('⚠️ Error in AuthService.sendVerificationMail:', error);
-            throw new Error('Failed to send verification email');
-        }
     }
 
     public async loginUser(email: string, password: string): Promise<UserDto | null> {
@@ -69,9 +51,12 @@ export class AuthService {
             name,
             email,
             password_salt: salt,
-            password_hash: hash
+            password_hash: hash,
+            emailVerificationToken: generateRandomToken(),
+            emailVerificationExpires: new Date(Date.now() + 24 * 60 * 60 * 1000)
         }).save();
 
+        // await emailService.sendVerificationEmail(newUser);
         return buildUserDto(newUser);
     }
 }
