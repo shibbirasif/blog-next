@@ -24,7 +24,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       <head>
         <ThemeModeScript />
       </head>
-      <body>
+      <body className="dark:bg-gray-900">
         <div id="main-wrapper">
           {children}
         </div>
