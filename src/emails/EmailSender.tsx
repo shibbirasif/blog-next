@@ -31,7 +31,7 @@ export interface PasswordChangedTemplateData extends TemplateData {
 
 export class EmailSender {
     public async sendVerificationEmail(user: UserDto, verificationToken: string): Promise<void> {
-        const verificationUrl = `${getBaseUrl()}/auth/verify-email?token=${verificationToken}`;
+        const verificationUrl = `${getBaseUrl()}/verify-email?token=${verificationToken}`;
 
         const templateData: VerificationTemplateData = {
             userName: user.name,

@@ -79,6 +79,32 @@ export class UserService {
             throw new Error(`Failed to retrieve user with email: ${email}.`);
         }
     }
+
+    public async verifyUserByVerificationToken(token: string): Promise<UserDto | null> {
+        await dbConnect();
+
+        try {
+            const user = await User.findOne({
+                verificationToken: token,
+                verificationTokenExpires: { $gt: new Date() },
+            });
+
+            if (!user) {
+                return null;
+            }
+
+            user.isEmailVerified = true;
+            user.emailVerificationToken = undefined;
+            user.emailVerificationExpires = undefined;
+            await user.save();
+
+            return buildUserDto(user);
+
+        } catch (error) {
+            console.error(`UserService.verifyUserByVerificationToken error:`, error);
+            throw new Error(`Failed to verify user with token.`);
+        }
+    }
 }
 
 export const userService = new UserService();

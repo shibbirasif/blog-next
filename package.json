@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "flowbite-react patch"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
@@ -14,6 +15,7 @@
     "@react-email/render": "^1.1.3",
     "bcrypt": "^6.0.0",
     "clsx": "^2.1.1",
+    "flowbite-react": "^0.11.9",
     "html-to-text": "^9.0.5",
     "mongoose": "^8.16.1",
     "next": "15.3.4",
