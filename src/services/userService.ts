@@ -85,8 +85,8 @@ export class UserService {
 
         try {
             const user = await User.findOne({
-                verificationToken: token,
-                verificationTokenExpires: { $gt: new Date() },
+                emailVerificationToken: token,
+                emailVerificationExpires: { $gt: new Date() },
             });
 
             if (!user) {

@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { NavbarCollapse, NavbarLink } from "flowbite-react";
+import { headers } from "next/headers";
 
 interface NavItem {
     name: string;
@@ -18,24 +19,19 @@ interface NavLinksProps {
 }
 
 export default function NavLinks({ isMobile = false }: NavLinksProps) {
+    const isActive = async (href: string): Promise<boolean> => {
+        const headerList = await headers();
+        const currentPath = headerList.get('x-request-path');
+        return href === currentPath;
+    }
     return (
-        <ul className={`
-                        flex ${isMobile ? 'flex-col justify-start items-start' : 'flex-row justify-center items-center md:gap-8'}
-                        w-full
-                    `}>
-
-            {MAIN_NAV_ITEMS.map((item) => (
-                <li key={item.name} className={`${isMobile ? 'h-[50px] w-full' : 'h-auto w-auto'}`}>
-                    <Link href={item.href}
-                        className={`
-                                    h-full w-full flex items-center
-                                    ${isMobile ? 'justify-start px-4' : 'justify-center'}
-                                    hover:text-accent-secondary
-                                `}>
-                        {item.name}
-                    </Link>
-                </li>
+        <NavbarCollapse>
+            {MAIN_NAV_ITEMS.map(async (item) => (
+                <NavbarLink href={item.href} active={await isActive(item.href)}>
+                    {item.name}
+                </NavbarLink>
             ))}
-        </ul>
+
+        </NavbarCollapse>
     );
 }

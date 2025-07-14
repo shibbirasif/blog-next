@@ -1,5 +1,6 @@
 'use client';
 
+import { Button } from "flowbite-react";
 import { useRouter } from "next/navigation";
 
 interface SignOutLinkProps {
@@ -17,12 +18,12 @@ export default function SignIn({ className, children }: SignOutLinkProps) {
     }
 
     return (
-        <button
+        <Button
             type="button"
             aria-label="Sign Out"
             onClick={handleSignIn}
             className={className || ""} >
             {children}
-        </button>
+        </Button>
     );
 }

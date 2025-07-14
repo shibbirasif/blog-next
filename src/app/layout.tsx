@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Outfit, Doto } from "next/font/google";
 import "./globals.css";
+import { ThemeModeScript } from "flowbite-react";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -20,7 +21,10 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
   return (
     <html lang="en" className={`${outfit.variable} ${doto.variable}`}>
-      <body className={`font-outfit bg-background`}>
+      <head>
+        <ThemeModeScript />
+      </head>
+      <body>
         <div id="main-wrapper">
           {children}
         </div>

@@ -1,48 +1,40 @@
-import Link from "next/link";
 import NavLinks from "./navigations/NavLinks";
-import SearchIcon from "./ui/icons/SearchIcon";
-import MobileMenu from "./navigations/MobileMenu";
 import { auth } from "@/lib/auth";
 import SignOut from "./auth/SignOut";
 import SignIn from "./auth/SignIn";
+import { Avatar, DarkThemeToggle, Dropdown, DropdownDivider, DropdownHeader, DropdownItem, Navbar, NavbarBrand, NavbarCollapse, NavbarLink, NavbarToggle } from "flowbite-react";
 
 export default async function Topbar() {
     const session = await auth();
+
     return (
-        <header className="fixed top-0 left-0 w-full z-30 bg-surface shadow-xs font-semibold text-text-secondary">
-            <nav className="flex flex-row justify-between items-center w-[90%] mx-auto sm:max-w-7xl h-16">
-                <div>
-                    <Link href="/" className="text-2xl font-bold text-primary-dark">
-                        Blog Next
-                    </Link>
-                </div>
-
-                <div className="hidden md:flex">
-                    <NavLinks isMobile={false} />
-                </div>
-
-                <div className="flex flex-row items-center justify-end gap-3 md:gap-4">
-                    <button
-                        type="button"
-                        aria-label="Search"
-                        className="p-1 rounded-md text-text-secondary hover:text-accent-secondary transition-colors duration-200"
+        <Navbar fluid rounded className="fixed top-0 w-full">
+            <NavbarBrand href="https://flowbite-react.com">
+                <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Blog Next</span>
+            </NavbarBrand>
+            <div className="flex md:order-2">
+                <DarkThemeToggle className="mx-2" />
+                {session?.user ?
+                    <Dropdown
+                        arrowIcon={false}
+                        inline
+                        label={
+                            <Avatar alt="User settings" img="https://flowbite.com/docs/images/people/profile-picture-5.jpg" rounded />
+                        }
                     >
-                        <SearchIcon />
-                    </button>
-
-                    <div>
-                        {session?.user ? (
-                            <SignOut className="hover:text-accent-secondary cursor-pointer" />
-                        ) : (
-                            <SignIn className="px-5 mx-2 py-1.5 bg-accent rounded-full hover:bg-secondary hover:text-white duration-300">
-                                Sign In
-                            </SignIn>
-                        )}
-                        {/* <button className="px-5 mx-2 py-1.5 bg-accent rounded-full hover:bg-secondary hover:text-white duration-300">Sign In</button> */}
-                    </div>
-                    <MobileMenu />
-                </div>
-            </nav>
-        </header>
+                        <DropdownHeader>
+                            <span className="block text-sm">Bonnie Green</span>
+                            <span className="block truncate text-sm font-medium">name@flowbite.com</span>
+                        </DropdownHeader>
+                        <DropdownItem>Dashboard</DropdownItem>
+                        <DropdownItem>Settings</DropdownItem>
+                        <DropdownDivider />
+                        <SignOut>Sign out</SignOut>
+                    </Dropdown>
+                    : <SignIn>Sign In</SignIn>}
+                <NavbarToggle className="mx-2" />
+            </div>
+            <NavLinks />
+        </Navbar>
     )
 }

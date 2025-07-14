@@ -67,8 +67,8 @@ export default function VerifyEmailPage() {
                         <h1 className="mb-4 text-3xl font-bold text-green-600">✅ Email Verified!</h1>
                         <p className="mb-4 text-gray-700">{message}</p>
                         <p className="mb-6 text-gray-600">You can now log in to your account.</p>
-                        <a href="/login" className="inline-block rounded-md bg-blue-600 px-6 py-3 font-semibold text-white transition duration-200 hover:bg-blue-700">
-                            Go to Login
+                        <a href="/signin" className="inline-block rounded-md bg-blue-600 px-6 py-3 font-semibold text-white transition duration-200 hover:bg-blue-700">
+                            Go to Signin
                         </a>
                     </div>
                 )}

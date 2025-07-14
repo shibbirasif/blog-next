@@ -1,23 +1,20 @@
 'use client';
+import { Button, DropdownItem } from 'flowbite-react';
 import { signOut } from 'next-auth/react';
 
 interface SignOutLinkProps {
     className?: string;
+    children?: React.ReactNode;
 }
 
-export default function SignOut({ className }: SignOutLinkProps) {
-    const handleSignOut = async (event: React.MouseEvent) => {
-        event.preventDefault();
+export default function SignOut({ children, className }: SignOutLinkProps) {
+    const handleSignOut = async () => {
         await signOut();
     };
 
     return (
-        <button
-            type="button"
-            aria-label="Sign Out"
-            onClick={handleSignOut}
-            className={className || ""} >
-            Sign Out
-        </button>
+        <DropdownItem className={className || ""} onClick={handleSignOut}>
+            {children}
+        </DropdownItem>
     );
 }
