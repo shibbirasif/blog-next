@@ -16,18 +16,18 @@ export interface UserDto {
 }
 
 export function buildUserDto(userDoc: IUser): UserDto {
-    const userObject = userDoc.toObject();
+    // const userObject = userDoc.toObject();
     return {
-        _id: userObject._id.toString(),
-        name: userObject.name,
-        email: userObject.email,
-        isActive: userObject.isActive,
-        isEmailVerified: userObject.isEmailVerified,
-        emailVerificationToken: userObject.isEmailVerified? undefined: userObject.emailVerificationToken,
-        roles: userObject.roles as UserRole[],
-        bio: userObject.bio || '',
-        avatar: userObject.avatar || '',
-        createdAt: userObject.createdAt,
-        updatedAt: userObject.updatedAt,
+        _id: userDoc._id.toString(),
+        name: userDoc.name,
+        email: userDoc.email,
+        isActive: userDoc.isActive,
+        isEmailVerified: userDoc.isEmailVerified,
+        emailVerificationToken: userDoc.isEmailVerified? undefined: userDoc.emailVerificationToken,
+        roles: userDoc.roles as UserRole[],
+        bio: userDoc.bio || '',
+        avatar: userDoc.avatar || '',
+        createdAt: userDoc.createdAt,
+        updatedAt: userDoc.updatedAt,
     };
 }

@@ -50,6 +50,8 @@ export class UserService {
         try {
             const user = await User.findById(id).lean() as IUser | null; // Added .lean() for consistency with updateUser
 
+            console.log(`UserService.getUserById(${id}) user:`, user);
+            
             if (!user) {
                 return null;
             }

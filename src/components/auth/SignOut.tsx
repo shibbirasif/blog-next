@@ -1,5 +1,6 @@
 'use client';
-import { Button, DropdownItem } from 'flowbite-react';
+
+import { DropdownItem } from 'flowbite-react';
 import { signOut } from 'next-auth/react';
 
 interface SignOutLinkProps {

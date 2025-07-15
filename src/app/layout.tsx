@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Outfit, Doto } from "next/font/google";
 import "./globals.css";
 import { ThemeModeScript } from "flowbite-react";
+import ProgressWrapper from "./ProgressWrapper";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -25,9 +26,11 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <ThemeModeScript />
       </head>
       <body className="dark:bg-gray-900">
-        <div id="main-wrapper">
-          {children}
-        </div>
+        <ProgressWrapper>
+          <div id="main-wrapper">
+            {children}
+          </div>
+        </ProgressWrapper>
       </body>
     </html>
   );

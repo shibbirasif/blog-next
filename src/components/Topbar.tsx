@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import SignOut from "./auth/SignOut";
 import SignIn from "./auth/SignIn";
 import { Avatar, DarkThemeToggle, Dropdown, DropdownDivider, DropdownHeader, DropdownItem, Navbar, NavbarBrand, NavbarCollapse, NavbarLink, NavbarToggle } from "flowbite-react";
+import Link from "next/link";
 
 export default async function Topbar() {
     const session = await auth();
@@ -26,7 +27,7 @@ export default async function Topbar() {
                             <span className="block text-sm">Bonnie Green</span>
                             <span className="block truncate text-sm font-medium">name@flowbite.com</span>
                         </DropdownHeader>
-                        <DropdownItem>Dashboard</DropdownItem>
+                        <DropdownItem><Link href={`/user/${session.user.id}`}>Dashboard</Link></DropdownItem>
                         <DropdownItem>Settings</DropdownItem>
                         <DropdownDivider />
                         <SignOut>Sign out</SignOut>
