@@ -8,7 +8,12 @@
     "start": "next start",
     "lint": "next lint",
     "postinstall": "flowbite-react patch",
-    "generate-tags": "tsx scripts/generateTags.ts"
+    "generate-tags": "tsx scripts/generateTags.ts",
+    "migrate:up": "npx ts-migrate-mongoose up -f ./migrate-mongo-config.ts",
+    "migrate:down": "npx ts-migrate-mongoose down -f ./migrate-mongo-config.ts",
+    "migrate:list": "npx ts-migrate-mongoose list -f ./migrate-mongo-config.ts",
+    "migrate:prune": "npx ts-migrate-mongoose prune -f ./migrate-mongo-config.ts",
+    "migrate:create": "npx ts-migrate-mongoose create -f ./migrate-mongo-config.ts"
   },
   "dependencies": {
     "@bprogress/next": "^3.2.12",
@@ -49,9 +54,11 @@
     "@types/nodemailer": "^6.4.17",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv": "^17.2.0",
     "eslint": "^9",
     "eslint-config-next": "15.3.4",
     "tailwindcss": "^4",
+    "ts-migrate-mongoose": "^4.0.9",
     "typescript": "^5"
   }
 }
