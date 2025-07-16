@@ -9,7 +9,7 @@ interface UserProfilePageProps {
 }
 
 export default async function UserProfilePage({ params }: UserProfilePageProps) {
-    const { id } = params;
+    const { id } = await params;
 
     try {
         const user = await userService.getUserById(id);
@@ -55,15 +55,15 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
                                 {/* User Status */}
                                 <div className="flex items-center gap-3 mt-3">
                                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${user.isActive
-                                            ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
-                                            : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                                        ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+                                        : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
                                         }`}>
                                         {user.isActive ? 'Active' : 'Inactive'}
                                     </span>
 
                                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${user.isEmailVerified
-                                            ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
-                                            : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
+                                        ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
+                                        : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
                                         }`}>
                                         {user.isEmailVerified ? 'Email Verified' : 'Email Pending'}
                                     </span>

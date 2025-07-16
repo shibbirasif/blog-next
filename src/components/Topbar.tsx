@@ -9,7 +9,7 @@ export default async function Topbar() {
     const session = await auth();
 
     return (
-        <Navbar fluid rounded className="fixed top-0 w-full">
+        <Navbar fluid rounded className="fixed top-0 w-full z-999 shadow-sm">
             <NavbarBrand href="https://flowbite-react.com">
                 <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Blog Next</span>
             </NavbarBrand>
