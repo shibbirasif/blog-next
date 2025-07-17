@@ -5,6 +5,7 @@ import SignIn from "./auth/SignIn";
 import { Avatar, DarkThemeToggle, Dropdown, DropdownDivider, DropdownHeader, DropdownItem, Navbar, NavbarBrand, NavbarCollapse, NavbarLink, NavbarToggle } from "flowbite-react";
 import Link from "next/link";
 import SidebarToggle from "./ui/SidebarToggle";
+import { APP_ROUTES } from "@/constants/appRoutes";
 
 export default async function Topbar() {
     const session = await auth();
@@ -31,7 +32,7 @@ export default async function Topbar() {
                             <span className="block text-sm">Bonnie Green</span>
                             <span className="block truncate text-sm font-medium">name@flowbite.com</span>
                         </DropdownHeader>
-                        <DropdownItem><Link href={`/user/${session.user.id}/feed`}>Dashboard</Link></DropdownItem>
+                        <DropdownItem><Link href={APP_ROUTES.USER.FEED(session.user.id)}>Dashboard</Link></DropdownItem>
                         <DropdownItem>Settings</DropdownItem>
                         <DropdownDivider />
                         <SignOut>Sign out</SignOut>
