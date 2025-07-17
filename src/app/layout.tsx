@@ -3,6 +3,7 @@ import { Outfit, Doto } from "next/font/google";
 import "./globals.css";
 import { ThemeModeScript } from "flowbite-react";
 import ProgressWrapper from "./ProgressWrapper";
+import { SessionProvider } from "next-auth/react";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -27,9 +28,11 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       </head>
       <body className="dark:bg-gray-900">
         <ProgressWrapper>
-          <div id="main-wrapper">
-            {children}
-          </div>
+          <SessionProvider>
+            <div id="main-wrapper">
+              {children}
+            </div>
+          </SessionProvider>
         </ProgressWrapper>
       </body>
     </html>

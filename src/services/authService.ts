@@ -7,7 +7,7 @@ import { generateRandomToken } from "@/lib/tokens";
 
 const SALT_ROUNDS = 10;
 
-export class AuthService {
+class AuthService {
     private async hashPassword(password: string): Promise<{ salt: string; hash: string }> {
         const salt = await bcrypt.genSalt(SALT_ROUNDS);
         const hash = await bcrypt.hash(password, salt);

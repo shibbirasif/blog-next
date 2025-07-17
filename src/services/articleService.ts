@@ -1,18 +1,16 @@
 import { dbConnect } from '@/lib/db';
-import Article, { IArticle } from '@/models/Article';
+import Article from '@/models/Article';
 import Tag from '@/models/Tag';
-import { CreateArticleInput, UpdateArticleInput, PublishArticleInput } from '@/validations/article';
+import type { IArticle } from '@/models/Article';
+import type { CreateArticleInput, UpdateArticleInput } from '@/validations/article';
 import mongoose from 'mongoose';
 
-export class ArticleService {
+class ArticleService {
 
-    /**
-     * Create a new article
-     */
+
     static async createArticle(articleData: CreateArticleInput): Promise<IArticle> {
         await dbConnect();
 
-        // Validate tags exist and are active
         if (articleData.tags && articleData.tags.length > 0) {
             const validTags = await Tag.find({
                 _id: { $in: articleData.tags },
@@ -28,9 +26,7 @@ export class ArticleService {
         return await article.save();
     }
 
-    /**
-     * Get article by ID
-     */
+
     static async getArticleById(id: string): Promise<IArticle | null> {
         await dbConnect();
 
@@ -44,9 +40,7 @@ export class ArticleService {
             .exec();
     }
 
-    /**
-     * Get articles by author
-     */
+
     static async getArticlesByAuthor(
         authorId: string,
         options: {
@@ -85,9 +79,7 @@ export class ArticleService {
         return { articles, total, pages };
     }
 
-    /**
-     * Get published articles (public)
-     */
+
     static async getPublishedArticles(options: {
         page?: number;
         limit?: number;
@@ -101,12 +93,12 @@ export class ArticleService {
 
         const filter: any = { isPublished: true };
 
-        // Filter by tags
+
         if (tags && tags.length > 0) {
             filter.tags = { $in: tags };
         }
 
-        // Search in title and content
+
         if (search) {
             filter.$text = { $search: search };
         }
@@ -127,9 +119,7 @@ export class ArticleService {
         return { articles, total, pages };
     }
 
-    /**
-     * Update article
-     */
+
     static async updateArticle(id: string, updateData: Partial<UpdateArticleInput>): Promise<IArticle | null> {
         await dbConnect();
 
@@ -137,7 +127,7 @@ export class ArticleService {
             throw new Error('Invalid article ID format');
         }
 
-        // Validate tags if provided
+
         if (updateData.tags && updateData.tags.length > 0) {
             const validTags = await Tag.find({
                 _id: { $in: updateData.tags },
@@ -159,9 +149,7 @@ export class ArticleService {
             .exec();
     }
 
-    /**
-     * Publish/unpublish article
-     */
+
     static async togglePublishStatus(id: string, isPublished: boolean): Promise<IArticle | null> {
         await dbConnect();
 
@@ -179,9 +167,7 @@ export class ArticleService {
             .exec();
     }
 
-    /**
-     * Delete article
-     */
+
     static async deleteArticle(id: string): Promise<boolean> {
         await dbConnect();
 
@@ -193,9 +179,7 @@ export class ArticleService {
         return !!result;
     }
 
-    /**
-     * Get articles in a series
-     */
+
     static async getSeriesArticles(seriesId: string): Promise<IArticle[]> {
         await dbConnect();
 
@@ -206,9 +190,7 @@ export class ArticleService {
             .exec();
     }
 
-    /**
-     * Check if user owns article
-     */
+
     static async verifyOwnership(articleId: string, userId: string): Promise<boolean> {
         await dbConnect();
 

@@ -16,7 +16,6 @@ export interface UserDto {
 }
 
 export function buildUserDto(userDoc: IUser): UserDto {
-    // const userObject = userDoc.toObject();
     return {
         _id: userDoc._id.toString(),
         name: userDoc.name,

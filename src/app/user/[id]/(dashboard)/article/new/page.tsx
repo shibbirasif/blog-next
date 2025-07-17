@@ -1,36 +1,17 @@
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import NewArticleForm from './NewArticleForm';
-import { dbConnect } from '@/lib/db';
-import Tag from '@/models/Tag';
+import { apiFetcher } from '@/utils/apiFetcher';
+import { TagDto } from '@/dtos/TagDto';
 
 interface PageProps {
     params: { id: string };
 }
 
-async function getTags() {
-    await dbConnect();
-    const tags = await Tag.find({ isActive: true })
-        .select('_id name color description')
-        .sort({ name: 1 });
-
-    return JSON.parse(JSON.stringify(tags));
-}
-
 export default async function NewArticlePage({ params }: PageProps) {
     const session = await auth();
 
-    // Check if user is authenticated
-    if (!session?.user) {
-        redirect('/signin');
-    }
-
-    // Check if the authenticated user matches the URL parameter
-    if (session.user.id !== params.id) {
-        redirect('/');
-    }
-
-    const tags = await getTags();
+    const tags = await apiFetcher<TagDto[]>(`${process.env.BASE_URL}/api/tags`);
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -48,7 +29,7 @@ export default async function NewArticlePage({ params }: PageProps) {
 
                         <div className="p-6">
                             <NewArticleForm
-                                userId={session.user.id}
+                                userId={session?.user?.id || '0'}
                                 availableTags={tags}
                             />
                         </div>

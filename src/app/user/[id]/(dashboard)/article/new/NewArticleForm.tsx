@@ -1,35 +1,24 @@
-'use client';
+"use client";
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { clientCreateArticleSchema, type ClientCreateArticleInput } from '@/validations/article';
+import { clientCreateArticleSchema, CreateArticleInput, type ClientCreateArticleInput } from '@/validations/article';
 import RichTextEditor from '@/components/richTextEditor/RichTextEditor';
 import { Button, Label, TextInput, Textarea, Checkbox, Badge } from 'flowbite-react';
 import { HiOutlineEye, HiOutlineSave, HiOutlineTag } from 'react-icons/hi';
+import z from 'zod';
+import { TagDto } from '@/dtos/TagDto';
 
-interface Tag {
-    _id: string;
-    name: string;
-    color: string;
-    description: string;
-}
 
 interface NewArticleFormProps {
     userId: string;
-    availableTags: Tag[];
+    availableTags: TagDto[];
 }
 
-// Create a form type that matches our needs
-type ArticleFormData = {
-    title: string;
-    content: string;
-    tags: string[];
-    isPublished: boolean;
-    seriesId?: string;
-    partNumber?: number;
-};
+type ClientCreateArticleOutput = z.output<typeof clientCreateArticleSchema>;
+
 
 export default function NewArticleForm({ userId, availableTags }: NewArticleFormProps) {
     const router = useRouter();
@@ -45,12 +34,13 @@ export default function NewArticleForm({ userId, availableTags }: NewArticleForm
         formState: { errors },
         watch,
         setValue
-    } = useForm<ArticleFormData>({
+    } = useForm<ClientCreateArticleOutput>({
+        resolver: zodResolver(clientCreateArticleSchema),
         defaultValues: {
             title: '',
             content: '',
-            tags: [],
             isPublished: false,
+            tags: [],
             seriesId: '',
             partNumber: undefined
         }
@@ -76,7 +66,7 @@ export default function NewArticleForm({ userId, availableTags }: NewArticleForm
         return availableTags.filter(tag => selectedTags.includes(tag._id));
     };
 
-    const onSubmit = async (data: ArticleFormData) => {
+    const onSubmit = async (data: ClientCreateArticleInput) => {
         setIsSubmitting(true);
 
         try {

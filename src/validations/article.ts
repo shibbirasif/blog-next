@@ -13,11 +13,9 @@ export const createArticleSchema = z.object({
     author: z.string()
         .regex(/^[0-9a-fA-F]{24}$/, "Invalid author ID format"),
     tags: z.array(z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid tag ID format"))
-        .optional()
-        .default([]),
+        .optional(),
     isPublished: z.boolean()
-        .optional()
-        .default(false),
+        .optional(),
     seriesId: z.string()
         .max(100, "Series ID cannot exceed 100 characters")
         .trim()
