@@ -11,7 +11,7 @@ export default function DashboardSidebar() {
 
     return (
         <>
-            <Sidebar id="dashboard-sidebar" aria-label="User dashboard sidebar" className="w-64 h-[90vh] hidden sm:block absolute">
+            <Sidebar id="dashboard-sidebar" aria-label="User dashboard sidebar" className="w-64 h-[90vh] hidden sm:block absolute sm:relative z-998">
                 <SidebarItems>
                     <SidebarItemGroup>
                         <SidebarItem href={APP_ROUTES.USER.FEED(session?.user?.id)} icon={FaRss} active>

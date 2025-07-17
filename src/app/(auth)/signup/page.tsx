@@ -79,7 +79,7 @@ export default function SignUpPage() {
                             id="name"
                             type="text"
                             {...register('name')}
-                            placeholder="John Doe"
+                            placeholder="Your Name"
                             required={false}
                             disabled={isSubmitting}
                             color={errors.name ? "failure" : "gray"}

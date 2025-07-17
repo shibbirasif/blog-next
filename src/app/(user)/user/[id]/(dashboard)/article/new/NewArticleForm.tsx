@@ -4,25 +4,21 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { clientCreateArticleSchema, CreateArticleInput, type ClientCreateArticleInput } from '@/validations/article';
+import { ClientCreateArticleInput, clientCreateArticleSchema } from '@/validations/article';
 import RichTextEditor from '@/components/richTextEditor/RichTextEditor';
-import { Button, Label, TextInput, Textarea, Checkbox, Badge } from 'flowbite-react';
+import { Button, Label, TextInput, Badge } from 'flowbite-react';
 import { HiOutlineEye, HiOutlineSave, HiOutlineTag } from 'react-icons/hi';
-import z from 'zod';
 import { TagDto } from '@/dtos/TagDto';
-
 
 interface NewArticleFormProps {
     userId: string;
     availableTags: TagDto[];
 }
 
-type ClientCreateArticleOutput = z.output<typeof clientCreateArticleSchema>;
 
 
 export default function NewArticleForm({ userId, availableTags }: NewArticleFormProps) {
     const router = useRouter();
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
     const [tagSearchTerm, setTagSearchTerm] = useState('');
     const [showTagDropdown, setShowTagDropdown] = useState(false);
@@ -31,22 +27,18 @@ export default function NewArticleForm({ userId, availableTags }: NewArticleForm
         register,
         handleSubmit,
         control,
-        formState: { errors },
-        watch,
+        formState: { errors, isSubmitting },
         setValue
-    } = useForm<ClientCreateArticleOutput>({
+    } = useForm<ClientCreateArticleInput>({
         resolver: zodResolver(clientCreateArticleSchema),
         defaultValues: {
             title: '',
             content: '',
-            isPublished: false,
             tags: [],
-            seriesId: '',
-            partNumber: undefined
+            isPublished: false
         }
     });
 
-    const watchedContent = watch('content');
 
     const filteredTags = availableTags.filter(tag =>
         tag.name.toLowerCase().includes(tagSearchTerm.toLowerCase()) &&
@@ -67,8 +59,6 @@ export default function NewArticleForm({ userId, availableTags }: NewArticleForm
     };
 
     const onSubmit = async (data: ClientCreateArticleInput) => {
-        setIsSubmitting(true);
-
         try {
             const response = await fetch('/api/articles', {
                 method: 'POST',
@@ -95,18 +85,16 @@ export default function NewArticleForm({ userId, availableTags }: NewArticleForm
         } catch (error) {
             console.error('Error creating article:', error);
             alert(error instanceof Error ? error.message : 'Failed to create article');
-        } finally {
-            setIsSubmitting(false);
         }
     };
 
-    const handleSaveDraft = async () => {
-        const formData = { ...watch(), isPublished: false, tags: selectedTags };
+    const handleSaveDraft = async (data: ClientCreateArticleInput) => {
+        const formData = { ...data, isPublished: false, tags: selectedTags };
         await onSubmit(formData);
     };
 
-    const handlePublish = async () => {
-        const formData = { ...watch(), isPublished: true, tags: selectedTags };
+    const handlePublish = async (data: ClientCreateArticleInput) => {
+        const formData = { ...data, isPublished: true, tags: selectedTags };
         await onSubmit(formData);
     };
 
@@ -120,7 +108,9 @@ export default function NewArticleForm({ userId, availableTags }: NewArticleForm
                 <TextInput
                     id="title"
                     {...register('title')}
+                    required={false}
                     placeholder="Enter article title..."
+                    disabled={isSubmitting}
                     color={errors.title ? 'failure' : 'gray'}
                 />
                 {errors.title && (
@@ -136,10 +126,12 @@ export default function NewArticleForm({ userId, availableTags }: NewArticleForm
                 <Controller
                     name="content"
                     control={control}
+                    defaultValue=""
                     render={({ field }) => (
                         <RichTextEditor
                             content={field.value || ''}
                             onContentChange={field.onChange}
+                            hasError={!!errors.content}
                         />
                     )}
                 />
@@ -219,42 +211,6 @@ export default function NewArticleForm({ userId, availableTags }: NewArticleForm
                 </div>
             </div>
 
-            {/* Series Information (Optional) */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <Label htmlFor="seriesId" className="mb-2 block">
-                        Series ID (Optional)
-                    </Label>
-                    <TextInput
-                        id="seriesId"
-                        {...register('seriesId')}
-                        placeholder="e.g., react-tutorial"
-                        color={errors.seriesId ? 'failure' : 'gray'}
-                    />
-                    {errors.seriesId && (
-                        <p className="text-red-600 text-sm mt-1">{errors.seriesId.message}</p>
-                    )}
-                </div>
-
-                <div>
-                    <Label htmlFor="partNumber" className="mb-2 block">
-                        Part Number (Optional)
-                    </Label>
-                    <TextInput
-                        id="partNumber"
-                        type="number"
-                        {...register('partNumber', { valueAsNumber: true })}
-                        placeholder="1"
-                        min="1"
-                        max="9999"
-                        color={errors.partNumber ? 'failure' : 'gray'}
-                    />
-                    {errors.partNumber && (
-                        <p className="text-red-600 text-sm mt-1">{errors.partNumber.message}</p>
-                    )}
-                </div>
-            </div>
-
             {/* Action Buttons */}
             <div className="flex justify-between items-center pt-6 border-t border-gray-200">
                 <Button
@@ -268,7 +224,7 @@ export default function NewArticleForm({ userId, availableTags }: NewArticleForm
                 <div className="flex gap-3">
                     <Button
                         color="light"
-                        onClick={handleSaveDraft}
+                        onClick={handleSubmit((data) => handleSaveDraft(data))}
                         disabled={isSubmitting}
                     >
                         <HiOutlineSave className="mr-2 h-4 w-4" />
@@ -277,7 +233,7 @@ export default function NewArticleForm({ userId, availableTags }: NewArticleForm
 
                     <Button
                         color="blue"
-                        onClick={handlePublish}
+                        onClick={handleSubmit((data) => handlePublish(data))}
                         disabled={isSubmitting}
                     >
                         <HiOutlineEye className="mr-2 h-4 w-4" />

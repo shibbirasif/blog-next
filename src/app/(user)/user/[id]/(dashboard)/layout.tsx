@@ -1,3 +1,4 @@
+import Topbar from "@/components/Topbar";
 import DashboardSidebar from "./DashboardSidebar";
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
@@ -19,9 +20,17 @@ export default async function UserLayout({ children, params }: DashboardLayoutPr
     }
 
     return (
-        <div className="flex">
-            <DashboardSidebar />
-            {children}
+        <div className="mt-16">
+            <Topbar sidebarId="dashboard-sidebar" />
+            <div className="flex">
+                <DashboardSidebar />
+                <main className="flex-1 flex items-center justify-center p-4 ma">
+                    <div className="w-full max-w-5xl">
+                        {children}
+                    </div>
+                </main>
+            </div>
         </div>
+
     );
 }

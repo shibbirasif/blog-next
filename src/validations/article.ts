@@ -1,29 +1,33 @@
 import z from "zod";
+import { isPlainTextValid, isHtmlContentValid } from '@/utils/sanitization';
 
 export const createArticleSchema = z.object({
     title: z.string()
+        .trim()
+        .min(1, "Title is required")
         .min(3, "Title must be at least 3 characters long")
         .max(200, "Title cannot exceed 200 characters")
-        .trim(),
+        .refine((title) => {
+            return isPlainTextValid(title);
+        }, {
+            message: "HTML text not supported. Please use plain text only."
+        }),
     content: z.string()
+        .min(1, "You must write something")
         .min(10, "Content must be at least 10 characters long")
         .refine((content) => content !== '<p></p>' && content.trim() !== '', {
-            message: "Article content cannot be empty"
+            message: "You must write something for your article"
+        })
+        .refine((content) => {
+            return isHtmlContentValid(content);
+        }, {
+            message: "Invalid HTML is not allowed. Please review and use only safe formatting."
         }),
     author: z.string()
         .regex(/^[0-9a-fA-F]{24}$/, "Invalid author ID format"),
     tags: z.array(z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid tag ID format"))
         .optional(),
     isPublished: z.boolean()
-        .optional(),
-    seriesId: z.string()
-        .max(100, "Series ID cannot exceed 100 characters")
-        .trim()
-        .optional(),
-    partNumber: z.number()
-        .int("Part number must be an integer")
-        .min(1, "Part number must be at least 1")
-        .max(9999, "Part number cannot exceed 9999")
         .optional()
 });
 

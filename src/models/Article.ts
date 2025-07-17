@@ -1,15 +1,16 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
+import { sanitizeToPlainText, sanitizeHtmlContent } from '@/utils/sanitization';
+import { generateSlug } from '@/utils/slug';
 import Tag from "./Tag";
 
 export interface IArticle extends Document {
     _id: mongoose.Types.ObjectId;
     title: string;
+    slug: string;
     content: string;
     author: mongoose.Types.ObjectId;
     tags?: mongoose.Types.ObjectId[];
     isPublished: boolean;
-    seriesId?: string;
-    partNumber?: number;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -21,11 +22,24 @@ const ArticleSchema = new Schema<IArticle>({
         trim: true,
         minlength: [3, "Title must be at least 3 characters long"],
         maxlength: [200, "Title cannot exceed 200 characters"],
+        set: function (value: string) {
+            return sanitizeToPlainText(value);
+        }
+    },
+    slug: {
+        type: String,
+        required: [true, "Slug is required"],
+        unique: true,
+        trim: true,
+        maxlength: [250, "Slug cannot exceed 250 characters"]
     },
     content: {
         type: String,
         required: [true, "Content is required"],
         minlength: [10, "Content must be at least 10 characters long"],
+        set: function (value: string) {
+            return sanitizeHtmlContent(value);
+        }
     },
     author: {
         type: Schema.Types.ObjectId,
@@ -69,32 +83,31 @@ const ArticleSchema = new Schema<IArticle>({
         default: false,
         index: true,
     },
-    seriesId: {
-        type: String,
-        required: false,
-        trim: true,
-        maxlength: [100, "Series ID cannot exceed 100 characters"],
-    },
-    partNumber: {
-        type: Number,
-        required: false,
-        min: [1, "Part number must be at least 1"],
-        max: [9999, "Part number cannot exceed 9999"],
-    },
 }, {
     timestamps: true
 });
 
-ArticleSchema.index({ seriesId: 1, partNumber: 1 }, {
-    unique: true,
-    sparse: true,
-    partialFilterExpression: {
-        seriesId: { $exists: true },
-        partNumber: { $exists: true }
+ArticleSchema.pre('save', async function (next) {
+    if (this.isNew && !this.slug && this.title) {
+        const baseSlug = generateSlug(this.title);
+
+        let uniqueSlug = baseSlug;
+        let counter = 1;
+
+        const Article = this.constructor as Model<IArticle>;
+        while (await Article.findOne({ slug: uniqueSlug })) {
+            uniqueSlug = `${baseSlug}-${counter}`;
+            counter++;
+        }
+
+        this.slug = uniqueSlug;
     }
+    next();
 });
 
 ArticleSchema.index({ isPublished: 1, createdAt: -1 });
+
+ArticleSchema.index({ slug: 1 }, { unique: true });
 
 ArticleSchema.index({ author: 1, createdAt: -1 });
 

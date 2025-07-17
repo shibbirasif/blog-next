@@ -7,13 +7,17 @@ import Link from "next/link";
 import SidebarToggle from "./ui/SidebarToggle";
 import { APP_ROUTES } from "@/constants/appRoutes";
 
-export default async function Topbar() {
+interface TopbarProps {
+    sidebarId?: string;
+ }
+
+export default async function Topbar({ sidebarId }: TopbarProps) {
     const session = await auth();
 
     return (
         <Navbar fluid rounded className="fixed top-0 w-full z-999 shadow-sm">
             <div className="flex">
-                <SidebarToggle sidebarId={"dashboard-sidebar"} />
+                {sidebarId && <SidebarToggle sidebarId={sidebarId} />}
                 <NavbarBrand href="https://flowbite-react.com">
                     <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Blog Next</span>
                 </NavbarBrand>

@@ -14,10 +14,11 @@ interface RichTextEditorProps {
     content: string;
     onContentChange: (html: string) => void;
     editable?: boolean;
+    hasError?: boolean;
 }
 
 
-const RichTextEditor: React.FC<RichTextEditorProps> = ({ content = '', onContentChange, editable = true }) => {
+const RichTextEditor: React.FC<RichTextEditorProps> = ({ content = '', onContentChange, editable = true, hasError = false }) => {
     const editor = useEditor({
         extensions: [
             StarterKit.configure({
@@ -43,17 +44,17 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ content = '', onContent
             onContentChange(editor.getHTML());
         },
         immediatelyRender: false,
-        // editorProps: {
-        //     attributes: {
-        //         class: 'prose max-w-none focus:outline-none p-4 min-h-[300px] overflow-y-auto',
-        //     },
-        // },
+        editorProps: {
+            attributes: {
+                class: 'prose max-w-none focus:outline-none p-4 min-h-[500px] overflow-y-auto',
+            },
+        },
     });
 
     return (
-        <div className="border border-gray-300 rounded-lg shadow-sm">
+        <div className={`border rounded-lg shadow-sm ${hasError ? 'border-red-500' : 'border-gray-300'}`}>
             {editable && <EditorToolbar editor={editor} />}
-            <EditorContent editor={editor} className='prose dark:prose-invert max-w-none min-h-[300px] overflow-y-auto'/>
+            <EditorContent editor={editor} className='prose dark:prose-invert max-w-none min-h-[500px] overflow-y-auto' />
         </div>
     );
 };
