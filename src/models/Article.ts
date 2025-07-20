@@ -9,7 +9,7 @@ export interface IArticle extends Document {
     slug: string;
     content: string;
     author: mongoose.Types.ObjectId;
-    tags?: mongoose.Types.ObjectId[];
+    tags: mongoose.Types.ObjectId[];
     isPublished: boolean;
     createdAt: Date;
     updatedAt: Date;
@@ -49,8 +49,14 @@ const ArticleSchema = new Schema<IArticle>({
     },
     tags: {
         type: [{ type: Schema.Types.ObjectId, ref: "Tag" }],
-        default: [],
+        required: [true, "At least one tag is required"],
         validate: [
+            {
+                validator: function (tags: mongoose.Types.ObjectId[]) {
+                    return tags.length > 0;
+                },
+                message: "At least one tag is required"
+            },
             {
                 validator: function (tags: mongoose.Types.ObjectId[]) {
                     const tagIds = tags.map(tag => tag.toString());
@@ -60,7 +66,7 @@ const ArticleSchema = new Schema<IArticle>({
             },
             {
                 validator: async function (tags: mongoose.Types.ObjectId[]) {
-                    if (tags.length === 0) return true;
+                    if (tags.length === 0) return false;
 
                     try {
                         const existingTags = await Tag.find({

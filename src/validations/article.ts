@@ -26,7 +26,7 @@ export const createArticleSchema = z.object({
     author: z.string()
         .regex(/^[0-9a-fA-F]{24}$/, "Invalid author ID format"),
     tags: z.array(z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid tag ID format"))
-        .optional(),
+        .min(1, "At least one tag is required"),
     isPublished: z.boolean()
         .optional()
 });
