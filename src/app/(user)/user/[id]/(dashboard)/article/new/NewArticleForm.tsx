@@ -100,7 +100,6 @@ export default function NewArticleForm({ userId, availableTags }: NewArticleForm
 
     return (
         <form className="space-y-6">
-            {/* Title */}
             <div>
                 <Label htmlFor="title" className="mb-2 block">
                     Article Title
@@ -118,7 +117,6 @@ export default function NewArticleForm({ userId, availableTags }: NewArticleForm
                 )}
             </div>
 
-            {/* Content */}
             <div>
                 <Label className="mb-2 block">
                     Content
@@ -140,13 +138,11 @@ export default function NewArticleForm({ userId, availableTags }: NewArticleForm
                 )}
             </div>
 
-            {/* Tags */}
             <div>
                 <Label className="mb-2 block">
                     Tags
                 </Label>
 
-                {/* Selected Tags */}
                 {selectedTags.length > 0 && (
                     <div className="flex flex-wrap gap-2 mb-3">
                         {getSelectedTagObjects().map(tag => (
@@ -169,7 +165,6 @@ export default function NewArticleForm({ userId, availableTags }: NewArticleForm
                     </div>
                 )}
 
-                {/* Tag Search */}
                 <div className="relative">
                     <TextInput
                         icon={HiOutlineTag}
@@ -180,11 +175,10 @@ export default function NewArticleForm({ userId, availableTags }: NewArticleForm
                         onBlur={() => setTimeout(() => setShowTagDropdown(false), 200)}
                     />
 
-                    {/* Tag Dropdown */}
                     {showTagDropdown && (
                         <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-y-auto">
                             {filteredTags.length > 0 ? (
-                                filteredTags.slice(0, 10).map(tag => (
+                                filteredTags.map(tag => (
                                     <div
                                         key={tag._id}
                                         className="px-3 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"
@@ -211,7 +205,6 @@ export default function NewArticleForm({ userId, availableTags }: NewArticleForm
                 </div>
             </div>
 
-            {/* Action Buttons */}
             <div className="flex justify-between items-center pt-6 border-t border-gray-200">
                 <Button
                     color="gray"

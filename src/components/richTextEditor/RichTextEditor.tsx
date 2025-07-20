@@ -46,7 +46,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ content = '', onContent
         immediatelyRender: false,
         editorProps: {
             attributes: {
-                class: 'prose max-w-none focus:outline-none p-1 min-h-[500px] overflow-y-auto',
+                class: 'prose max-w-none text-gray-900 dark:text-white focus:outline-none p-1 min-h-[500px] overflow-y-auto',
             },
         },
     });
