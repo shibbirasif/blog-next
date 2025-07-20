@@ -1,15 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
-import ArticleService from '@/services/articleService';
+import { articleService } from '@/services/articleService';
 import { updateArticleSchema, publishArticleSchema } from '@/validations/article';
 
 interface RouteParams {
     params: { id: string };
 }
 
-export async function GET(request: NextRequest, { params }: RouteParams) {
+export async function GET(_: NextRequest, { params }: RouteParams) {
     try {
-        const article = await ArticleService.getArticleById(params.id);
+        console.log('Fetching article with ID:', params);
+        let article;
+
+        try {
+            article = await articleService.getArticleBySlug(params.id);
+        } catch {
+            article = await articleService.getArticleById(params.id);
+        }
 
         if (!article) {
             return NextResponse.json(
@@ -18,7 +25,6 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
             );
         }
 
-        // If article is not published, only the author can view it
         if (!article.isPublished) {
             const session = await auth();
 
@@ -60,8 +66,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
             );
         }
 
-        // Verify ownership
-        const isOwner = await ArticleService.verifyOwnership(params.id, session.user.id);
+        const isOwner = await articleService.verifyOwnership(params.id, session.user.id);
 
         if (!isOwner) {
             return NextResponse.json(
@@ -72,7 +77,6 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
         const body = await request.json();
 
-        // Check if this is a publish/unpublish request
         if ('isPublished' in body && Object.keys(body).length === 1) {
             const validationResult = publishArticleSchema.safeParse({
                 id: params.id,
@@ -89,7 +93,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
                 );
             }
 
-            const article = await ArticleService.togglePublishStatus(
+            const article = await articleService.togglePublishStatus(
                 params.id,
                 body.isPublished
             );
@@ -100,7 +104,6 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
             });
         }
 
-        // Regular update
         const validationResult = updateArticleSchema.safeParse({
             ...body,
             id: params.id
@@ -117,7 +120,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         }
 
         const { id, ...updateData } = validationResult.data;
-        const article = await ArticleService.updateArticle(params.id, updateData);
+        const article = await articleService.updateArticle(params.id, updateData);
 
         if (!article) {
             return NextResponse.json(
@@ -148,7 +151,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     }
 }
 
-export async function DELETE(request: NextRequest, { params }: RouteParams) {
+export async function DELETE(_: NextRequest, { params }: RouteParams) {
     try {
         const session = await auth();
 
@@ -159,8 +162,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
             );
         }
 
-        // Verify ownership
-        const isOwner = await ArticleService.verifyOwnership(params.id, session.user.id);
+        const isOwner = await articleService.verifyOwnership(params.id, session.user.id);
 
         if (!isOwner) {
             return NextResponse.json(
@@ -169,7 +171,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
             );
         }
 
-        const success = await ArticleService.deleteArticle(params.id);
+        const success = await articleService.deleteArticle(params.id);
 
         if (!success) {
             return NextResponse.json(

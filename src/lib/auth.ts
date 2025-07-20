@@ -2,6 +2,7 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import UserRole from '@/models/UserRole'; // Import UserRole enum for session if needed
+import { apiFetcher } from '@/utils/apiFetcher';
 
 
 export interface AuthUser {
@@ -33,25 +34,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
                 try {
                     const baseUrl = process.env.BASE_URL || "http://localhost:3000";
-                    const res = await fetch(`${baseUrl}/api/auth/signin`, {
+                    return await apiFetcher<AuthUser>(`${baseUrl}/api/auth/signin`, {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ email, password }),
+                        body: { email, password }
                     });
-
-                    if (!res.ok) {
-                        const errorData = await res.json();
-                        console.error('Signin API error:', errorData);
-                        throw new Error(errorData.message || 'Authentication failed');
-                    }
-
-                    return (await res.json()) as AuthUser;
-                } catch (error: unknown) {
-                    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-                    console.error('NextAuth authorize error:', errorMessage);
-                    throw new Error("Authentication failed: " + errorMessage);
+                } catch (error: any) {
+                    console.error('Signin API error:', error);
+                    throw new Error(error.message || 'Authentication failed');
                 }
             },
         }),

@@ -10,6 +10,9 @@ import { Button, Label, TextInput, Badge } from 'flowbite-react';
 import { HiOutlineEye, HiOutlineSave, HiOutlineTag } from 'react-icons/hi';
 import { TagDto } from '@/dtos/TagDto';
 import { apiFetcher } from '@/utils/apiFetcher';
+import { API_ROUTES } from '@/constants/apiRoutes';
+import { APP_ROUTES } from '@/constants/appRoutes';
+import { ar } from 'zod/v4/locales';
 
 interface NewArticleFormProps {
     userId: string;
@@ -63,7 +66,7 @@ export default function NewArticleForm({ userId, availableTags }: NewArticleForm
 
     const onSubmit = async (data: ClientCreateArticleInput) => {
         try {
-            const article = await apiFetcher('/api/articles', {
+            const article = await apiFetcher(API_ROUTES.ARTICLE.CREATE(), {
                 method: 'POST',
                 body: {
                     ...data,
@@ -72,7 +75,7 @@ export default function NewArticleForm({ userId, availableTags }: NewArticleForm
                 }
             });
 
-            router.push(`/user/${userId}/dashboard`);
+            router.push(APP_ROUTES.ARTICLE.SHOW(article._id));
             router.refresh();
         } catch (error) {
             console.error('Error creating article:', error);

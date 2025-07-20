@@ -1,17 +1,16 @@
-import { auth } from '@/lib/auth';
 import NewArticleForm from './NewArticleForm';
 import { apiFetcher } from '@/utils/apiFetcher';
 import { TagDto } from '@/dtos/TagDto';
 import { H1 } from '@/components/ui/Headers';
+import { API_ROUTES } from '@/constants/apiRoutes';
 
 interface PageProps {
     params: { id: string };
 }
 
 export default async function NewArticlePage({ params }: PageProps) {
-    const session = await auth();
 
-    const tags = await apiFetcher<TagDto[]>(`${process.env.BASE_URL}/api/tags`);
+    const tags = await apiFetcher<TagDto[]>(API_ROUTES.TAGS.LIST(true));
 
     return (
         <>
@@ -21,7 +20,7 @@ export default async function NewArticlePage({ params }: PageProps) {
             </p>
             <div className="p-6">
                 <NewArticleForm
-                    userId={session?.user?.id || '0'}
+                    userId={params.id || '0'}
                     availableTags={tags}
                 />
             </div>

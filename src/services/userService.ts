@@ -1,4 +1,3 @@
-// services/userService.ts
 import { buildUserDto, UserDto } from '@/dtos/UserDto';
 import { dbConnect } from '@/lib/db';
 import User, { IUser } from '@/models/User';

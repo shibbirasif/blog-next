@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { loadModels } from "@/models/modelLoader";
 
 const MONGODB_URI = process.env.MONGODB_URI!;
 
@@ -36,6 +37,10 @@ export async function dbConnect() {
     try {
         cached.conn = await cached.promise;
         console.log("✅ Connected to MongoDB");
+
+        // Load models after successful connection
+        await loadModels();
+
         return cached.conn;
     } catch (error) {
         console.error("⚠️ MongoDB connection error:", error);

@@ -1,6 +1,7 @@
 'use client';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { apiFetcher } from '@/utils/apiFetcher';
 
 export default function VerifyEmailPage() {
     const searchParams = useSearchParams();
@@ -18,27 +19,17 @@ export default function VerifyEmailPage() {
 
             setVerificationStatus('verifying');
             try {
-                const response = await fetch('/api/auth/verify-email', {
+                const data = await apiFetcher('/api/auth/verify-email', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ token }),
+                    body: { token }
                 });
 
-                const data = await response.json();
-
-                if (response.ok) {
-                    setVerificationStatus('success');
-                    setMessage(data.message || 'Your email has been successfully verified! You can now log in.');
-                } else {
-                    setVerificationStatus('error');
-                    setMessage(data.message || 'Failed to verify email. The link might be invalid or expired.');
-                }
-            } catch (error) {
+                setVerificationStatus('success');
+                setMessage(data.message || 'Your email has been successfully verified! You can now log in.');
+            } catch (error: any) {
                 console.error('Frontend: Error during verification request:', error);
                 setVerificationStatus('error');
-                setMessage('An unexpected error occurred. Please try again later.');
+                setMessage(error.message || 'Failed to verify email. The link might be invalid or expired.');
             }
         }
 

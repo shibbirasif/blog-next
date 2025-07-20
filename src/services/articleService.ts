@@ -1,14 +1,12 @@
 import { dbConnect } from '@/lib/db';
 import Article from '@/models/Article';
 import Tag from '@/models/Tag';
-import type { IArticle } from '@/models/Article';
 import type { CreateArticleInput, UpdateArticleInput } from '@/validations/article';
+import { ArticleDto, ArticleListDto, buildArticleDto, buildArticleListDto } from '@/dtos/ArticleDto';
 import mongoose from 'mongoose';
 
 class ArticleService {
-
-
-    static async createArticle(articleData: CreateArticleInput): Promise<IArticle> {
+    async createArticle(articleData: CreateArticleInput): Promise<ArticleDto> {
         await dbConnect();
 
         if (articleData.tags && articleData.tags.length > 0) {
@@ -23,32 +21,62 @@ class ArticleService {
         }
 
         const article = new Article(articleData);
-        return await article.save();
+        const savedArticle = await article.save();
+
+        // Populate the saved article to build DTO
+        const populatedArticle = await Article.findById(savedArticle._id)
+            .populate('author', 'name email image bio')
+            .populate('tags', 'name color description')
+            .exec();
+
+        if (!populatedArticle) {
+            throw new Error('Failed to retrieve created article');
+        }
+
+        return buildArticleDto(populatedArticle);
     }
 
 
-    static async getArticleById(id: string): Promise<IArticle | null> {
+    async getArticleById(id: string): Promise<ArticleDto | null> {
         await dbConnect();
 
+        console.log('Fetching article by ID:', id);
         if (!mongoose.Types.ObjectId.isValid(id)) {
             throw new Error('Invalid article ID format');
         }
 
-        return await Article.findById(id)
+        const article = await Article.findById(id)
             .populate('author', 'name email image bio')
             .populate('tags', 'name color description')
             .exec();
+
+        return article ? buildArticleDto(article) : null;
+    }
+
+    async getArticleBySlug(slug: string): Promise<ArticleDto | null> {
+        await dbConnect();
+
+        if (!slug || typeof slug !== 'string') {
+            throw new Error('Invalid article slug');
+        }
+
+        const article = await Article.findOne({ slug: 'a-article' })
+            .populate('author', 'name email image bio')
+            .populate('tags', 'name color description')
+            .exec();
+
+        return article ? buildArticleDto(article) : null;
     }
 
 
-    static async getArticlesByAuthor(
+    async getArticlesByAuthor(
         authorId: string,
         options: {
             page?: number;
             limit?: number;
             published?: boolean;
         } = {}
-    ): Promise<{ articles: IArticle[]; total: number; pages: number }> {
+    ): Promise<{ articles: ArticleListDto[]; total: number; pages: number }> {
         await dbConnect();
 
         if (!mongoose.Types.ObjectId.isValid(authorId)) {
@@ -58,7 +86,7 @@ class ArticleService {
         const { page = 1, limit = 10, published } = options;
         const skip = (page - 1) * limit;
 
-        const filter: any = { author: authorId };
+        const filter: { author: string; isPublished?: boolean } = { author: authorId };
         if (typeof published === 'boolean') {
             filter.isPublished = published;
         }
@@ -76,28 +104,30 @@ class ArticleService {
 
         const pages = Math.ceil(total / limit);
 
-        return { articles, total, pages };
+        return {
+            articles: articles.map(article => buildArticleListDto(article)),
+            total,
+            pages
+        };
     }
 
 
-    static async getPublishedArticles(options: {
+    async getPublishedArticles(options: {
         page?: number;
         limit?: number;
         tags?: string[];
         search?: string;
-    } = {}): Promise<{ articles: IArticle[]; total: number; pages: number }> {
+    } = {}): Promise<{ articles: ArticleListDto[]; total: number; pages: number }> {
         await dbConnect();
 
         const { page = 1, limit = 10, tags, search } = options;
         const skip = (page - 1) * limit;
 
-        const filter: any = { isPublished: true };
-
+        const filter: { isPublished: boolean; tags?: { $in: string[] }; $text?: { $search: string } } = { isPublished: true };
 
         if (tags && tags.length > 0) {
             filter.tags = { $in: tags };
         }
-
 
         if (search) {
             filter.$text = { $search: search };
@@ -116,17 +146,20 @@ class ArticleService {
 
         const pages = Math.ceil(total / limit);
 
-        return { articles, total, pages };
+        return {
+            articles: articles.map(article => buildArticleListDto(article)),
+            total,
+            pages
+        };
     }
 
 
-    static async updateArticle(id: string, updateData: Partial<UpdateArticleInput>): Promise<IArticle | null> {
+    async updateArticle(id: string, updateData: Partial<UpdateArticleInput>): Promise<ArticleDto | null> {
         await dbConnect();
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
             throw new Error('Invalid article ID format');
         }
-
 
         if (updateData.tags && updateData.tags.length > 0) {
             const validTags = await Tag.find({
@@ -139,7 +172,7 @@ class ArticleService {
             }
         }
 
-        return await Article.findByIdAndUpdate(
+        const article = await Article.findByIdAndUpdate(
             id,
             { ...updateData, updatedAt: new Date() },
             { new: true, runValidators: true }
@@ -147,17 +180,19 @@ class ArticleService {
             .populate('author', 'name email image bio')
             .populate('tags', 'name color description')
             .exec();
+
+        return article ? buildArticleDto(article) : null;
     }
 
 
-    static async togglePublishStatus(id: string, isPublished: boolean): Promise<IArticle | null> {
+    async togglePublishStatus(id: string, isPublished: boolean): Promise<ArticleDto | null> {
         await dbConnect();
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
             throw new Error('Invalid article ID format');
         }
 
-        return await Article.findByIdAndUpdate(
+        const article = await Article.findByIdAndUpdate(
             id,
             { isPublished, updatedAt: new Date() },
             { new: true, runValidators: true }
@@ -165,10 +200,12 @@ class ArticleService {
             .populate('author', 'name email image bio')
             .populate('tags', 'name color description')
             .exec();
+
+        return article ? buildArticleDto(article) : null;
     }
 
 
-    static async deleteArticle(id: string): Promise<boolean> {
+    async deleteArticle(id: string): Promise<boolean> {
         await dbConnect();
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -180,18 +217,7 @@ class ArticleService {
     }
 
 
-    static async getSeriesArticles(seriesId: string): Promise<IArticle[]> {
-        await dbConnect();
-
-        return await Article.find({ seriesId })
-            .populate('author', 'name email image bio')
-            .populate('tags', 'name color description')
-            .sort({ partNumber: 1 })
-            .exec();
-    }
-
-
-    static async verifyOwnership(articleId: string, userId: string): Promise<boolean> {
+    async verifyOwnership(articleId: string, userId: string): Promise<boolean> {
         await dbConnect();
 
         if (!mongoose.Types.ObjectId.isValid(articleId) || !mongoose.Types.ObjectId.isValid(userId)) {
@@ -203,4 +229,4 @@ class ArticleService {
     }
 }
 
-export default ArticleService;
+export const articleService = new ArticleService();

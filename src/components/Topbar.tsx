@@ -2,14 +2,14 @@ import NavLinks from "./navigations/NavLinks";
 import { auth } from "@/lib/auth";
 import SignOut from "./auth/SignOut";
 import SignIn from "./auth/SignIn";
-import { Avatar, DarkThemeToggle, Dropdown, DropdownDivider, DropdownHeader, DropdownItem, Navbar, NavbarBrand, NavbarCollapse, NavbarLink, NavbarToggle } from "flowbite-react";
+import { Avatar, DarkThemeToggle, Dropdown, DropdownDivider, DropdownHeader, DropdownItem, Navbar, NavbarBrand, NavbarToggle } from "flowbite-react";
 import Link from "next/link";
 import SidebarToggle from "./ui/SidebarToggle";
 import { APP_ROUTES } from "@/constants/appRoutes";
 
 interface TopbarProps {
     sidebarId?: string;
- }
+}
 
 export default async function Topbar({ sidebarId }: TopbarProps) {
     const session = await auth();
@@ -18,7 +18,7 @@ export default async function Topbar({ sidebarId }: TopbarProps) {
         <Navbar fluid rounded className="fixed top-0 w-full z-999 shadow-sm">
             <div className="flex">
                 {sidebarId && <SidebarToggle sidebarId={sidebarId} />}
-                <NavbarBrand href="https://flowbite-react.com">
+                <NavbarBrand href={APP_ROUTES.HOME}>
                     <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Blog Next</span>
                 </NavbarBrand>
             </div>

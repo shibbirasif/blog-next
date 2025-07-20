@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
-import ArticleService from '@/services/articleService';
+import { articleService } from '@/services/articleService';
 import { createArticleSchema } from '@/validations/article';
 
 export async function POST(request: NextRequest) {
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Create the article
-        const article = await ArticleService.createArticle(articleData);
+        const article = await articleService.createArticle(articleData);
 
         return NextResponse.json({
             message: 'Article created successfully',
@@ -87,14 +87,13 @@ export async function GET(request: NextRequest) {
             // If requesting own articles, include unpublished ones
             const includeUnpublished = session?.user?.id === authorId;
 
-            result = await ArticleService.getArticlesByAuthor(authorId, {
+            result = await articleService.getArticlesByAuthor(authorId, {
                 page,
                 limit,
                 published: includeUnpublished ? undefined : true
             });
         } else {
-            // Get public published articles
-            result = await ArticleService.getPublishedArticles({
+            result = await articleService.getPublishedArticles({
                 page,
                 limit,
                 tags,

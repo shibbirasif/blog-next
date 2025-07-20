@@ -4,10 +4,9 @@ export default async function MainLayout({ children }: Readonly<{ children: Reac
     return (
         <>
             <Topbar />
-            <main className="mt-17">
-                <header><h1>Blogify your self</h1></header>
+            <main className="mt-17 min-h-screen text-gray-700 dark:text-gray-300">
+                {/* <header><h1>Blogify your self</h1></header> */}
                 <article> {children} </article>
-                <aside>Sidebar goes here</aside>
             </main>
             <footer className="bg-gray-200">
                 <h4>Footer goes here..</h4>

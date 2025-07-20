@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { apiFetcher } from '@/utils/apiFetcher';
 
 import { Button, Label, TextInput, Alert, Spinner } from 'flowbite-react';
 
@@ -28,27 +29,17 @@ export default function SignUpPage() {
 
         try {
             const { confirmPassword, ...signupData } = data;
-            const res = await fetch('/api/auth/signup', {
+            await apiFetcher('/api/auth/signup', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(signupData),
+                body: signupData
             });
 
-            const result = await res.json();
-
-            if (!res.ok) {
-                setSignupError(result.message || 'Signup failed. Please try again.');
-                console.error('Signup API error:', result);
-            } else {
-                setSignupSuccess('Account created successfully! You can now sign in.');
-                router.replace("/auth/signin");
-                router.refresh();
-            }
-        } catch (error) {
+            setSignupSuccess('Account created successfully! You can now sign in.');
+            router.replace("/auth/signin");
+            router.refresh();
+        } catch (error: unknown) {
             console.error('Signup error:', error);
-            setSignupError('An unexpected error occurred. Please try again later.');
+            setSignupError(error instanceof Error && error.message ? error.message : 'Signup failed. Please try again.');
         }
     };
 

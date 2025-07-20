@@ -12,14 +12,12 @@ export async function POST(request: Request) {
 
         await dbConnect();
 
-        console.log('yes it is')
         const user = await authService.loginUser(email, password);
 
         if (!user) {
             return NextResponse.json({ message: 'Invalid credentials' }, { status: 401 });
         }
 
-        console.log('yes 2')
         const authenticatedUser = {
             id: user._id.toString(),
             email: user.email,
