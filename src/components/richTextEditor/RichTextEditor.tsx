@@ -46,7 +46,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ content = '', onContent
         immediatelyRender: false,
         editorProps: {
             attributes: {
-                class: 'prose max-w-none focus:outline-none p-4 min-h-[500px] overflow-y-auto',
+                class: 'prose max-w-none focus:outline-none p-1 min-h-[500px] overflow-y-auto',
             },
         },
     });
@@ -54,7 +54,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ content = '', onContent
     return (
         <div className={`border rounded-lg shadow-sm ${hasError ? 'border-red-500' : 'border-gray-300'}`}>
             {editable && <EditorToolbar editor={editor} />}
-            <EditorContent editor={editor} className='prose dark:prose-invert max-w-none min-h-[500px] overflow-y-auto' />
+            <EditorContent editor={editor} className='max-w-none min-h-[500px] overflow-y-auto rounded-lg' />
         </div>
     );
 };

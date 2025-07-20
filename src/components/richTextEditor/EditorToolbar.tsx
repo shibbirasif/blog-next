@@ -83,7 +83,7 @@ export default function EditorToolbar({ editor }: Props) {
 
     return (
         <>
-            <div className="flex flex-wrap justify-center py-2 gap-2 items-center shadow-sm rounded-sm dark:bg-gray-700">
+            <div className="flex flex-wrap justify-center py-2 gap-2 items-center shadow-sm rounded-lg dark:bg-gray-700">
                 <Tooltip content="Bold">
                     <Button size="xs" color="light" onClick={() => editor.chain().focus().toggleBold().run()}>
                         <FaBold />
