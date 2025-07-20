@@ -28,7 +28,6 @@ const ArticleSchema = new Schema<IArticle>({
     },
     slug: {
         type: String,
-        required: [true, "Slug is required"],
         unique: true,
         trim: true,
         maxlength: [250, "Slug cannot exceed 250 characters"]
@@ -93,7 +92,7 @@ const ArticleSchema = new Schema<IArticle>({
     timestamps: true
 });
 
-ArticleSchema.pre('save', async function (next) {
+ArticleSchema.pre('validate', async function (next) {
     if (this.isNew && !this.slug && this.title) {
         const baseSlug = generateSlug(this.title);
 
@@ -112,8 +111,6 @@ ArticleSchema.pre('save', async function (next) {
 });
 
 ArticleSchema.index({ isPublished: 1, createdAt: -1 });
-
-ArticleSchema.index({ slug: 1 }, { unique: true });
 
 ArticleSchema.index({ author: 1, createdAt: -1 });
 

@@ -9,6 +9,7 @@ import RichTextEditor from '@/components/richTextEditor/RichTextEditor';
 import { Button, Label, TextInput, Badge } from 'flowbite-react';
 import { HiOutlineEye, HiOutlineSave, HiOutlineTag } from 'react-icons/hi';
 import { TagDto } from '@/dtos/TagDto';
+import { apiFetcher } from '@/utils/apiFetcher';
 
 interface NewArticleFormProps {
     userId: string;
@@ -28,7 +29,8 @@ export default function NewArticleForm({ userId, availableTags }: NewArticleForm
         handleSubmit,
         control,
         formState: { errors, isSubmitting },
-        setValue
+        setValue,
+        trigger
     } = useForm<ClientCreateArticleInput>({
         resolver: zodResolver(clientCreateArticleSchema),
         defaultValues: {
@@ -52,6 +54,7 @@ export default function NewArticleForm({ userId, availableTags }: NewArticleForm
 
         setSelectedTags(newSelectedTags);
         setValue('tags', newSelectedTags);
+        trigger('tags');
     };
 
     const getSelectedTagObjects = () => {
@@ -60,26 +63,15 @@ export default function NewArticleForm({ userId, availableTags }: NewArticleForm
 
     const onSubmit = async (data: ClientCreateArticleInput) => {
         try {
-            const response = await fetch('/api/articles', {
+            const article = await apiFetcher('/api/articles', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
+                body: {
                     ...data,
                     author: userId,
                     tags: selectedTags
-                }),
+                }
             });
 
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.message || 'Failed to create article');
-            }
-
-            const article = await response.json();
-
-            // Redirect to the created article or user dashboard
             router.push(`/user/${userId}/dashboard`);
             router.refresh();
         } catch (error) {
@@ -173,6 +165,7 @@ export default function NewArticleForm({ userId, availableTags }: NewArticleForm
                         onChange={(e) => setTagSearchTerm(e.target.value)}
                         onFocus={() => setShowTagDropdown(true)}
                         onBlur={() => setTimeout(() => setShowTagDropdown(false), 200)}
+                        color={errors.tags ? 'failure' : 'gray'}
                     />
 
                     {showTagDropdown && (
@@ -203,6 +196,9 @@ export default function NewArticleForm({ userId, availableTags }: NewArticleForm
                         </div>
                     )}
                 </div>
+                {errors.tags && (
+                    <p className="text-red-600 text-sm mt-1">{errors.tags.message}</p>
+                )}
             </div>
 
             <div className="flex justify-between items-center pt-6 border-t border-gray-200">
