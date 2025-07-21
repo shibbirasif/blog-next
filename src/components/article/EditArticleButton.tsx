@@ -6,12 +6,12 @@ import { Button } from 'flowbite-react';
 import { HiOutlinePencil } from 'react-icons/hi';
 import { APP_ROUTES } from '@/constants/appRoutes';
 
-interface EditButtonProps {
+interface EditArticleButtonProps {
     authorId: string;
     articleId: string;
 }
 
-export default function EditButton({ authorId, articleId }: EditButtonProps) {
+export default function EditEditButton({ authorId, articleId }: EditArticleButtonProps) {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
 

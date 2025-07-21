@@ -3,7 +3,7 @@ import { auth } from '@/lib/auth';
 import { H1 } from '@/components/ui/Headers';
 import { Avatar, Badge } from 'flowbite-react';
 import { HiOutlineCalendar, HiOutlineEye } from 'react-icons/hi';
-import EditButton from './EditButton';
+import EditEditButton from '../../../../components/article/EditArticleButton';
 import { ArticleDto } from '@/dtos/ArticleDto';
 import { apiFetcher } from '@/utils/apiFetcher';
 import { API_ROUTES } from '@/constants/apiRoutes';
@@ -106,7 +106,7 @@ export default async function ArticleDetailsPage({ params }: PageProps) {
 
                             {getStatusBadge()}
                             {isAuthor && (
-                                <EditButton
+                                <EditEditButton
                                     authorId={author._id}
                                     articleId={article._id}
                                 />
