@@ -15,9 +15,15 @@ export const API_ROUTES = {
         CREATE: (isServerComponent = false) => buildApiUrl('/api/articles', isServerComponent),
         UPDATE: (id: string, isServerComponent = false) => buildApiUrl(`/api/articles/${id}`, isServerComponent),
         DELETE: (id: string, isServerComponent = false) => buildApiUrl(`/api/articles/${id}`, isServerComponent),
-        LIST: (userId: string, isServerComponent = false) => buildApiUrl(`/api/articles?userId=${userId}`, isServerComponent),
+        LIST: (userId?: string, isServerComponent = false) => {
+            const baseUrl = buildApiUrl('/api/articles', isServerComponent);
+            return userId ? `${baseUrl}?author=${userId}` : baseUrl;
+        },
     },
     TAGS: {
         LIST: (isServerComponent = false) => buildApiUrl('/api/tags', isServerComponent),
+    },
+    USERS: {
+        LIST: (isServerComponent = false) => buildApiUrl('/api/users', isServerComponent),
     }
 };

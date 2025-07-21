@@ -3,6 +3,8 @@ import Article from '@/models/Article';
 import Tag from '@/models/Tag';
 import type { CreateArticleInput, UpdateArticleInput } from '@/validations/article';
 import { ArticleDto, ArticleListDto, buildArticleDto, buildArticleListDto } from '@/dtos/ArticleDto';
+import { ArticleSortOrder } from '@/constants/enums';
+import { API_DEFAULTS } from '@/constants/common';
 import mongoose from 'mongoose';
 
 class ArticleService {
@@ -75,6 +77,7 @@ class ArticleService {
             page?: number;
             limit?: number;
             published?: boolean;
+            sortBy?: ArticleSortOrder;
         } = {}
     ): Promise<{ articles: ArticleListDto[]; total: number; pages: number }> {
         await dbConnect();
@@ -83,7 +86,7 @@ class ArticleService {
             throw new Error('Invalid author ID format');
         }
 
-        const { page = 1, limit = 10, published } = options;
+        const { page = 1, limit = API_DEFAULTS.DEFAULT_LIMIT, published, sortBy = ArticleSortOrder.NEWEST } = options;
         const skip = (page - 1) * limit;
 
         const filter: { author: string; isPublished?: boolean } = { author: authorId };
@@ -91,11 +94,13 @@ class ArticleService {
             filter.isPublished = published;
         }
 
+        const sortOrder = sortBy === ArticleSortOrder.OLDEST ? 1 : -1;
+
         const [articles, total] = await Promise.all([
             Article.find(filter)
                 .populate('author', 'name email image bio')
                 .populate('tags', 'name color description')
-                .sort({ createdAt: -1 })
+                .sort({ createdAt: sortOrder })
                 .skip(skip)
                 .limit(limit)
                 .exec(),
@@ -117,10 +122,11 @@ class ArticleService {
         limit?: number;
         tags?: string[];
         search?: string;
+        sortBy?: ArticleSortOrder;
     } = {}): Promise<{ articles: ArticleListDto[]; total: number; pages: number }> {
         await dbConnect();
 
-        const { page = 1, limit = 10, tags, search } = options;
+        const { page = 1, limit = API_DEFAULTS.DEFAULT_LIMIT, tags, search, sortBy = ArticleSortOrder.NEWEST } = options;
         const skip = (page - 1) * limit;
 
         const filter: { isPublished: boolean; tags?: { $in: string[] }; $text?: { $search: string } } = { isPublished: true };
@@ -133,11 +139,19 @@ class ArticleService {
             filter.$text = { $search: search };
         }
 
+        let sortOption = {};
+        if (search) {
+            sortOption = { score: { $meta: 'textScore' } };
+        } else {
+            const sortOrder = sortBy === ArticleSortOrder.OLDEST ? 1 : -1;
+            sortOption = { createdAt: sortOrder };
+        }
+
         const [articles, total] = await Promise.all([
             Article.find(filter)
                 .populate('author', 'name email image bio')
                 .populate('tags', 'name color description')
-                .sort(search ? { score: { $meta: 'textScore' } } : { createdAt: -1 })
+                .sort(sortOption)
                 .skip(skip)
                 .limit(limit)
                 .exec(),

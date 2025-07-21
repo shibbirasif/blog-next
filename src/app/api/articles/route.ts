@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { articleService } from '@/services/articleService';
 import { createArticleSchema } from '@/validations/article';
+import { ArticleSortOrder } from '@/constants/enums';
+import { PAGINATION } from '@/constants/common';
 
 export async function POST(request: NextRequest) {
     try {
@@ -72,11 +74,17 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
-        const page = parseInt(searchParams.get('page') || '1');
-        const limit = parseInt(searchParams.get('limit') || '10');
+        const page = parseInt(searchParams.get('page') || PAGINATION.DEFAULT_PAGE.toString());
+        const limit = parseInt(searchParams.get('limit') || PAGINATION.ARTICLES_PER_PAGE.toString());
         const tags = searchParams.get('tags')?.split(',').filter(Boolean);
         const search = searchParams.get('search') || undefined;
         const authorId = searchParams.get('author');
+        const sortByParam = searchParams.get('sortBy');
+
+        const sortBy: ArticleSortOrder =
+            sortByParam === ArticleSortOrder.NEWEST || sortByParam === ArticleSortOrder.OLDEST
+                ? sortByParam as ArticleSortOrder
+                : ArticleSortOrder.NEWEST;
 
         let result;
 
@@ -90,14 +98,16 @@ export async function GET(request: NextRequest) {
             result = await articleService.getArticlesByAuthor(authorId, {
                 page,
                 limit,
-                published: includeUnpublished ? undefined : true
+                published: includeUnpublished ? undefined : true,
+                sortBy
             });
         } else {
             result = await articleService.getPublishedArticles({
                 page,
                 limit,
                 tags,
-                search
+                search,
+                sortBy
             });
         }
 

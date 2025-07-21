@@ -4,7 +4,7 @@ import { TagDto } from '@/dtos/TagDto';
 import { apiFetcher } from '@/utils/apiFetcher';
 import { API_ROUTES } from '@/constants/apiRoutes';
 import { H1 } from '@/components/ui/Headers';
-import NewArticle from '../../../../../../../components/article/NewArticle';
+import NewArticle from '@/components/article/NewArticle';
 
 interface PageProps {
     params: { id: string };

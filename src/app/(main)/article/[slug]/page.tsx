@@ -1,4 +1,4 @@
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { auth } from '@/lib/auth';
 import { H1 } from '@/components/ui/Headers';
 import { Avatar, Badge } from 'flowbite-react';
@@ -8,6 +8,7 @@ import { ArticleDto } from '@/dtos/ArticleDto';
 import { apiFetcher } from '@/utils/apiFetcher';
 import { API_ROUTES } from '@/constants/apiRoutes';
 import { generateArticleMetadata, generateArticleJsonLd } from '@/lib/metadata';
+import { TagDto } from '@/dtos/TagDto';
 
 interface PageProps {
     params: {
@@ -118,7 +119,7 @@ export default async function ArticleDetailsPage({ params }: PageProps) {
                     {article.tags && article.tags.length > 0 && (
                         <div className="mb-4">
                             <div className="flex flex-wrap gap-2 justify-center">
-                                {article.tags.map((tag: any) => (
+                                {article.tags.map((tag: TagDto) => (
                                     <Badge
                                         key={tag._id}
                                         color="gray"

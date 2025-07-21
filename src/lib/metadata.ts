@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { apiFetcher } from '@/utils/apiFetcher';
 import { API_ROUTES } from '@/constants/apiRoutes';
 import { ArticleDto } from '@/dtos/ArticleDto';
+import { ArticleListDto } from '@/dtos/ArticleDto';
 import { sanitizeToPlainText } from '@/utils/sanitization';
 import { truncateText } from '@/utils/common';
 
@@ -29,11 +30,9 @@ export async function generateArticleMetadata({ params }: ArticleMetadataParams)
             };
         }
 
-        // Strip HTML and create description
         const plainTextContent = sanitizeToPlainText(article.content);
         const description = truncateText(plainTextContent, 160);
 
-        // Create keywords from tags
         const keywords = article.tags?.map(tag => tag.name).join(', ') || '';
 
         return {
@@ -96,5 +95,62 @@ export function generateArticleJsonLd(article: ArticleDto) {
             "name": "Blog Next",
             "url": process.env.BASE_URL || "http://localhost:3000"
         }
+    };
+}
+
+/**
+ * Generate metadata for the home page
+ * @returns Metadata - The generated metadata for the home page
+ */
+export const generateHomeMetadata = (): Metadata => {
+    return {
+        title: 'Blog Next - Discover Amazing Stories',
+        description: 'Discover amazing stories, insights, and ideas from our community of writers. Read articles about technology, lifestyle, science, and more.',
+        keywords: 'blog, articles, stories, technology, lifestyle, science, community, writers',
+        authors: [{ name: 'Blog Next Team' }],
+        openGraph: {
+            title: 'Blog Next - Discover Amazing Stories',
+            description: 'Discover amazing stories, insights, and ideas from our community of writers.',
+            type: 'website',
+            locale: 'en_US',
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: 'Blog Next - Discover Amazing Stories',
+            description: 'Discover amazing stories, insights, and ideas from our community of writers.',
+        },
+        alternates: {
+            canonical: '/',
+        },
+    };
+};
+
+/**
+ * Generate JSON-LD structured data for the home page
+ * @param articles - Array of featured articles to include in structured data
+ * @returns JSON-LD object for structured data
+ */
+export function generateHomeJsonLd(articles: ArticleListDto[]) {
+    return {
+        '@context': 'https://schema.org',
+        '@type': 'Blog',
+        name: 'Blog Next',
+        description: 'Discover amazing stories, insights, and ideas from our community of writers',
+        url: process.env.BASE_URL || 'http://localhost:3000',
+        publisher: {
+            '@type': 'Organization',
+            name: 'Blog Next',
+        },
+        blogPost: articles.slice(0, 3).map((article) => ({
+            '@type': 'BlogPosting',
+            headline: article.title,
+            author: {
+                '@type': 'Person',
+                name: article.author.name,
+            },
+            datePublished: article.createdAt,
+            dateModified: article.updatedAt,
+            url: `${process.env.BASE_URL || 'http://localhost:3000'}/article/${article.slug || article._id}`,
+        })),
     };
 }
