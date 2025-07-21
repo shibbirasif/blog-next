@@ -1,4 +1,5 @@
 'use client';
+
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { apiFetcher } from '@/utils/apiFetcher';
@@ -19,7 +20,7 @@ export default function VerifyEmailPage() {
 
             setVerificationStatus('verifying');
             try {
-                const data = await apiFetcher('/api/auth/verify-email', {
+                const data = await apiFetcher<{ message: string }>('/api/auth/verify-email', {
                     method: 'POST',
                     body: { token }
                 });
