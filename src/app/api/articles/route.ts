@@ -18,7 +18,6 @@ export async function POST(request: NextRequest) {
 
         const body = await request.json();
 
-        // Validate the request body
         const validationResult = createArticleSchema.safeParse(body);
 
         if (!validationResult.success) {
@@ -33,7 +32,6 @@ export async function POST(request: NextRequest) {
 
         const articleData = validationResult.data;
 
-        // Ensure the author matches the authenticated user
         if (articleData.author !== session.user.id) {
             return NextResponse.json(
                 { error: 'Forbidden: Cannot create article for another user' },
@@ -41,7 +39,6 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Create the article
         const article = await articleService.createArticle(articleData);
 
         return NextResponse.json({
@@ -89,10 +86,8 @@ export async function GET(request: NextRequest) {
         let result;
 
         if (authorId) {
-            // Get articles by specific author
             const session = await auth();
 
-            // If requesting own articles, include unpublished ones
             const includeUnpublished = session?.user?.id === authorId;
 
             result = await articleService.getArticlesByAuthor(authorId, {

@@ -88,7 +88,7 @@ export default function SignInPage() {
                             {...register('password')}
                             required={false}
                             disabled={isSubmitting}
-                            color={errors.password ? "failure" : "gray"} // Highlight if there's an error
+                            color={errors.password ? "failure" : "gray"}
                         />
                         {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>}
                     </div>
