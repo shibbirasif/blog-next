@@ -14,11 +14,7 @@ const MAIN_NAV_ITEMS: NavItem[] = [
     { name: 'More', href: '/more' },
 ];
 
-interface NavLinksProps {
-    isMobile?: boolean;
-}
-
-export default function NavLinks({ isMobile = false }: NavLinksProps) {
+export default function NavLinks() {
     const isActive = async (href: string): Promise<boolean> => {
         const headerList = await headers();
         const currentPath = headerList.get('x-request-path');
@@ -27,7 +23,7 @@ export default function NavLinks({ isMobile = false }: NavLinksProps) {
     return (
         <NavbarCollapse>
             {MAIN_NAV_ITEMS.map(async (item) => (
-                <NavbarLink href={item.href} active={await isActive(item.href)}>
+                <NavbarLink key={item.href} href={item.href} active={await isActive(item.href)}>
                     {item.name}
                 </NavbarLink>
             ))}

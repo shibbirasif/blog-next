@@ -1,14 +1,14 @@
 export type RequestMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
-interface RequestOptions extends RequestInit {
+interface RequestOptions {
     method?: RequestMethod;
     headers?: HeadersInit;
-    body?: any;
+    body?: unknown;
     cache?: RequestCache;
     signal?: AbortSignal;
 }
 
-export async function apiFetcher<T = any>(path: string, opinions: RequestOptions = {}): Promise<T> {
+export async function apiFetcher<T = unknown>(path: string, opinions: RequestOptions = {}): Promise<T> {
     const { method = 'GET', headers = {}, body, cache = 'no-store', signal } = opinions;
 
     const fetchOptions: RequestInit = {

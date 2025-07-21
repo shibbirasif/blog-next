@@ -38,9 +38,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                         method: 'POST',
                         body: { email, password }
                     });
-                } catch (error: any) {
+                } catch (error: unknown) {
                     console.error('Signin API error:', error);
-                    throw new Error(error.message || 'Authentication failed');
+                    throw new Error(error instanceof Error ? error.message : 'Authentication failed');
                 }
             },
         }),

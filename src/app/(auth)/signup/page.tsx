@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { apiFetcher } from '@/utils/apiFetcher';
+import { omit } from '@/utils/common';
 
 import { Button, Label, TextInput, Alert, Spinner } from 'flowbite-react';
 
@@ -28,7 +29,7 @@ export default function SignUpPage() {
         setSignupError(null);
 
         try {
-            const { confirmPassword, ...signupData } = data;
+            const signupData = omit(data, 'confirmPassword');
             await apiFetcher('/api/auth/signup', {
                 method: 'POST',
                 body: signupData

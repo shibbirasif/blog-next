@@ -133,7 +133,7 @@ export async function generateMetadata({ params }: UserProfilePageProps) {
             title: `${user.name} - User Profile`,
             description: user.bio || `View ${user.name}'s profile and activity on our blog platform.`,
         };
-    } catch (error) {
+    } catch {
         return {
             title: 'User Profile',
             description: 'User profile page'

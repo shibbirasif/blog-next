@@ -16,7 +16,7 @@ type FormData = ClientCreateArticleInput | ClientUpdateArticleInput;
 interface ArticleFormProps {
     availableTags: TagDto[];
     article?: ArticleDto;
-    validationSchema: any; // Keep as any for now to avoid type complexity
+    validationSchema: unknown; // Use unknown instead of any for better type safety
     defaultValues: Partial<FormData>;
     onSubmit: (data: FormData) => Promise<void>;
     onDelete?: () => Promise<void>;
@@ -54,7 +54,8 @@ export default function ArticleForm({
         setValue,
         trigger
     } = useForm({
-        resolver: zodResolver(validationSchema),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        resolver: zodResolver(validationSchema as any),
         defaultValues: {
             ...defaultValues,
             tags: selectedTags

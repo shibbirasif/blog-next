@@ -26,10 +26,10 @@ export default function VerifyEmailPage() {
 
                 setVerificationStatus('success');
                 setMessage(data.message || 'Your email has been successfully verified! You can now log in.');
-            } catch (error: any) {
+            } catch (error: unknown) {
                 console.error('Frontend: Error during verification request:', error);
                 setVerificationStatus('error');
-                setMessage(error.message || 'Failed to verify email. The link might be invalid or expired.');
+                setMessage(error instanceof Error ? error.message : 'Failed to verify email. The link might be invalid or expired.');
             }
         }
 

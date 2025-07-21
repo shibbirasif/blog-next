@@ -119,7 +119,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
             );
         }
 
-        const { id, ...updateData } = validationResult.data;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { id: _, ...updateData } = validationResult.data;
         const article = await articleService.updateArticle(params.id, updateData);
 
         if (!article) {
