@@ -3,12 +3,12 @@
 import { useRouter } from 'next/navigation';
 import { Button } from 'flowbite-react';
 
-interface LoadMoreClientProps {
+interface LoadMoreProps {
     currentPage: number;
     searchParams?: URLSearchParams;
 }
 
-export default function LoadMoreClient({ currentPage, searchParams }: LoadMoreClientProps) {
+export default function LoadMore({ currentPage, searchParams }: LoadMoreProps) {
     const router = useRouter();
 
     const handleLoadMore = () => {

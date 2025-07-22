@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Outfit, Doto } from "next/font/google";
 import "./globals.css";
 import { ThemeModeScript } from "flowbite-react";
-import ProgressWrapper from "./ProgressWrapper";
+import ProgressWrapper from "../components/ProgressWrapper";
 import { SessionProvider } from "next-auth/react";
 
 const outfit = Outfit({

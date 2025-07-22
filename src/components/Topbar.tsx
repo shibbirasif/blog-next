@@ -4,6 +4,7 @@ import SignOut from "./auth/SignOut";
 import SignIn from "./auth/SignIn";
 import { Avatar, DarkThemeToggle, Dropdown, DropdownDivider, DropdownHeader, DropdownItem, Navbar, NavbarBrand, NavbarToggle } from "flowbite-react";
 import Link from "next/link";
+import Image from "next/image";
 import SidebarToggle from "./ui/SidebarToggle";
 import { APP_ROUTES } from "@/constants/appRoutes";
 
@@ -19,7 +20,16 @@ export default async function Topbar({ sidebarId }: TopbarProps) {
             <div className="flex">
                 {sidebarId && <SidebarToggle sidebarId={sidebarId} />}
                 <NavbarBrand href={APP_ROUTES.HOME}>
-                    <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Blog Next</span>
+                    <div className="flex items-center space-x-3">
+                        <Image
+                            src="/images/logo-no-bg.png"
+                            alt="Blog Next Logo"
+                            width={32}
+                            height={32}
+                            className="h-12 w-auto" 
+                        />
+                        <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Blog Next</span>
+                    </div>
                 </NavbarBrand>
             </div>
             <div className="flex md:order-2">

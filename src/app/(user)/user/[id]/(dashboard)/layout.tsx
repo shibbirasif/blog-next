@@ -1,5 +1,5 @@
 import Topbar from "@/components/Topbar";
-import DashboardSidebar from "./DashboardSidebar";
+import DashboardSidebar from "../../../../../components/sidebars/DashboardSidebar";
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 

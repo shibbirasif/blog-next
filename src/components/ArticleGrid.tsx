@@ -3,7 +3,7 @@ import { Avatar, Badge, Card } from 'flowbite-react';
 import { ArticleListDto } from '@/dtos/ArticleDto';
 import { APP_ROUTES } from '@/constants/appRoutes';
 import { sanitizeToPlainText } from '@/utils/sanitization';
-import LoadMoreClient from './LoadMoreClient';
+import LoadMore from './ui/LoadMore';
 
 interface ArticleGridProps {
     articles: ArticleListDto[];
@@ -112,7 +112,7 @@ export default function ArticleGrid({
 
                     {/* Load More Component */}
                     {hasMore && (
-                        <LoadMoreClient
+                        <LoadMore
                             currentPage={currentPage}
                             searchParams={searchParams}
                         />
