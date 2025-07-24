@@ -11,9 +11,9 @@ import { generateArticleMetadata, generateArticleJsonLd } from '@/lib/metadata';
 import { TagDto } from '@/dtos/TagDto';
 
 interface PageProps {
-    params: {
+    params: Promise<{
         slug: string;
-    };
+    }>;
 }
 
 const formatDate = (date: Date | string) => {

@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { ClientCreateArticleInput, ClientUpdateArticleInput, clientCreateArticleSchema } from '@/validations/article';
 import { TagDto } from '@/dtos/TagDto';
+import { ArticleDto } from '@/dtos/ArticleDto';
 import { apiFetcher } from '@/utils/apiFetcher';
 import { API_ROUTES } from '@/constants/apiRoutes';
 import { APP_ROUTES } from '@/constants/appRoutes';
@@ -30,7 +31,7 @@ export default function NewArticle({ availableTags, userId }: NewArticleProps) {
                 ...data,
                 author: userId
             }
-        });
+        }) as ArticleDto;
 
         setTimeout(() => {
             router.push(APP_ROUTES.ARTICLE.SHOW(article._id));

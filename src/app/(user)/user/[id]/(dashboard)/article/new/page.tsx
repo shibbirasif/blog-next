@@ -7,18 +7,19 @@ import { H1 } from '@/components/ui/Headers';
 import NewArticle from '@/components/article/NewArticle';
 
 interface PageProps {
-    params: { id: string };
+    params: Promise<{ id: string }>;
 }
 
 export default async function NewArticlePage({ params }: PageProps) {
     const session = await auth();
+    const { id } = await params;
 
     if (!session?.user) {
         redirect('/signin');
     }
 
     // Check if the user is accessing their own dashboard
-    if (session.user.id !== params.id) {
+    if (session.user.id !== id) {
         redirect('/404');
     }
 
@@ -34,7 +35,7 @@ export default async function NewArticlePage({ params }: PageProps) {
                 <div className="p-6">
                     <NewArticle
                         availableTags={tags}
-                        userId={params.id}
+                        userId={id}
                     />
                 </div>
             </>

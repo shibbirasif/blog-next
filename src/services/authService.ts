@@ -4,6 +4,7 @@ import User from "@/models/User";
 import UserSignupPayload from "@/dtos/UserSignupPayload";
 import { buildUserDto, UserDto } from "@/dtos/UserDto";
 import { generateRandomToken } from "@/lib/tokens";
+import { emailSender } from "@/emails/EmailSender";
 
 const SALT_ROUNDS = 10;
 
@@ -56,8 +57,68 @@ class AuthService {
             emailVerificationExpires: new Date(Date.now() + 24 * 60 * 60 * 1000)
         }).save();
 
-        // await emailService.sendVerificationEmail(newUser);
         return buildUserDto(newUser);
+    }
+
+    public async requestPasswordReset(email: string): Promise<boolean> {
+        await dbConnect();
+
+        const user = await User.findOne({ email });
+        if (!user) {
+            return true;
+        }
+
+        const resetToken = generateRandomToken();
+        const resetExpires = new Date(Date.now() + 60 * 60 * 1000);
+
+        await User.findByIdAndUpdate(user._id, {
+            resetPasswordToken: resetToken,
+            resetPasswordExpires: resetExpires
+        });
+
+        // Send password reset email
+        await emailSender.sendPasswordResetEmail(buildUserDto(user), resetToken);
+
+        return true;
+    }
+
+    public async validateResetToken(token: string): Promise<UserDto | null> {
+        await dbConnect();
+
+        const user = await User.findOne({
+            resetPasswordToken: token,
+            resetPasswordExpires: { $gt: new Date() }
+        });
+
+        if (!user) {
+            return null;
+        }
+
+        return buildUserDto(user);
+    }
+
+    public async resetPassword(token: string, newPassword: string): Promise<boolean> {
+        await dbConnect();
+
+        const user = await User.findOne({
+            resetPasswordToken: token,
+            resetPasswordExpires: { $gt: new Date() }
+        });
+
+        if (!user) {
+            return false;
+        }
+
+        const { salt, hash } = await this.hashPassword(newPassword);
+
+        await User.findByIdAndUpdate(user._id, {
+            password_salt: salt,
+            password_hash: hash,
+            resetPasswordToken: undefined,
+            resetPasswordExpires: undefined
+        });
+
+        return true;
     }
 }
 

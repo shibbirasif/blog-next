@@ -3,9 +3,9 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 
 interface UserProfilePageProps {
-    params: {
+    params: Promise<{
         id: string;
-    };
+    }>;
 }
 
 export default async function UserProfilePage({ params }: UserProfilePageProps) {
@@ -117,7 +117,7 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
 
 // Generate metadata for the page
 export async function generateMetadata({ params }: UserProfilePageProps) {
-    const { id } = params;
+    const { id } = await params;
 
     try {
         const user = await userService.getUserById(id);

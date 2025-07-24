@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation';
 
 interface DashboardLayoutProps {
     children: React.ReactNode;
-    params: { id: string };
+    params: Promise<{ id: string }>;
 }
 
 export default async function UserLayout({ children, params }: DashboardLayoutProps) {

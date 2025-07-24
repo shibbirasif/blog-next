@@ -8,11 +8,12 @@ import { API_ROUTES } from '@/constants/apiRoutes';
 import EditArticle from '../../../../../../../../components/article/EditArticle';
 
 interface PageProps {
-    params: { id: string; articleId: string };
+    params: Promise<{ id: string; articleId: string }>;
 }
 
 export default async function EditArticlePage({ params }: PageProps) {
     const session = await auth();
+    const { id, articleId } = await params;
 
     if (!session?.user) {
         redirect('/signin');
@@ -21,7 +22,7 @@ export default async function EditArticlePage({ params }: PageProps) {
     try {
         // Fetch the article to edit and tags in parallel
         const [articleResponse, tags] = await Promise.all([
-            apiFetcher<{ article: ArticleDto }>(API_ROUTES.ARTICLE.SHOW(params.articleId)),
+            apiFetcher<{ article: ArticleDto }>(API_ROUTES.ARTICLE.SHOW(articleId)),
             apiFetcher<TagDto[]>(API_ROUTES.TAGS.LIST())
         ]);
 
@@ -46,7 +47,7 @@ export default async function EditArticlePage({ params }: PageProps) {
                     <EditArticle
                         article={article}
                         availableTags={tags}
-                        userId={params.id}
+                        userId={id}
                     />
                 </div>
             </>

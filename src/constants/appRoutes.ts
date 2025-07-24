@@ -1,7 +1,12 @@
 export const APP_ROUTES = {
     HOME: '/',
-    LOGIN: '/login',
-    REGISTER: '/register',
+    AUTH: {
+        SIGNIN: '/signin',
+        SIGNUP: '/signup',
+        FORGOT_PASSWORD: '/forgot-password',
+        RESET_PASSWORD: '/reset-password',
+        VERIFY_EMAIL: '/verify-email',
+    },
     USER: {
         FEED: (id: string | undefined) => id ? `/user/${id}/feed` : '#',
         ARTICLE: {

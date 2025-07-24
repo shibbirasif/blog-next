@@ -4,18 +4,20 @@ import { articleService } from '@/services/articleService';
 import { updateArticleSchema, publishArticleSchema } from '@/validations/article';
 
 interface RouteParams {
-    params: { id: string };
+    params: Promise<{ id: string }>;
 }
 
 export async function GET(_: NextRequest, { params }: RouteParams) {
     try {
-        console.log('Fetching article with ID:', params);
+        const { id } = await params;
+        console.log('Fetching article with ID:', id);
         let article;
 
         try {
-            article = await articleService.getArticleBySlug(params.id);
+            // Try to fetch by slug first (for SEO-friendly routing)
+            article = await articleService.getArticleBySlug(id);
         } catch {
-            article = await articleService.getArticleById(params.id);
+            article = await articleService.getArticleById(id);
         }
 
         if (!article) {
@@ -57,6 +59,7 @@ export async function GET(_: NextRequest, { params }: RouteParams) {
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
     try {
+        const { id } = await params;
         const session = await auth();
 
         if (!session?.user) {
@@ -66,7 +69,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
             );
         }
 
-        const isOwner = await articleService.verifyOwnership(params.id, session.user.id);
+        const isOwner = await articleService.verifyOwnership(id, session.user.id);
 
         if (!isOwner) {
             return NextResponse.json(
@@ -79,7 +82,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
         if ('isPublished' in body && Object.keys(body).length === 1) {
             const validationResult = publishArticleSchema.safeParse({
-                id: params.id,
+                id: id,
                 isPublished: body.isPublished
             });
 
@@ -94,7 +97,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
             }
 
             const article = await articleService.togglePublishStatus(
-                params.id,
+                id,
                 body.isPublished
             );
 
@@ -106,7 +109,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
         const validationResult = updateArticleSchema.safeParse({
             ...body,
-            id: params.id
+            id: id
         });
 
         if (!validationResult.success) {
@@ -121,7 +124,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { id: _, ...updateData } = validationResult.data;
-        const article = await articleService.updateArticle(params.id, updateData);
+        const article = await articleService.updateArticle(id, updateData);
 
         if (!article) {
             return NextResponse.json(
@@ -154,6 +157,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
 export async function DELETE(_: NextRequest, { params }: RouteParams) {
     try {
+        const { id } = await params;
         const session = await auth();
 
         if (!session?.user) {
@@ -163,7 +167,7 @@ export async function DELETE(_: NextRequest, { params }: RouteParams) {
             );
         }
 
-        const isOwner = await articleService.verifyOwnership(params.id, session.user.id);
+        const isOwner = await articleService.verifyOwnership(id, session.user.id);
 
         if (!isOwner) {
             return NextResponse.json(
@@ -172,7 +176,7 @@ export async function DELETE(_: NextRequest, { params }: RouteParams) {
             );
         }
 
-        const success = await articleService.deleteArticle(params.id);
+        const success = await articleService.deleteArticle(id);
 
         if (!success) {
             return NextResponse.json(

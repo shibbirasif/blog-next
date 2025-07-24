@@ -9,6 +9,9 @@ import SearchFilter from '@/components/SearchFilter';
 import ArticleGrid from '@/components/ArticleGrid';
 import Topbar from '@/components/Topbar';
 
+// Force dynamic rendering for this page since it uses searchParams
+export const dynamic = 'force-dynamic';
+
 // SEO Metadata
 export const metadata = generateHomeMetadata();
 

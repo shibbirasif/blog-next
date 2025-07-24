@@ -7,9 +7,9 @@ import { sanitizeToPlainText } from '@/utils/sanitization';
 import { truncateText } from '@/utils/common';
 
 interface ArticleMetadataParams {
-    params: {
+    params: Promise<{
         slug: string;
-    };
+    }>;
 }
 
 /**
