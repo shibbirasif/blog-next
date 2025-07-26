@@ -42,9 +42,8 @@ class ArticleService {
     async getArticleById(id: string): Promise<ArticleDto | null> {
         await dbConnect();
 
-        console.log('Fetching article by ID:', id);
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            throw new Error('Invalid article ID format');
+            throw new Error('Invalid article ID');
         }
 
         const article = await Article.findById(id)
@@ -62,7 +61,7 @@ class ArticleService {
             throw new Error('Invalid article slug');
         }
 
-        const article = await Article.findOne({ slug: 'a-article' })
+        const article = await Article.findOne({ slug })
             .populate('author', 'name email image bio')
             .populate('tags', 'name color description')
             .exec();
