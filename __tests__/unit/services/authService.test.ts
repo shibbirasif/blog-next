@@ -24,7 +24,7 @@ jest.mock('mongoose', () => {
     });
     (MockUser as any).findById = jest.fn();
     (MockUser as any).findByIdAndUpdate = jest.fn();
-    
+
     return {
         Schema: jest.fn(),
         model: jest.fn(() => MockUser),
@@ -310,7 +310,7 @@ describe('AuthService', () => {
 
             const updateCall = (MockUser.findByIdAndUpdate as jest.Mock).mock.calls[0][1];
             const resetExpires = updateCall.resetPasswordExpires.getTime();
-            
+
             // Should be approximately 1 hour (3600000ms) from now
             expect(resetExpires).toBeGreaterThan(beforeTime + 3590000); // 59.8 minutes
             expect(resetExpires).toBeLessThan(afterTime + 3610000); // 60.2 minutes
@@ -362,7 +362,7 @@ describe('AuthService', () => {
 
             const findOneCall = (MockUser.findOne as jest.Mock).mock.calls[0][0];
             const checkTime = findOneCall.resetPasswordExpires.$gt.getTime();
-            
+
             expect(checkTime).toBeGreaterThanOrEqual(beforeTime);
             expect(checkTime).toBeLessThanOrEqual(afterTime);
         });
