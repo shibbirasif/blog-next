@@ -46,7 +46,7 @@ export default function SignUpPage() {
     };
 
     return (
-        <Card className="w-full max-w-lg">
+        <Card className="w-full sm:w-md">
             <div className="space-y-6">
                 <div className="text-center">
                     <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Create Your Account</h2>

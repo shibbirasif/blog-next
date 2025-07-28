@@ -10,15 +10,7 @@ import { clientResetPasswordSchema, ClientResetPasswordInput } from '@/validatio
 import { apiFetcher } from '@/utils/apiFetcher';
 import { APP_ROUTES } from '@/constants/appRoutes';
 
-export default function ResetPasswordPage() {
-    return (
-        <Suspense fallback={<div className="flex justify-center items-center min-h-screen"><Spinner size="xl" /></div>}>
-            <ResetPasswordForm />
-        </Suspense>
-    );
-}
-
-function ResetPasswordForm() {
+function ResetPasswordContent() {
     const {
         register,
         handleSubmit,
@@ -88,7 +80,7 @@ function ResetPasswordForm() {
 
     if (isValidatingToken) {
         return (
-            <Card className="w-full max-w-md">
+            <Card className="w-full sm:w-md">
                 <div className="text-center space-y-4">
                     <Spinner size="lg" />
                     <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Validating Reset Token...</h2>
@@ -100,7 +92,7 @@ function ResetPasswordForm() {
 
     if (tokenError) {
         return (
-            <Card className="w-full max-w-md">
+            <Card className="w-full sm:w-md">
                 <div className="text-center space-y-4">
                     <h1 className="text-3xl font-bold text-red-600">❌ Invalid Reset Link</h1>
                     <p className="text-gray-700 dark:text-gray-300">{tokenError}</p>
@@ -121,7 +113,7 @@ function ResetPasswordForm() {
     }
 
     return (
-        <Card className="w-full max-w-md">
+        <Card className="w-full sm:w-md">
             <div className="space-y-6">
                 <div className="text-center">
                     <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Reset Password</h1>
@@ -202,5 +194,13 @@ function ResetPasswordForm() {
                 </div>
             </div>
         </Card>
+    );
+}
+
+export default function ResetPasswordPage() {
+    return (
+        <Suspense fallback={<div className="flex justify-center items-center min-h-screen"><Spinner size="xl" /></div>}>
+            <ResetPasswordContent />
+        </Suspense>
     );
 }

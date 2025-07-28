@@ -3,7 +3,7 @@
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState, Suspense } from 'react';
 import { apiFetcher } from '@/utils/apiFetcher';
-import { Spinner } from 'flowbite-react';
+import { Spinner, Card } from 'flowbite-react';
 
 export default function VerifyEmailPage() {
     return (
@@ -49,36 +49,38 @@ function VerifyEmailContent() {
     }, [token, verificationStatus]);
 
     return (
-        <div className="w-full max-w-md rounded-lg bg-white dark:bg-gray-800 p-8 text-center shadow-lg">
-            {verificationStatus === 'idle' && (
-                <div>
-                    <h2 className="mb-4 text-2xl font-semibold text-gray-800 dark:text-gray-200">Checking Verification Link...</h2>
-                    <p className="text-gray-600 dark:text-gray-400">Please wait while we verify your email.</p>
-                </div>
-            )}
-            {verificationStatus === 'verifying' && (
-                <div>
-                    <h2 className="mb-4 text-2xl font-semibold text-gray-800 dark:text-gray-200">Verifying Email...</h2>
-                    <p className="text-gray-600 dark:text-gray-400">This should only take a moment.</p>
-                </div>
-            )}
-            {verificationStatus === 'success' && (
-                <div>
-                    <h1 className="mb-4 text-3xl font-bold text-green-600">✅ Email Verified!</h1>
-                    <p className="mb-4 text-gray-700 dark:text-gray-300">{message}</p>
-                    <p className="mb-6 text-gray-600 dark:text-gray-400">You can now log in to your account.</p>
-                    <a href="/signin" className="inline-block rounded-md bg-blue-600 px-6 py-3 font-semibold text-white transition duration-200 hover:bg-blue-700">
-                        Go to Signin
-                    </a>
-                </div>
-            )}
-            {verificationStatus === 'error' && (
-                <div>
-                    <h1 className="mb-4 text-3xl font-bold text-red-600">❌ Verification Failed</h1>
-                    <p className="mb-4 text-gray-700 dark:text-gray-300">{message}</p>
-                    <p className="mb-6 text-gray-600 dark:text-gray-400">If you believe this is an error or the link has expired, please request a new verification email from your account settings or registration page.</p>
-                </div>
-            )}
-        </div>
+        <Card className="w-full sm:w-md">
+            <div className="text-center space-y-4">
+                {verificationStatus === 'idle' && (
+                    <div>
+                        <h2 className="mb-4 text-2xl font-semibold text-gray-800 dark:text-gray-200">Checking Verification Link...</h2>
+                        <p className="text-gray-600 dark:text-gray-400">Please wait while we verify your email.</p>
+                    </div>
+                )}
+                {verificationStatus === 'verifying' && (
+                    <div>
+                        <h2 className="mb-4 text-2xl font-semibold text-gray-800 dark:text-gray-200">Verifying Email...</h2>
+                        <p className="text-gray-600 dark:text-gray-400">This should only take a moment.</p>
+                    </div>
+                )}
+                {verificationStatus === 'success' && (
+                    <div>
+                        <h1 className="mb-4 text-3xl font-bold text-green-600">✅ Email Verified!</h1>
+                        <p className="mb-4 text-gray-700 dark:text-gray-300">{message}</p>
+                        <p className="mb-6 text-gray-600 dark:text-gray-400">You can now log in to your account.</p>
+                        <a href="/signin" className="inline-block rounded-md bg-blue-600 px-6 py-3 font-semibold text-white transition duration-200 hover:bg-blue-700">
+                            Go to Signin
+                        </a>
+                    </div>
+                )}
+                {verificationStatus === 'error' && (
+                    <div>
+                        <h1 className="mb-4 text-3xl font-bold text-red-600">❌ Verification Failed</h1>
+                        <p className="mb-4 text-gray-700 dark:text-gray-300">{message}</p>
+                        <p className="mb-6 text-gray-600 dark:text-gray-400">If you believe this is an error or the link has expired, please request a new verification email from your account settings or registration page.</p>
+                    </div>
+                )}
+            </div>
+        </Card>
     );
 }

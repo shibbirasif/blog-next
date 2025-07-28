@@ -3,16 +3,8 @@ import pino from 'pino';
 const logger = pino({
     level: process.env.NODE_ENV === 'test' ? 'silent' : process.env.LOG_LEVEL || (process.env.NODE_ENV === 'production' ? 'info' : 'debug'),
 
-    ...(process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test' && {
-        transport: {
-            target: 'pino-pretty',
-            options: {
-                colorize: true,
-                translateTime: 'HH:MM:ss',
-                ignore: 'pid,hostname',
-            },
-        },
-    }),
+    // Note: pino-pretty is disabled because it's incompatible with Next.js 15 + Turbopack
+    // This keeps the logger simple and compatible with all environments
 
     // Add useful metadata
     base: {

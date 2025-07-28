@@ -6,6 +6,7 @@ import { EmailVerification } from '@/emails/components/EmailVerification';
 import { PasswordResetEmail } from '@/emails/components/PasswordResetEmail';
 import { PasswordChangedEmail } from '@/emails/components/PasswordChangedEmail';
 import { getBaseUrl, getPlatformName } from '@/utils/common';
+import { APP_ROUTES } from '@/constants/appRoutes';
 
 export interface TemplateData {
     userName: string;
@@ -31,7 +32,7 @@ export interface PasswordChangedTemplateData extends TemplateData {
 
 export class EmailSender {
     public async sendVerificationEmail(user: UserDto, verificationToken: string): Promise<void> {
-        const verificationUrl = `${getBaseUrl()}/verify-email?token=${verificationToken}`;
+        const verificationUrl = `${getBaseUrl()}${APP_ROUTES.AUTH.VERIFY_EMAIL}?token=${verificationToken}`;
 
         const templateData: VerificationTemplateData = {
             userName: user.name,
@@ -57,7 +58,7 @@ export class EmailSender {
     }
 
     public async sendPasswordResetEmail(user: UserDto, resetToken: string): Promise<void> {
-        const resetUrl = `${getBaseUrl()}/auth/reset-password?token=${resetToken}`;
+        const resetUrl = `${getBaseUrl()}${APP_ROUTES.AUTH.RESET_PASSWORD}?token=${resetToken}`;
 
         const templateData: PasswordResetTemplateData = {
             userName: user.name,
