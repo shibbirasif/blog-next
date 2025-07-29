@@ -11,7 +11,7 @@ export interface ResizableImageOptions {
 declare module '@tiptap/core' {
     interface Commands<ReturnType> {
         resizableImage: {
-            setImage: (options: { src: string; alt?: string; title?: string; width?: number; height?: number }) => ReturnType;
+            setImage: (options: { src: string; fileId: string, alt?: string; title?: string; width?: number; height?: number }) => ReturnType;
         };
     }
 }
@@ -42,6 +42,9 @@ export const ResizableImage = Node.create<ResizableImageOptions>({
     addAttributes() {
         return {
             src: {
+                default: null,
+            },
+            fileId: {
                 default: null,
             },
             alt: {
@@ -76,7 +79,7 @@ export const ResizableImage = Node.create<ResizableImageOptions>({
     },
 
     renderHTML({ HTMLAttributes }) {
-        const { width, height, ...otherAttributes } = HTMLAttributes;
+        const { width, height, fileId, ...otherAttributes } = HTMLAttributes;
         const style: Record<string, string> = {};
 
         if (width) style.width = `${width}px`;
@@ -86,6 +89,7 @@ export const ResizableImage = Node.create<ResizableImageOptions>({
             'img',
             {
                 ...otherAttributes,
+                ...(fileId ? { 'data-file-id': fileId } : {}),
                 style: Object.keys(style).length > 0 ? Object.entries(style).map(([k, v]) => `${k}: ${v}`).join('; ') : undefined
             }
         ];

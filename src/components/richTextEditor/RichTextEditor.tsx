@@ -1,4 +1,4 @@
-'use client'; // This MUST be the very first line
+'use client'; 
 
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';

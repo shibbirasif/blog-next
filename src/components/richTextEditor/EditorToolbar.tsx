@@ -34,14 +34,16 @@ const EmojiPicker = dynamic(() => import('emoji-picker-react'), { ssr: false });
 
 type Props = {
     editor: Editor | null;
+    imageUploadConfig?: {
+        uploadUrl: string;
+    };
 }
 
-export default function EditorToolbar({ editor }: Props) {
+export default function EditorToolbar({ editor, imageUploadConfig }: Props) {
     const [imageModalOpen, setImageModalOpen] = useState(false);
     const [videoModalOpen, setVideoModalOpen] = useState(false);
     const [imageUrl, setImageUrl] = useState('');
     const [videoUrl, setVideoUrl] = useState('');
-    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
     const [uploadError, setUploadError] = useState<string | null>(null);
     const [uploadMode, setUploadMode] = useState<'url' | 'upload'>('url');
@@ -51,7 +53,7 @@ export default function EditorToolbar({ editor }: Props) {
 
     const insertImage = () => {
         if (imageUrl) {
-            editor?.chain().focus().setImage({ src: imageUrl }).run();
+            editor?.chain().focus().setImage({ src: imageUrl, fileId: '' }).run();
             setImageUrl('');
             setImageModalOpen(false);
             setUploadError(null);
@@ -73,9 +75,10 @@ export default function EditorToolbar({ editor }: Props) {
         }
 
         try {
-            const result = await ImageUploadHandler.uploadToServer(file);
-            if (result.success && result.url) {
-                editor?.chain().focus().setImage({ src: result.url }).run();
+            const uploadUrl = imageUploadConfig?.uploadUrl || '/api/articles/uploads';
+            const result = await ImageUploadHandler.uploadToServer(file, uploadUrl);
+            if (result.success && result.src && result.uploadedFileId) {
+                editor?.chain().focus().setImage({ src: result.src, fileId: result.uploadedFileId }).run();
                 setImageModalOpen(false);
                 setUploadError(null);
                 resetImageModal();
@@ -171,7 +174,8 @@ export default function EditorToolbar({ editor }: Props) {
                     </Button>
                 </Tooltip>
 
-                <div className='relative'>
+                {/* Emoji button always at the right */}
+                <div className="relative ml-auto">
                     <Tooltip content="Emoji">
                         <Button size="xs" color="light" onClick={() => setShowEmoji((prev) => !prev)}>
                             <FaSmile />
@@ -191,7 +195,6 @@ export default function EditorToolbar({ editor }: Props) {
                         </div>
                     )}
                 </div>
-
             </div>
 
 

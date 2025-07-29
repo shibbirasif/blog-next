@@ -1,6 +1,7 @@
 export interface ImageUploadResult {
     success: boolean;
-    url?: string;
+    src?: string;
+    uploadedFileId?: string;
     error?: string;
 }
 
@@ -36,33 +37,13 @@ export class ImageUploadHandler {
         });
     }
 
-    // Upload to server (you can implement your preferred upload method)
-    static async uploadToServer(file: File): Promise<ImageUploadResult> {
-        try {
-            // For now, we'll use base64 encoding
-            // In production, you'd upload to your server/cloud storage
-            const base64 = await this.fileToBase64(file);
-
-            return {
-                success: true,
-                url: base64
-            };
-        } catch (error) {
-            return {
-                success: false,
-                error: error instanceof Error ? error.message : 'Upload failed'
-            };
-        }
-    }
-
-    // Alternative: Upload to cloud storage (implement as needed)
-    static async uploadToCloudStorage(file: File): Promise<ImageUploadResult> {
+    static async uploadToServer(file: File, uploadUrl: string): Promise<ImageUploadResult> {
         try {
             const formData = new FormData();
-            formData.append('image', file);
+            formData.append('file', file);
+            // Optionally add altText/articleId if needed
 
-            // Example API call - replace with your actual upload endpoint
-            const response = await fetch('/api/upload/image', {
+            const response = await fetch(uploadUrl, {
                 method: 'POST',
                 body: formData,
             });
@@ -72,17 +53,18 @@ export class ImageUploadHandler {
             }
 
             const data = await response.json();
-
+            // Expecting { file: { url, id, ... } }
             return {
                 success: true,
-                url: data.url
+                src: data.file.url,
+                uploadedFileId: data.file.id
             };
         } catch (error) {
-            console.error('Image upload error:', error);
             return {
                 success: false,
                 error: error instanceof Error ? error.message : 'Upload failed'
             };
         }
     }
+
 }
