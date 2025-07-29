@@ -19,6 +19,9 @@ export async function loadModels() {
         // Tag model next (no dependencies)
         await import('./Tag');
 
+        // UploadedFile model (depends on User)
+        await import('./UploadedFile');
+
         // Article model last (depends on User and Tag)
         await import('./Article');
 

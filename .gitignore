@@ -45,3 +45,6 @@ next-env.d.ts
 #IDE/code editor files
 .vscode/
 .idea/
+
+# uploaded files
+/uploads/
