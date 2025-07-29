@@ -53,7 +53,20 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ content = '', onContent
     return (
         <div className={`border rounded-lg shadow-sm ${hasError ? 'border-red-500' : 'border-gray-300'}`}>
             {editable && <EditorToolbar editor={editor} onImageUpload={onImageUpload} />}
-            <EditorContent editor={editor} className='max-w-none min-h-[500px] overflow-y-auto rounded-lg' />
+            <EditorContent
+                editor={editor}
+                className='max-w-none min-h-[500px] overflow-y-auto rounded-lg'
+                style={{
+                    // Fix bold/italic color in dark mode
+                    '--tw-prose-bold': 'var(--tw-prose-invert)',
+                    color: 'inherit',
+                } as React.CSSProperties}
+            />
+            <style>{`
+                .dark .prose strong, .dark .prose b, .dark .prose em {
+                    color: #fff !important;
+                }
+            `}</style>
         </div>
     );
 };

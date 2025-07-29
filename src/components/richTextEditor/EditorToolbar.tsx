@@ -259,7 +259,7 @@ export default function EditorToolbar({ editor, imageUploadConfig, onImageUpload
                                     accept="image/*"
                                     onChange={e => {
                                         const file = e.target.files?.[0];
-                                        if (file) {
+                                        if (file && altText === '') {
                                             const nameWithoutExt = file.name.replace(/\.[^/.]+$/, "");
                                             setAltText(nameWithoutExt);
                                         }
