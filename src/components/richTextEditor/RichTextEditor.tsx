@@ -2,13 +2,13 @@
 
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import Image from '@tiptap/extension-image';
 import Youtube from '@tiptap/extension-youtube';
 import React from 'react';
 import Underline from '@tiptap/extension-underline';
 import Placeholder from '@tiptap/extension-placeholder';
 import Emoji from '@tiptap/extension-emoji';
 import EditorToolbar from './EditorToolbar';
+import { ResizableImage } from './ResizableImageExtension';
 
 interface RichTextEditorProps {
     content: string;
@@ -25,8 +25,8 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ content = '', onContent
                 heading: { levels: [1, 2, 3, 4] },
             }),
             Underline,
-            Image.configure({
-                inline: true,
+            ResizableImage.configure({
+                inline: false,
                 allowBase64: true,
             }),
             Youtube.configure({

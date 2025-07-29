@@ -1,7 +1,7 @@
 'use client'
 
 import { Editor } from '@tiptap/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import {
     Button,
     Tooltip,
@@ -11,7 +11,8 @@ import {
     DropdownItem,
     ModalHeader,
     ModalBody,
-    ModalFooter
+    ModalFooter,
+    Alert
 } from 'flowbite-react';
 import {
     FaBold,
@@ -20,10 +21,13 @@ import {
     FaImage,
     FaVideo,
     FaSmile,
-    FaHeading
+    FaHeading,
+    FaUpload,
+    FaLink
 } from 'react-icons/fa';
 import dynamic from 'next/dynamic';
 import { Theme } from 'emoji-picker-react';
+import { ImageUploadHandler } from './ImageUploadHandler';
 
 
 const EmojiPicker = dynamic(() => import('emoji-picker-react'), { ssr: false });
@@ -37,16 +41,62 @@ export default function EditorToolbar({ editor }: Props) {
     const [videoModalOpen, setVideoModalOpen] = useState(false);
     const [imageUrl, setImageUrl] = useState('');
     const [videoUrl, setVideoUrl] = useState('');
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
+    const [uploadError, setUploadError] = useState<string | null>(null);
+    const [uploadMode, setUploadMode] = useState<'url' | 'upload'>('url');
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [emojiTheme, setEmojiTheme] = useState<Theme>(Theme.AUTO);
     const [showEmoji, setShowEmoji] = useState(false);
-    const [emojiTheme, setEmojiTheme] = useState<Theme>(Theme.AUTO)
 
     const insertImage = () => {
         if (imageUrl) {
             editor?.chain().focus().setImage({ src: imageUrl }).run();
             setImageUrl('');
             setImageModalOpen(false);
+            setUploadError(null);
         }
-    }
+    };
+
+    const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        setIsUploading(true);
+        setUploadError(null);
+
+        const validation = ImageUploadHandler.validateFile(file);
+        if (!validation.valid) {
+            setUploadError(validation.error || 'Invalid file');
+            setIsUploading(false);
+            return;
+        }
+
+        try {
+            const result = await ImageUploadHandler.uploadToServer(file);
+            if (result.success && result.url) {
+                editor?.chain().focus().setImage({ src: result.url }).run();
+                setImageModalOpen(false);
+                setUploadError(null);
+                resetImageModal();
+            } else {
+                setUploadError(result.error || 'Upload failed');
+            }
+        } catch (error) {
+            setUploadError('Upload failed. Please try again.');
+        } finally {
+            setIsUploading(false);
+        }
+    };
+
+    const resetImageModal = () => {
+        setImageUrl('');
+        setUploadError(null);
+        setUploadMode('url');
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+    };
 
     const insertVideo = () => {
         if (videoUrl) {
@@ -147,19 +197,88 @@ export default function EditorToolbar({ editor }: Props) {
 
 
             {/* Image Modal */}
-            <Modal show={imageModalOpen} onClose={() => setImageModalOpen(false)}>
+            <Modal show={imageModalOpen} onClose={() => { setImageModalOpen(false); resetImageModal(); }}>
                 <ModalHeader>Insert Image</ModalHeader>
                 <ModalBody>
-                    <TextInput
-                        id="image-url"
-                        placeholder="Enter image URL"
-                        value={imageUrl}
-                        onChange={(e) => setImageUrl(e.target.value)}
-                    />
+                    <div className="space-y-4">
+                        {/* Upload Mode Toggle */}
+                        <div className="flex gap-2 mb-4">
+                            <Button
+                                size="sm"
+                                color={uploadMode === 'url' ? 'blue' : 'gray'}
+                                onClick={() => setUploadMode('url')}
+                            >
+                                <FaLink className="mr-2" />
+                                URL
+                            </Button>
+                            <Button
+                                size="sm"
+                                color={uploadMode === 'upload' ? 'blue' : 'gray'}
+                                onClick={() => setUploadMode('upload')}
+                            >
+                                <FaUpload className="mr-2" />
+                                Upload
+                            </Button>
+                        </div>
+
+                        {/* Error Alert */}
+                        {uploadError && (
+                            <Alert color="failure" onDismiss={() => setUploadError(null)}>
+                                {uploadError}
+                            </Alert>
+                        )}
+
+                        {/* URL Input */}
+                        {uploadMode === 'url' && (
+                            <TextInput
+                                id="image-url"
+                                placeholder="Enter image URL (https://example.com/image.jpg)"
+                                value={imageUrl}
+                                onChange={(e) => setImageUrl(e.target.value)}
+                                disabled={isUploading}
+                            />
+                        )}
+
+                        {/* File Upload */}
+                        {uploadMode === 'upload' && (
+                            <div>
+                                <input
+                                    ref={fileInputRef}
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleFileUpload}
+                                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                                    disabled={isUploading}
+                                />
+                                <p className="mt-2 text-sm text-gray-500">
+                                    Supported formats: JPEG, PNG, GIF, WebP (max 5MB)
+                                </p>
+                            </div>
+                        )}
+
+                        {/* Loading indicator */}
+                        {isUploading && (
+                            <div className="flex items-center justify-center py-4">
+                                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                                <span className="ml-2 text-sm text-gray-600">Uploading...</span>
+                            </div>
+                        )}
+                    </div>
                 </ModalBody>
                 <ModalFooter>
-                    <Button onClick={insertImage}>Insert</Button>
-                    <Button color="gray" onClick={() => setImageModalOpen(false)}>Cancel</Button>
+                    <Button
+                        onClick={insertImage}
+                        disabled={isUploading || (uploadMode === 'url' && !imageUrl)}
+                    >
+                        Insert
+                    </Button>
+                    <Button
+                        color="gray"
+                        onClick={() => { setImageModalOpen(false); resetImageModal(); }}
+                        disabled={isUploading}
+                    >
+                        Cancel
+                    </Button>
                 </ModalFooter>
             </Modal>
 
