@@ -57,7 +57,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ content = '', onContent
                 editor={editor}
                 className='max-w-none min-h-[500px] overflow-y-auto rounded-lg'
                 style={{
-                    // Fix bold/italic color in dark mode
+                    // Fix bold color in dark mode
                     '--tw-prose-bold': 'var(--tw-prose-invert)',
                     color: 'inherit',
                 } as React.CSSProperties}

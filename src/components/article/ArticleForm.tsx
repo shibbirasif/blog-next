@@ -51,9 +51,8 @@ export default function ArticleForm({
         register,
         handleSubmit,
         control,
-        formState: { errors, isSubmitting },
-        setValue,
-        trigger
+        formState: { errors, isSubmitting, touchedFields, submitCount },
+        setValue
     } = useForm({
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         resolver: zodResolver(validationSchema as any),
@@ -65,8 +64,7 @@ export default function ArticleForm({
 
     useEffect(() => {
         setValue('tags', selectedTags);
-        trigger('tags');
-    }, [selectedTags, setValue, trigger]);
+    }, [selectedTags, setValue]);
 
     // Combined loading state for UI elements
     const isLoading = isSubmitting || isOperating;
