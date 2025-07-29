@@ -11,7 +11,6 @@ export async function GET(
     try {
         const { fileId } = params;
 
-        // Find the file record in database
         const fileRecord = await uploadedFileService.findFile(fileId);
 
         if (!fileRecord) {

@@ -1,10 +1,5 @@
-import UploadedFile, { IUploadedFile, FileType, AttachableType, FileStatus } from '../models/UploadedFile';
-import {
-    UploadedFileDto,
-    buildUploadedFileDto,
-    CreateUploadedFileDto,
-    DeleteFilesResultDto
-} from '../dtos/UploadedFileDto';
+import UploadedFile, { AttachableType, FileStatus } from '../models/UploadedFile';
+import { UploadedFileDto, buildUploadedFileDto, CreateUploadedFileDto, DeleteFilesResultDto } from '../dtos/UploadedFileDto';
 import mongoose from 'mongoose';
 
 export class UploadedFileService {
@@ -27,6 +22,24 @@ export class UploadedFileService {
         }
     }
 
+    async deleteFile(fileId: string): Promise<boolean> {
+        try {
+            if (!mongoose.Types.ObjectId.isValid(fileId)) {
+                return false;
+            }
+            const file = await UploadedFile.findById(fileId);
+            if (!file) {
+                return false;
+            }
+            file.status = FileStatus.ARCHIVED;
+            await file.save();
+            return true;
+        } catch (error) {
+            console.error('Error deleting file:', error);
+            return false;
+        }
+    }
+
     async findFile(fileId: string): Promise<UploadedFileDto | null> {
         try {
             if (!mongoose.Types.ObjectId.isValid(fileId)) {
@@ -41,46 +54,6 @@ export class UploadedFileService {
         }
     }
 
-    async deleteFiles(fileIds: string[], userId?: string): Promise<DeleteFilesResultDto> {
-        try {
-            const results = {
-                deleted: 0,
-                failed: [] as string[]
-            };
-
-            for (const fileId of fileIds) {
-                try {
-                    if (!mongoose.Types.ObjectId.isValid(fileId)) {
-                        results.failed.push(fileId);
-                        continue;
-                    }
-
-                    const filter: any = { _id: fileId };
-
-                    if (userId) {
-                        filter.uploadedBy = new mongoose.Types.ObjectId(userId);
-                    }
-
-                    const file = await UploadedFile.findOne(filter);
-                    if (!file) {
-                        results.failed.push(fileId);
-                        continue;
-                    }
-
-                    file.status = FileStatus.ARCHIVED;
-                    await file.save();
-                    results.deleted++;
-                } catch (error) {
-                    results.failed.push(fileId);
-                }
-            }
-
-            return results;
-        } catch (error) {
-            console.error('Error deleting files:', error);
-            throw new Error('Failed to delete files');
-        }
-    }
 
     async attachToEntity(
         fileId: string,
@@ -112,31 +85,8 @@ export class UploadedFileService {
         }
     }
 
-    async getFilesByEntity(
-        entityType: AttachableType,
-        entityId: string
-    ): Promise<UploadedFileDto[]> {
-        try {
-            if (!mongoose.Types.ObjectId.isValid(entityId)) {
-                return [];
-            }
 
-            const files = await UploadedFile.find({
-                attachableType: entityType,
-                attachableId: new mongoose.Types.ObjectId(entityId),
-                status: { $ne: FileStatus.ARCHIVED }
-            })
-                .populate('uploadedBy', 'name email')
-                .sort({ uploadedAt: -1 });
-
-            return files.map(file => buildUploadedFileDto(file));
-        } catch (error) {
-            console.error('Error getting files by entity:', error);
-            throw new Error('Failed to get files by entity');
-        }
-    }
-
-    async findOrphanedFiles(userId?: string): Promise<UploadedFileDto[]> {
+    async findOrphanedFiles(olderThan?: Date): Promise<UploadedFileDto[]> {
         try {
             const filter: any = {
                 attachableType: null,
@@ -144,8 +94,8 @@ export class UploadedFileService {
                 status: FileStatus.TEMPORARY
             };
 
-            if (userId) {
-                filter.uploadedBy = new mongoose.Types.ObjectId(userId);
+            if (olderThan) {
+                filter.uploadedAt = { $lt: olderThan };
             }
 
             const files = await UploadedFile.find(filter)
@@ -179,5 +129,4 @@ export class UploadedFileService {
     }
 }
 
-// Export singleton instance for IoC
 export const uploadedFileService = new UploadedFileService();

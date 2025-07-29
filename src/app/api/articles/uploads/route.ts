@@ -7,7 +7,7 @@ import { join } from 'path';
 import crypto from 'crypto';
 import { PRIVATE_UPLOAD_DIR } from '@/constants/uploads';
 import { uploadFileSchema } from '@/validations/upload';
-import { getUploadedFileUrl } from '@/utils/fileUrl';
+import { getUploadedFileUrl } from '@/utils/fileUpload';
 
 export async function POST(request: NextRequest) {
     try {
@@ -104,50 +104,6 @@ export async function POST(request: NextRequest) {
         console.error('File upload error:', error);
         return NextResponse.json(
             { error: 'Failed to upload file' },
-            { status: 500 }
-        );
-    }
-}
-
-export async function DELETE(request: NextRequest) {
-    try {
-        const session = await auth();
-
-        if (!session?.user) {
-            return NextResponse.json(
-                { error: 'Unauthorized' },
-                { status: 401 }
-            );
-        }
-
-        const { searchParams } = new URL(request.url);
-        const fileId = searchParams.get('fileId');
-
-        if (!fileId) {
-            return NextResponse.json(
-                { error: 'File ID is required' },
-                { status: 400 }
-            );
-        }
-
-        // Delete file (marks as archived)
-        const result = await uploadedFileService.deleteFiles([fileId], session.user.id);
-
-        if (result.failed.length > 0) {
-            return NextResponse.json(
-                { error: 'File not found or access denied' },
-                { status: 404 }
-            );
-        }
-
-        return NextResponse.json({
-            message: 'File deleted successfully'
-        });
-
-    } catch (error) {
-        console.error('Error deleting file:', error);
-        return NextResponse.json(
-            { error: 'Failed to delete file' },
             { status: 500 }
         );
     }
