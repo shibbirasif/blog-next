@@ -184,6 +184,6 @@ UploadedFileSchema.pre('save', function (next) {
     next();
 });
 
-const UploadedFile = mongoose.model<IUploadedFile>('UploadedFile', UploadedFileSchema);
+const UploadedFile = mongoose.models.UploadedFile || mongoose.model<IUploadedFile>('UploadedFile', UploadedFileSchema);
 
 export default UploadedFile;

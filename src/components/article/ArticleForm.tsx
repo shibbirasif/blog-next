@@ -45,6 +45,7 @@ export default function ArticleForm({
     const [isPublished, setIsPublished] = useState(article?.isPublished || false);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [uploadedFileIds, setUploadedFileIds] = useState<string[]>([]);
 
     const {
         register,
@@ -92,7 +93,7 @@ export default function ArticleForm({
         setSuccessMessage(null);
 
         try {
-            await onSubmit({ ...data, isPublished: false, tags: selectedTags });
+            await onSubmit({ ...data, isPublished: false, tags: selectedTags, uploadedFileIds });
             setSuccessMessage(mode === 'edit' ? 'Article updated successfully!' : 'Article saved as draft!');
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Failed to save article';
@@ -105,7 +106,7 @@ export default function ArticleForm({
         setSuccessMessage(null);
 
         try {
-            await onSubmit({ ...data, isPublished: true, tags: selectedTags });
+            await onSubmit({ ...data, isPublished: true, tags: selectedTags, uploadedFileIds });
             setSuccessMessage(mode === 'edit' ? 'Article updated and published!' : 'Article published successfully!');
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Failed to publish article';
@@ -194,6 +195,7 @@ export default function ArticleForm({
                                 content={field.value || ''}
                                 onContentChange={field.onChange}
                                 hasError={!!errors.content}
+                                onImageUpload={fileId => setUploadedFileIds(ids => [...ids, fileId])}
                             />
                         )}
                     />

@@ -37,11 +37,11 @@ export class ImageUploadHandler {
         });
     }
 
-    static async uploadToServer(file: File, uploadUrl: string): Promise<ImageUploadResult> {
+    static async uploadToServer(file: File, uploadUrl: string, altText: string): Promise<ImageUploadResult> {
         try {
             const formData = new FormData();
             formData.append('file', file);
-            // Optionally add altText/articleId if needed
+            formData.append('altText', altText);
 
             const response = await fetch(uploadUrl, {
                 method: 'POST',

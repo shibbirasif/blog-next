@@ -37,12 +37,14 @@ type Props = {
     imageUploadConfig?: {
         uploadUrl: string;
     };
+    onImageUpload?: (fileId: string) => void;
 }
 
-export default function EditorToolbar({ editor, imageUploadConfig }: Props) {
+export default function EditorToolbar({ editor, imageUploadConfig, onImageUpload }: Props) {
     const [imageModalOpen, setImageModalOpen] = useState(false);
     const [videoModalOpen, setVideoModalOpen] = useState(false);
     const [imageUrl, setImageUrl] = useState('');
+    const [altText, setAltText] = useState('');
     const [videoUrl, setVideoUrl] = useState('');
     const [isUploading, setIsUploading] = useState(false);
     const [uploadError, setUploadError] = useState<string | null>(null);
@@ -53,7 +55,7 @@ export default function EditorToolbar({ editor, imageUploadConfig }: Props) {
 
     const insertImage = () => {
         if (imageUrl) {
-            editor?.chain().focus().setImage({ src: imageUrl, fileId: '' }).run();
+            editor?.chain().focus().setImage({ src: imageUrl }).run();
             setImageUrl('');
             setImageModalOpen(false);
             setUploadError(null);
@@ -63,6 +65,10 @@ export default function EditorToolbar({ editor, imageUploadConfig }: Props) {
     const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (!file) return;
+
+        // Default altText to file name without extension
+        const nameWithoutExt = file.name.replace(/\.[^/.]+$/, "");
+        setAltText(nameWithoutExt);
 
         setIsUploading(true);
         setUploadError(null);
@@ -76,9 +82,10 @@ export default function EditorToolbar({ editor, imageUploadConfig }: Props) {
 
         try {
             const uploadUrl = imageUploadConfig?.uploadUrl || '/api/articles/uploads';
-            const result = await ImageUploadHandler.uploadToServer(file, uploadUrl);
+            const result = await ImageUploadHandler.uploadToServer(file, uploadUrl, altText);
             if (result.success && result.src && result.uploadedFileId) {
-                editor?.chain().focus().setImage({ src: result.src, fileId: result.uploadedFileId }).run();
+                editor?.chain().focus().setImage({ src: result.src, alt: altText }).run();
+                onImageUpload?.(result.uploadedFileId);
                 setImageModalOpen(false);
                 setUploadError(null);
                 resetImageModal();
@@ -94,6 +101,7 @@ export default function EditorToolbar({ editor, imageUploadConfig }: Props) {
 
     const resetImageModal = () => {
         setImageUrl('');
+        setAltText('');
         setUploadError(null);
         setUploadMode('url');
         if (fileInputRef.current) {
@@ -174,8 +182,8 @@ export default function EditorToolbar({ editor, imageUploadConfig }: Props) {
                     </Button>
                 </Tooltip>
 
-                {/* Emoji button always at the right */}
-                <div className="relative ml-auto">
+                {/* Emoji button now centered with others */}
+                <div className="relative">
                     <Tooltip content="Emoji">
                         <Button size="xs" color="light" onClick={() => setShowEmoji((prev) => !prev)}>
                             <FaSmile />
@@ -249,10 +257,37 @@ export default function EditorToolbar({ editor, imageUploadConfig }: Props) {
                                     ref={fileInputRef}
                                     type="file"
                                     accept="image/*"
-                                    onChange={handleFileUpload}
+                                    onChange={e => {
+                                        const file = e.target.files?.[0];
+                                        if (file) {
+                                            const nameWithoutExt = file.name.replace(/\.[^/.]+$/, "");
+                                            setAltText(nameWithoutExt);
+                                        }
+                                    }}
                                     className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                                     disabled={isUploading}
                                 />
+                                <TextInput
+                                    id="alt-text"
+                                    placeholder="Image alt text"
+                                    value={altText}
+                                    onChange={e => setAltText(e.target.value)}
+                                    className="mt-2"
+                                    disabled={isUploading}
+                                />
+                                <Button
+                                    color="blue"
+                                    className="mt-2"
+                                    onClick={async () => {
+                                        if (!fileInputRef.current?.files?.[0]) return;
+                                        await handleFileUpload({
+                                            target: fileInputRef.current
+                                        } as React.ChangeEvent<HTMLInputElement>);
+                                    }}
+                                    disabled={isUploading || !fileInputRef.current?.files?.[0]}
+                                >
+                                    Upload
+                                </Button>
                                 <p className="mt-2 text-sm text-gray-500">
                                     Supported formats: JPEG, PNG, GIF, WebP (max 5MB)
                                 </p>

@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { articleService } from '@/services/articleService';
+import { uploadedFileService } from '@/services/UploadedFileService';
+import { AttachableType } from '@/models/UploadedFile';
 import { createArticleSchema } from '@/validations/article';
 import { ArticleSortOrder } from '@/constants/enums';
 import { PAGINATION } from '@/constants/common';
@@ -39,7 +41,21 @@ export async function POST(request: NextRequest) {
             );
         }
 
+        // Extract uploadedFileIds from body (client schema)
+        const uploadedFileIds: string[] = Array.isArray(body.uploadedFileIds) ? body.uploadedFileIds : [];
+
         const article = await articleService.createArticle(articleData);
+        if (uploadedFileIds.length > 0) {
+            const attachPromises = uploadedFileIds.map(fileId =>
+                uploadedFileService.attachToEntity(
+                    fileId,
+                    AttachableType.ARTICLE,
+                    article._id.toString(),
+                    session.user.id
+                )
+            );
+            await Promise.all(attachPromises);
+        }
 
         return NextResponse.json({
             message: 'Article created successfully',

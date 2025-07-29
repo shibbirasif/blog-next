@@ -22,14 +22,14 @@ export async function POST(request: NextRequest) {
 
         const formData = await request.formData();
         const file = formData.get('file') as File;
-        const altText = formData.get('altText') as string;
-        const articleId = formData.get('articleId') as string;
+        const altText = formData.get('altText') as (string | null | undefined);
+        const articleId = formData.get('articleId') as (string | null | undefined);
 
         // Validate input using Zod
         const validationResult = uploadFileSchema.safeParse({
             file,
-            altText,
-            articleId
+            altText: altText ?? undefined,
+            articleId: articleId ?? undefined
         });
 
         if (!validationResult.success) {
@@ -58,12 +58,12 @@ export async function POST(request: NextRequest) {
             fileType: FileType.IMAGE,
             mimeType: validatedData.file.type,
             size: validatedData.file.size,
-            path: '',
-            url: '',
+            path: 'pending',
+            url: 'pending',
             checksum,
             uploadedBy: session.user.id,
             attachableType: validatedData.articleId ? AttachableType.ARTICLE : undefined,
-            attachableId: validatedData.articleId || undefined,
+            attachableId: validatedData.articleId ? validatedData.articleId : undefined,
         };
 
         const uploadedFile = await uploadedFileService.uploadFile(fileData);

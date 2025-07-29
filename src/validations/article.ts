@@ -42,9 +42,13 @@ export const publishArticleSchema = z.object({
     isPublished: z.boolean()
 });
 
-export const clientCreateArticleSchema = createArticleSchema.omit({ author: true });
+export const clientCreateArticleSchema = createArticleSchema.omit({ author: true }).extend({
+    uploadedFileIds: z.array(z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid file ID format")).optional()
+});
 
-export const clientUpdateArticleSchema = updateArticleSchema.omit({ author: true, id: true });
+export const clientUpdateArticleSchema = updateArticleSchema.omit({ author: true, id: true }).extend({
+    uploadedFileIds: z.array(z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid file ID format")).optional()
+});
 
 export type CreateArticleInput = z.infer<typeof createArticleSchema>;
 export type UpdateArticleInput = z.infer<typeof updateArticleSchema>;

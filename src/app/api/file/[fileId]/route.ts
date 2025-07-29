@@ -13,9 +13,16 @@ export async function GET(
 
         const fileRecord = await uploadedFileService.findFile(fileId);
 
-        if (!fileRecord) {
+        if (!fileRecord || !fileRecord.path || !fileRecord.url) {
             return NextResponse.json(
-                { error: 'File not found' },
+                { error: 'File not found or incomplete metadata' },
+                { status: 404 }
+            );
+        }
+        // Check for placeholder values
+        if (fileRecord.path === 'pending' || fileRecord.url === 'pending') {
+            return NextResponse.json(
+                { error: 'File not ready yet' },
                 { status: 404 }
             );
         }
@@ -23,6 +30,12 @@ export async function GET(
         try {
             // Read file from private directory
             const filePath = join(PRIVATE_UPLOAD_DIR, fileId, fileRecord.filename);
+            if (!filePath || typeof filePath !== 'string') {
+                return NextResponse.json(
+                    { error: 'File path missing or invalid' },
+                    { status: 404 }
+                );
+            }
             const fileBuffer = await readFile(filePath);
 
             // Set appropriate headers
