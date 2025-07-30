@@ -119,7 +119,7 @@ export default async function ArticleDetailsPage({ params }: PageProps) {
                     {article.tags && article.tags.length > 0 && (
                         <div className="mb-4">
                             <div className="flex flex-wrap gap-2 justify-center">
-                                {article.tags.map((tag: TagDto) => (
+                                {article.tags.map((tag) => (
                                     <Badge
                                         key={tag.id}
                                         color="gray"

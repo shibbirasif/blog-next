@@ -23,7 +23,7 @@ export default function NavLinks() {
     return (
         <NavbarCollapse>
             {MAIN_NAV_ITEMS.map(async (item) => (
-                <NavbarLink key={item.href} href={item.href} active={await isActive(item.href)}>
+                <NavbarLink key={item.href} href={item.href} active={await isActive(item.href)} className="text-base">
                     {item.name}
                 </NavbarLink>
             ))}

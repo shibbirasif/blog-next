@@ -26,7 +26,7 @@ export default async function Topbar({ sidebarId }: TopbarProps) {
                             alt="Blog Next Logo"
                             width={32}
                             height={32}
-                            className="h-12 w-auto" 
+                            className="h-12 w-auto"
                         />
                         <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Blog Next</span>
                     </div>
@@ -47,13 +47,14 @@ export default async function Topbar({ sidebarId }: TopbarProps) {
                             <span className="block truncate text-sm font-medium">name@flowbite.com</span>
                         </DropdownHeader>
                         <DropdownItem><Link href={APP_ROUTES.USER.FEED(session.user.id)}>Dashboard</Link></DropdownItem>
-                        <DropdownItem>Settings</DropdownItem>
+                        <DropdownItem><Link href={APP_ROUTES.USER.ABOUT_ME(session.user.id)}>Settings</Link></DropdownItem>
                         <DropdownDivider />
                         <SignOut>Sign out</SignOut>
                     </Dropdown>
                     : <SignIn>Sign In</SignIn>}
                 <NavbarToggle className="mx-2" />
             </div>
+            
             <NavLinks />
         </Navbar>
     )

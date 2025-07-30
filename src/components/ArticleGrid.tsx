@@ -65,7 +65,7 @@ export default function ArticleGrid({
                                         {/* Author Info */}
                                         <div className="flex items-center gap-3 mb-3">
                                             <Avatar
-                                                img={article.author.image || undefined}
+                                                img={article.author.avatar || undefined}
                                                 size="sm"
                                                 rounded
                                                 alt={`${article.author.name} avatar`}

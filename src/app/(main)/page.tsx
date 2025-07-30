@@ -19,7 +19,7 @@ interface HomePageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export default async function Home({ searchParams }: HomePageProps) {
+export default async function HomePage({ searchParams }: HomePageProps) {
   try {
     // Await and extract search parameters
     const params = await searchParams;
