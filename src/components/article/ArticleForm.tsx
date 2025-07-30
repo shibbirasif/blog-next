@@ -38,7 +38,7 @@ export default function ArticleForm({
 }: ArticleFormProps) {
     const router = useRouter();
     const [selectedTags, setSelectedTags] = useState<string[]>(
-        article?.tags?.map(tag => tag._id) || defaultValues.tags || []
+        article?.tags?.map(tag => tag.id) || defaultValues.tags || []
     );
     const [tagSearchTerm, setTagSearchTerm] = useState('');
     const [showTagDropdown, setShowTagDropdown] = useState(false);
@@ -71,7 +71,7 @@ export default function ArticleForm({
 
     const filteredTags = availableTags.filter(tag =>
         tag.name.toLowerCase().includes(tagSearchTerm.toLowerCase()) &&
-        !selectedTags.includes(tag._id)
+        !selectedTags.includes(tag.id)
     );
 
     const handleTagToggle = (tagId: string) => {
@@ -83,7 +83,7 @@ export default function ArticleForm({
     };
 
     const getSelectedTagObjects = () => {
-        return availableTags.filter(tag => selectedTags.includes(tag._id));
+        return availableTags.filter(tag => selectedTags.includes(tag.id));
     };
 
     const handleSaveDraft = async (data: FormData) => {
@@ -215,10 +215,10 @@ export default function ArticleForm({
                         <div className="flex flex-wrap gap-2 mb-3">
                             {getSelectedTagObjects().map(tag => (
                                 <Badge
-                                    key={tag._id}
+                                    key={tag.id}
                                     color="gray"
                                     className="cursor-pointer"
-                                    onClick={() => handleTagToggle(tag._id)}
+                                    onClick={() => handleTagToggle(tag.id)}
                                 >
                                     <span className="flex items-center gap-1">
                                         <span
@@ -249,10 +249,10 @@ export default function ArticleForm({
                                 {filteredTags.length > 0 ? (
                                     filteredTags.map(tag => (
                                         <div
-                                            key={tag._id}
+                                            key={tag.id}
                                             className="px-3 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"
                                             onClick={() => {
-                                                handleTagToggle(tag._id);
+                                                handleTagToggle(tag.id);
                                                 setTagSearchTerm('');
                                             }}
                                         >

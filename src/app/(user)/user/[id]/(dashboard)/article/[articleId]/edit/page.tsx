@@ -33,7 +33,7 @@ export default async function EditArticlePage({ params }: PageProps) {
         }
 
         // Check if the user is the author of the article
-        if (article.author._id !== session.user.id) {
+        if (article.author.id !== session.user.id) {
             redirect('/404');
         }
 

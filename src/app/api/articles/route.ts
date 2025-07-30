@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
                 uploadedFileService.attachToEntity(
                     fileId,
                     AttachableType.ARTICLE,
-                    article._id.toString(),
+                    article.id,
                     session.user.id
                 )
             );
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({
             message: 'Article created successfully',
             article: {
-                _id: article._id,
+                id: article.id,
                 title: article.title,
                 slug: article.slug,
                 isPublished: article.isPublished,

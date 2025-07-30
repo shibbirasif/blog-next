@@ -112,13 +112,13 @@ export default function SearchFilter({ tags }: SearchFilterProps) {
                     <div className="flex flex-wrap gap-2 transition-all duration-300 ease-in-out">
                         {(showAllTags ? tags : tags.slice(0, PAGINATION.TAGS_INITIAL_LIMIT)).map((tag) => (
                             <Badge
-                                key={tag._id}
-                                color={selectedTags.includes(tag._id) ? "blue" : "gray"}
-                                className={`cursor-pointer transition-all duration-200 ${selectedTags.includes(tag._id)
+                                key={tag.id}
+                                color={selectedTags.includes(tag.id) ? "blue" : "gray"}
+                                className={`cursor-pointer transition-all duration-200 ${selectedTags.includes(tag.id)
                                     ? 'ring-2 ring-blue-300 scale-105'
                                     : 'hover:bg-gray-200 dark:hover:bg-gray-600 hover:scale-105'
                                     }`}
-                                onClick={() => handleTagToggle(tag._id)}
+                                onClick={() => handleTagToggle(tag.id)}
                             >
                                 <span className="flex items-center gap-1">
                                     {tag.color && (

@@ -21,13 +21,13 @@ export default function EditArticle({ article, availableTags, userId }: EditArti
     const [isOperating, setIsOperating] = useState(false);
 
     const handleSubmit = async (data: ClientUpdateArticleInput) => {
-        await apiFetcher(API_ROUTES.ARTICLE.UPDATE(article._id), {
+        await apiFetcher(API_ROUTES.ARTICLE.UPDATE(article.id), {
             method: 'PUT',
             body: data
         });
 
         setTimeout(() => {
-            router.push(APP_ROUTES.ARTICLE.SHOW(article.slug || article._id));
+            router.push(APP_ROUTES.ARTICLE.SHOW(article.slug || article.id));
         }, 1500);
     };
 
@@ -36,7 +36,7 @@ export default function EditArticle({ article, availableTags, userId }: EditArti
 
         try {
             const newPublishStatus = !article.isPublished;
-            await apiFetcher(API_ROUTES.ARTICLE.UPDATE(article._id), {
+            await apiFetcher(API_ROUTES.ARTICLE.UPDATE(article.id), {
                 method: 'PUT',
                 body: {
                     isPublished: newPublishStatus
@@ -60,7 +60,7 @@ export default function EditArticle({ article, availableTags, userId }: EditArti
         setIsOperating(true);
 
         try {
-            await apiFetcher(API_ROUTES.ARTICLE.DELETE(article._id), {
+            await apiFetcher(API_ROUTES.ARTICLE.DELETE(article.id), {
                 method: 'DELETE'
             });
 
@@ -76,7 +76,7 @@ export default function EditArticle({ article, availableTags, userId }: EditArti
     const defaultValues = {
         title: article.title,
         content: article.content,
-        tags: article.tags?.map(tag => tag._id) || [],
+        tags: article.tags?.map(tag => tag.id) || [],
         isPublished: article.isPublished
     };
 

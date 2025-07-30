@@ -41,7 +41,7 @@ export default async function ArticleDetailsPage({ params }: PageProps) {
         }
 
         const author = article.author;
-        const isAuthor = session?.user?.id === author._id.toString();
+        const isAuthor = session?.user?.id === author.id.toString();
 
         // JSON-LD structured data for SEO
         const jsonLd = generateArticleJsonLd(article);
@@ -108,8 +108,8 @@ export default async function ArticleDetailsPage({ params }: PageProps) {
                             {getStatusBadge()}
                             {isAuthor && (
                                 <EditEditButton
-                                    authorId={author._id}
-                                    articleId={article._id}
+                                    authorId={author.id}
+                                    articleId={article.id}
                                 />
                             )}
                         </div>
@@ -121,7 +121,7 @@ export default async function ArticleDetailsPage({ params }: PageProps) {
                             <div className="flex flex-wrap gap-2 justify-center">
                                 {article.tags.map((tag: TagDto) => (
                                     <Badge
-                                        key={tag._id}
+                                        key={tag.id}
                                         color="gray"
                                         className="cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                                     >

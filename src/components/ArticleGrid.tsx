@@ -49,7 +49,7 @@ export default function ArticleGrid({
                     {/* Articles Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                         {articles.map((article) => (
-                            <Link href={APP_ROUTES.ARTICLE.SHOW(article.slug || article._id)} key={article._id}>
+                            <Link href={APP_ROUTES.ARTICLE.SHOW(article.slug || article.id)} key={article.id}>
                                 <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer">
                                     <article className="flex flex-col h-full">
                                         {/* Article Title */}
@@ -84,7 +84,7 @@ export default function ArticleGrid({
                                         {article.tags && article.tags.length > 0 && (
                                             <div className="flex flex-wrap gap-1 mb-2" role="list">
                                                 {article.tags.slice(0, 3).map((tag) => (
-                                                    <Badge key={tag._id} color="gray" size="sm" role="listitem">
+                                                    <Badge key={tag.id} color="gray" size="sm" role="listitem">
                                                         <span className="flex items-center gap-1">
                                                             {tag.color && (
                                                                 <span

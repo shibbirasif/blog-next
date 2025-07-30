@@ -31,7 +31,7 @@ export default function AuthorSearchDropdown({
     // Find selected author name when value changes
     useEffect(() => {
         if (value && authors.length > 0) {
-            const selectedAuthor = authors.find(author => author._id === value);
+            const selectedAuthor = authors.find(author => author.id === value);
             setSelectedAuthorName(selectedAuthor?.name || '');
         } else if (!value) {
             setSelectedAuthorName('');
@@ -87,7 +87,7 @@ export default function AuthorSearchDropdown({
     };
 
     const handleAuthorSelect = (author: UserDto) => {
-        onChange(author._id);
+        onChange(author.id);
         setSelectedAuthorName(author.name);
         setIsOpen(false);
         setSearchTerm('');
@@ -157,8 +157,8 @@ export default function AuthorSearchDropdown({
                         {!loading && authors.length > 0 && (
                             authors.map((author) => (
                                 <div
-                                    key={author._id}
-                                    className={`px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 ${author._id === value
+                                    key={author.id}
+                                    className={`px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 ${author.id === value
                                         ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
                                         : 'text-gray-900 dark:text-white'
                                         }`}

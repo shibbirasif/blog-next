@@ -1,7 +1,7 @@
 import { ITag } from "@/models/Tag";
 
 export interface TagDto {
-    _id: string;
+    id: string;
     name: string;
     description?: string;
     color?: string;
@@ -12,7 +12,7 @@ export interface TagDto {
 
 export function buildTagDto(tagDoc: ITag): TagDto {
     return {
-        _id: tagDoc._id.toString(),
+        id: tagDoc._id.toString(),
         name: tagDoc.name,
         description: tagDoc.description || '',
         color: tagDoc.color || '',

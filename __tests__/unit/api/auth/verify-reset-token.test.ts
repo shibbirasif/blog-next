@@ -22,7 +22,7 @@ describe("GET /api/auth/verify-reset-token/[token]", () => {
     const mockNextResponseJson = NextResponse.json as jest.MockedFunction<typeof NextResponse.json>;
 
     const mockUser = {
-        _id: "user123",
+        id: "user123",
         email: "test@example.com",
         name: "Test User",
         isActive: true,
@@ -43,7 +43,7 @@ describe("GET /api/auth/verify-reset-token/[token]", () => {
     describe("Success Cases", () => {
         it("should return success for valid token", async () => {
             const token = "valid-reset-token";
-            const params = { params: { token } };
+            const params = { params: Promise.resolve({ token }) };
             mockValidateResetToken.mockResolvedValue(mockUser);
 
             const response = await GET(mockRequest as NextRequest, params);
@@ -53,7 +53,7 @@ describe("GET /api/auth/verify-reset-token/[token]", () => {
                 {
                     message: 'Reset token is valid',
                     user: {
-                        id: mockUser._id,
+                        id: mockUser.id,
                         email: mockUser.email,
                         name: mockUser.name,
                     }
@@ -64,10 +64,10 @@ describe("GET /api/auth/verify-reset-token/[token]", () => {
 
         it("should handle user with all required fields", async () => {
             const token = "valid-token";
-            const params = { params: { token } };
+            const params = { params: Promise.resolve({ token }) };
             const fullUser = {
                 ...mockUser,
-                _id: "different-id",
+                id: "different-id",
                 email: "different@example.com",
                 name: "Different User",
             };
@@ -80,7 +80,7 @@ describe("GET /api/auth/verify-reset-token/[token]", () => {
                 {
                     message: 'Reset token is valid',
                     user: {
-                        id: fullUser._id,
+                        id: fullUser.id,
                         email: fullUser.email,
                         name: fullUser.name,
                     }
@@ -93,7 +93,7 @@ describe("GET /api/auth/verify-reset-token/[token]", () => {
     describe("Invalid Token Cases", () => {
         it("should return error for invalid token", async () => {
             const token = "invalid-token";
-            const params = { params: { token } };
+            const params = { params: Promise.resolve({ token }) };
             mockValidateResetToken.mockResolvedValue(null);
 
             const response = await GET(mockRequest as NextRequest, params);
@@ -107,7 +107,7 @@ describe("GET /api/auth/verify-reset-token/[token]", () => {
 
         it("should return error for expired token", async () => {
             const token = "expired-token";
-            const params = { params: { token } };
+            const params = { params: Promise.resolve({ token }) };
             mockValidateResetToken.mockResolvedValue(null);
 
             const response = await GET(mockRequest as NextRequest, params);
@@ -120,7 +120,7 @@ describe("GET /api/auth/verify-reset-token/[token]", () => {
         });
 
         it("should return error for missing token", async () => {
-            const params = { params: { token: "" } };
+            const params = { params: Promise.resolve({ token: "" }) };
 
             const response = await GET(mockRequest as NextRequest, params);
 
@@ -132,7 +132,7 @@ describe("GET /api/auth/verify-reset-token/[token]", () => {
         });
 
         it("should return error for undefined token", async () => {
-            const params = { params: { token: undefined as any } };
+            const params = { params: Promise.resolve({ token: undefined as any }) };
 
             const response = await GET(mockRequest as NextRequest, params);
 
@@ -147,7 +147,7 @@ describe("GET /api/auth/verify-reset-token/[token]", () => {
     describe("Error Handling", () => {
         it("should handle authService errors", async () => {
             const token = "valid-token";
-            const params = { params: { token } };
+            const params = { params: Promise.resolve({ token }) };
             mockValidateResetToken.mockRejectedValue(new Error("Database error"));
 
             const response = await GET(mockRequest as NextRequest, params);
@@ -160,7 +160,7 @@ describe("GET /api/auth/verify-reset-token/[token]", () => {
 
         it("should handle unknown errors", async () => {
             const token = "valid-token";
-            const params = { params: { token } };
+            const params = { params: Promise.resolve({ token }) };
             mockValidateResetToken.mockRejectedValue("Unknown error");
 
             const response = await GET(mockRequest as NextRequest, params);
@@ -175,7 +175,7 @@ describe("GET /api/auth/verify-reset-token/[token]", () => {
     describe("Edge Cases", () => {
         it("should handle token with special characters", async () => {
             const token = "token-with-special-chars!@#$%";
-            const params = { params: { token } };
+            const params = { params: Promise.resolve({ token }) };
             mockValidateResetToken.mockResolvedValue(mockUser);
 
             const response = await GET(mockRequest as NextRequest, params);
@@ -185,7 +185,7 @@ describe("GET /api/auth/verify-reset-token/[token]", () => {
                 {
                     message: 'Reset token is valid',
                     user: {
-                        id: mockUser._id,
+                        id: mockUser.id,
                         email: mockUser.email,
                         name: mockUser.name,
                     }
@@ -196,7 +196,7 @@ describe("GET /api/auth/verify-reset-token/[token]", () => {
 
         it("should handle very long token", async () => {
             const token = "a".repeat(1000);
-            const params = { params: { token } };
+            const params = { params: Promise.resolve({ token }) };
             mockValidateResetToken.mockResolvedValue(mockUser);
 
             const response = await GET(mockRequest as NextRequest, params);
@@ -206,7 +206,7 @@ describe("GET /api/auth/verify-reset-token/[token]", () => {
                 {
                     message: 'Reset token is valid',
                     user: {
-                        id: mockUser._id,
+                        id: mockUser.id,
                         email: mockUser.email,
                         name: mockUser.name,
                     }
@@ -217,7 +217,7 @@ describe("GET /api/auth/verify-reset-token/[token]", () => {
 
         it("should only return safe user data", async () => {
             const token = "valid-token";
-            const params = { params: { token } };
+            const params = { params: Promise.resolve({ token }) };
             const userWithSensitiveData = {
                 ...mockUser,
                 password: "secret-password",
@@ -233,7 +233,7 @@ describe("GET /api/auth/verify-reset-token/[token]", () => {
                 {
                     message: 'Reset token is valid',
                     user: {
-                        id: userWithSensitiveData._id,
+                        id: userWithSensitiveData.id,
                         email: userWithSensitiveData.email,
                         name: userWithSensitiveData.name,
                     }
@@ -251,7 +251,7 @@ describe("GET /api/auth/verify-reset-token/[token]", () => {
 
         it("should handle whitespace in token", async () => {
             const token = "  valid-token  ";
-            const params = { params: { token } };
+            const params = { params: Promise.resolve({ token }) };
             mockValidateResetToken.mockResolvedValue(mockUser);
 
             const response = await GET(mockRequest as NextRequest, params);

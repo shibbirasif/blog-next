@@ -28,7 +28,7 @@ export async function GET(_: NextRequest, { params }: RouteParams) {
         if (!article.isPublished) {
             const session = await auth();
 
-            if (!session?.user || session.user.id !== article.author._id.toString()) {
+            if (!session?.user || session.user.id !== article.author.id.toString()) {
                 return NextResponse.json(
                     { error: 'Article not found' },
                     { status: 404 }

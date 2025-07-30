@@ -2,7 +2,7 @@ import { IUser } from "@/models/User";
 import UserRole from "@/models/UserRole";
 
 export interface UserDto {
-    _id: string;
+    id: string;
     name: string;
     email: string;
     isActive: boolean;
@@ -17,7 +17,7 @@ export interface UserDto {
 
 export function buildUserDto(userDoc: IUser): UserDto {
     return {
-        _id: userDoc._id.toString(),
+        id: userDoc._id.toString(),
         name: userDoc.name,
         email: userDoc.email,
         isActive: userDoc.isActive,
