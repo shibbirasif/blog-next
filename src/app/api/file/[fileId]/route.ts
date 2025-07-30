@@ -4,12 +4,13 @@ import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { PRIVATE_UPLOAD_DIR } from '@/constants/uploads';
 
-export async function GET(
-    request: NextRequest,
-    { params }: { params: { fileId: string } }
-) {
+interface RouteParams {
+    params: Promise<{ fileId: string }>;
+}
+
+export async function GET(request: NextRequest, { params }: RouteParams) {
     try {
-        const { fileId } = params;
+        const { fileId } = await params;
 
         const fileRecord = await uploadedFileService.findFile(fileId);
 

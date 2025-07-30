@@ -38,6 +38,7 @@
     "clsx": "^2.1.1",
     "emoji-picker-react": "^4.13.1",
     "flowbite-react": "^0.11.9",
+    "html-parse-stringify": "^3.0.1",
     "html-to-text": "^9.0.5",
     "mongoose": "^8.16.1",
     "next": "15.3.4",

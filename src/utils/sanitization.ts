@@ -1,4 +1,5 @@
 import sanitizeHtml from 'sanitize-html';
+import parse from 'html-parse-stringify';
 
 // Sanitization rules for plain text fields (no HTML allowed)
 export const plainTextSanitizationOptions: sanitizeHtml.IOptions = {
@@ -20,7 +21,7 @@ export const htmlContentSanitizationOptions: sanitizeHtml.IOptions = {
     ],
     allowedAttributes: {
         'a': ['href', 'target'],
-        'img': ['src', 'alt', 'width', 'height'],
+        'img': ['src', 'alt', 'width', 'height',  'style'],
         '*': ['class']
     },
     allowedSchemes: ['http', 'https', 'mailto'],
@@ -44,5 +45,26 @@ export const isPlainTextValid = (text: string): boolean => {
 
 export const isHtmlContentValid = (content: string): boolean => {
     const sanitized = sanitizeHtml(content, htmlContentSanitizationOptions);
-    return content === sanitized;
+
+    const astOriginal = parse.parse(content);
+    const astSanitized = parse.parse(sanitized);
+
+    function minifyStyleAttributes(ast: any[]): any[] {
+        return ast.map(node => {
+            if (node.type === 'tag' && node.name === 'img' && node.attrs && node.attrs.style) {
+                node.attrs.style = node.attrs.style
+                    .replace(/\s*:\s*/g, ':')
+                    .replace(/\s*;\s*/g, ';')
+                    .replace(/;\s*$/g, '');
+            }
+            if (node.children && node.children.length > 0) {
+                node.children = minifyStyleAttributes(node.children);
+            }
+            return node;
+        });
+    }
+    const astOriginalMin = minifyStyleAttributes(astOriginal);
+    const astSanitizedMin = minifyStyleAttributes(astSanitized);
+
+    return JSON.stringify(astOriginalMin) === JSON.stringify(astSanitizedMin);
 };
