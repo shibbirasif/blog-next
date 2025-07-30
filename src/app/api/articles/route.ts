@@ -62,6 +62,7 @@ export async function POST(request: NextRequest) {
             article: {
                 _id: article._id,
                 title: article.title,
+                slug: article.slug,
                 isPublished: article.isPublished,
                 createdAt: article.createdAt
             }

@@ -24,17 +24,19 @@ export default function NewArticle({ availableTags, userId }: NewArticleProps) {
         isPublished: false
     };
 
-    const handleSubmit = async (data: ClientCreateArticleInput | ClientUpdateArticleInput) => {
-        const article = await apiFetcher(API_ROUTES.ARTICLE.CREATE(), {
+    const handleSubmit = async (formData: ClientCreateArticleInput | ClientUpdateArticleInput) => {
+        const response = await apiFetcher(API_ROUTES.ARTICLE.CREATE(), {
             method: 'POST',
             body: {
-                ...data,
+                ...formData,
                 author: userId
             }
-        }) as ArticleDto;
+        }) as { article: ArticleDto };
+
+        const article = response.article;
 
         setTimeout(() => {
-            router.push(APP_ROUTES.ARTICLE.SHOW(article._id));
+            router.push(APP_ROUTES.ARTICLE.SHOW(article.slug));
             router.refresh();
         }, 1500);
     };

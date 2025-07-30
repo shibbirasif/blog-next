@@ -51,7 +51,7 @@ export default function ArticleForm({
         register,
         handleSubmit,
         control,
-        formState: { errors, isSubmitting, touchedFields, submitCount },
+        formState: { errors, isSubmitting },
         setValue
     } = useForm({
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -168,6 +168,7 @@ export default function ArticleForm({
                     <TextInput
                         id="title"
                         {...register('title')}
+                        maxLength={200}
                         required={false}
                         placeholder="Enter article title..."
                         disabled={isLoading}

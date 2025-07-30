@@ -11,12 +11,10 @@ export async function GET(_: NextRequest, { params }: RouteParams) {
     try {
         const { id } = await params;
         console.log('Fetching article with ID:', id);
-        let article;
 
-        try {
-            // Try to fetch by slug first (for SEO-friendly routing)
-            article = await articleService.getArticleBySlug(id);
-        } catch {
+        let article = await articleService.getArticleBySlug(id);
+        if (!article) {
+            console.warn('Article not found by slug, trying by ID');
             article = await articleService.getArticleById(id);
         }
 
