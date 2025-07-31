@@ -47,7 +47,7 @@ export default async function Topbar({ sidebarId }: TopbarProps) {
                             <span className="block truncate text-sm font-medium">name@flowbite.com</span>
                         </DropdownHeader>
                         <DropdownItem><Link href={APP_ROUTES.USER.FEED(session.user.id)}>Dashboard</Link></DropdownItem>
-                        <DropdownItem><Link href={APP_ROUTES.USER.EDIT_PROFILE(session.user.id)}>Settings</Link></DropdownItem>
+                        <DropdownItem><Link href={APP_ROUTES.USER.PROFILE_EDIT(session.user.id)}>Settings</Link></DropdownItem>
                         <DropdownDivider />
                         <SignOut>Sign out</SignOut>
                     </Dropdown>
