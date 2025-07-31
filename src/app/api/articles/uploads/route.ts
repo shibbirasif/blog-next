@@ -6,7 +6,7 @@ import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import crypto from 'crypto';
 import { PRIVATE_UPLOAD_DIR } from '@/constants/uploads';
-import { uploadFileSchema } from '@/validations/upload';
+import { uploadArticleFileSchema } from '@/validations/upload';
 import { getUploadedFileUrl } from '@/utils/fileUpload';
 
 export async function POST(request: NextRequest) {
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
         const articleId = formData.get('articleId') as (string | null | undefined);
 
         // Validate input using Zod
-        const validationResult = uploadFileSchema.safeParse({
+        const validationResult = uploadArticleFileSchema.safeParse({
             file,
             altText: altText ?? undefined,
             articleId: articleId ?? undefined

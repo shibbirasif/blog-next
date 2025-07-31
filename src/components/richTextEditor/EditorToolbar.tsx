@@ -29,7 +29,7 @@ import {
 import dynamic from 'next/dynamic';
 import { Theme } from 'emoji-picker-react';
 import { ImageUploadHandler } from './ImageUploadHandler';
-import { uploadFileSchema } from '@/validations/upload';
+import { uploadArticleFileSchema } from '@/validations/upload';
 
 
 const EmojiPicker = dynamic(() => import('emoji-picker-react'), { ssr: false });
@@ -75,7 +75,7 @@ export default function EditorToolbar({ editor, imageUploadConfig, onImageUpload
         setIsUploading(true);
         setUploadError(null);
 
-        const result = uploadFileSchema.safeParse(file);
+        const result = uploadArticleFileSchema.safeParse(file);
         if (!result.success) {
             setUploadError(result.error.errors[0]?.message || 'Invalid file');
             setIsUploading(false);

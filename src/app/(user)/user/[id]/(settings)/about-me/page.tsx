@@ -58,14 +58,6 @@ export default function AboutMePage() {
         }
     };
 
-    // Add a style for rounded cropper preview
-    const cropperPreviewStyle = {
-        borderRadius: '50%',
-        overflow: 'hidden',
-        width: '100%',
-        height: '100%',
-    };
-
     return (
         <div className="space-y-6">
             <H1 className='text-center mb-6'>About Me</H1>
@@ -80,17 +72,17 @@ export default function AboutMePage() {
             <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Avatar */}
                 <div className="flex flex-col items-center gap-2">
-                    <div className="relative inline-flex items-center justify-center w-36 h-36 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+                    <div className="relative inline-flex items-center justify-center w-36 h-36 bg-gray-100 rounded-full dark:bg-gray-600">
                         {avatar ? (
                             <img src={avatar} alt="Avatar" className="w-full h-full object-cover" />
                         ) : (
                             <span className="font-medium text-gray-600 dark:text-gray-300 text-8xl">
-                                {name ? name[0].toUpperCase() : "?"}
+                                {name ? name[0].toUpperCase() : "U"}
                             </span>
                         )}
                         {/* Pencil icon overlay */}
-                        <label className="absolute bottom-2 right-2 bg-white rounded-full p-2 shadow cursor-pointer hover:bg-gray-200">
-                            <FaPencilAlt className="text-gray-600" />
+                        <label className="absolute top-2 right-2 rounded-full p-2 shadow cursor-pointer focus:outline-none focus:ring-4 bg-blue-700 text-white hover:bg-blue-800 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                            <FaPencilAlt className="text-gray-100" />
                             <input
                                 ref={fileInputRef}
                                 type="file"
@@ -105,7 +97,7 @@ export default function AboutMePage() {
                     {showCropper && imageSrc && (
                         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                             <div className="bg-white p-4 rounded shadow-lg">
-                                <div className="relative w-72 h-72" style={cropperPreviewStyle}>
+                                <div className="relative w-72 h-72">
                                     <Cropper
                                         image={imageSrc}
                                         crop={crop}

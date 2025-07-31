@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { ALLOWED_IMAGE_TYPES, MAX_FILE_SIZE } from '../constants/uploads';
 
-export const uploadFileSchema = z.object({
+const uploadFileSchema = z.object({
     file: z
         .instanceof(File)
         .refine((file) => file.size > 0, 'File cannot be empty')
@@ -10,8 +10,12 @@ export const uploadFileSchema = z.object({
             (file) => ALLOWED_IMAGE_TYPES.includes(file.type),
             'Invalid file type. Only images are allowed.'
         ),
+});
+
+export const uploadArticleFileSchema = uploadFileSchema.extend({
     altText: z.string().optional(),
     articleId: z.string().optional()
 });
 
-export type UploadFileInput = z.infer<typeof uploadFileSchema>;
+
+export type UploadArticleFileInput = z.infer<typeof uploadArticleFileSchema>;
