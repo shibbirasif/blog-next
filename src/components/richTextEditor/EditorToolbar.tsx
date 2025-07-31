@@ -12,7 +12,8 @@ import {
     ModalHeader,
     ModalBody,
     ModalFooter,
-    Alert
+    Alert,
+    FileInput
 } from 'flowbite-react';
 import {
     FaBold,
@@ -28,6 +29,7 @@ import {
 import dynamic from 'next/dynamic';
 import { Theme } from 'emoji-picker-react';
 import { ImageUploadHandler } from './ImageUploadHandler';
+import { uploadFileSchema } from '@/validations/upload';
 
 
 const EmojiPicker = dynamic(() => import('emoji-picker-react'), { ssr: false });
@@ -73,9 +75,9 @@ export default function EditorToolbar({ editor, imageUploadConfig, onImageUpload
         setIsUploading(true);
         setUploadError(null);
 
-        const validation = ImageUploadHandler.validateFile(file);
-        if (!validation.valid) {
-            setUploadError(validation.error || 'Invalid file');
+        const result = uploadFileSchema.safeParse(file);
+        if (!result.success) {
+            setUploadError(result.error.errors[0]?.message || 'Invalid file');
             setIsUploading(false);
             return;
         }
@@ -253,9 +255,8 @@ export default function EditorToolbar({ editor, imageUploadConfig, onImageUpload
                         {/* File Upload */}
                         {uploadMode === 'upload' && (
                             <div>
-                                <input
+                                <FileInput
                                     ref={fileInputRef}
-                                    type="file"
                                     accept="image/*"
                                     onChange={e => {
                                         const file = e.target.files?.[0];
@@ -264,7 +265,6 @@ export default function EditorToolbar({ editor, imageUploadConfig, onImageUpload
                                             setAltText(nameWithoutExt);
                                         }
                                     }}
-                                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                                     disabled={isUploading}
                                 />
                                 <TextInput
@@ -275,19 +275,7 @@ export default function EditorToolbar({ editor, imageUploadConfig, onImageUpload
                                     className="mt-2"
                                     disabled={isUploading}
                                 />
-                                <Button
-                                    color="blue"
-                                    className="mt-2"
-                                    onClick={async () => {
-                                        if (!fileInputRef.current?.files?.[0]) return;
-                                        await handleFileUpload({
-                                            target: fileInputRef.current
-                                        } as React.ChangeEvent<HTMLInputElement>);
-                                    }}
-                                    disabled={isUploading || !fileInputRef.current?.files?.[0]}
-                                >
-                                    Upload
-                                </Button>
+
                                 <p className="mt-2 text-sm text-gray-500">
                                     Supported formats: JPEG, PNG, GIF, WebP (max 5MB)
                                 </p>
@@ -304,12 +292,27 @@ export default function EditorToolbar({ editor, imageUploadConfig, onImageUpload
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    <Button
-                        onClick={insertImage}
-                        disabled={isUploading || (uploadMode === 'url' && !imageUrl)}
-                    >
-                        Insert
-                    </Button>
+                    {uploadMode === 'upload' ? (
+                        <Button
+                            onClick={async () => {
+                                if (!fileInputRef.current?.files?.[0]) return;
+                                await handleFileUpload({
+                                    target: fileInputRef.current
+                                } as React.ChangeEvent<HTMLInputElement>);
+                            }}
+                            disabled={isUploading || !fileInputRef.current?.files?.[0]}
+                        >
+                            Upload
+                        </Button>
+                    ) : (
+                        <Button
+                            onClick={insertImage}
+                            disabled={isUploading || (uploadMode === 'url' && !imageUrl)}
+                        >
+                            Insert
+                        </Button>
+                    )}
+
                     <Button
                         color="gray"
                         onClick={() => { setImageModalOpen(false); resetImageModal(); }}
