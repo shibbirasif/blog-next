@@ -1,8 +1,9 @@
-// auth.ts
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import UserRole from '@/models/UserRole'; // Import UserRole enum for session if needed
+import UserRole from '@/models/UserRole';
 import { apiFetcher } from '@/utils/apiFetcher';
+import { API_ROUTES } from "@/constants/apiRoutes";
+import { UserDto } from "@/dtos/UserDto";
 
 
 export interface AuthUser {
@@ -33,8 +34,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 }
 
                 try {
-                    const baseUrl = process.env.BASE_URL || "http://localhost:3000";
-                    return await apiFetcher<AuthUser>(`${baseUrl}/api/auth/signin`, {
+                    return await apiFetcher<AuthUser>(API_ROUTES.AUTH.SIGN_IN(true), {
                         method: 'POST',
                         body: { email, password }
                     });
@@ -61,13 +61,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             return token;
         },
         async session({ session, token }) {
-            // Add custom data from JWT to session
             session.user.id = token.id as string;
             session.user.email = token.email as string;
             session.user.name = token.name as string;
             session.user.image = token.picture as string | null | undefined;
             session.user.roles = token.roles as UserRole[];
-            session.user.bio = token.bio as string | null;
+            session.user.bio = token.bio as string | undefined;
             session.user.isActive = token.isActive as boolean;
             session.user.isEmailVerified = token.isEmailVerified as boolean;
             return session;
@@ -75,25 +74,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     // Optional: Configure pages for redirection
     pages: {
-        signIn: '/signin', // Your custom sign-in page
-        error: '/error',   // Your custom error page (e.g., for login failures)
+        signIn: '/signin', // custom sign-in page
+        error: '/error',   // custom error page (e.g., for login failures)
     },
 });
 
-// Extend NextAuth's types for TypeScript if you added custom fields to session/JWT
+// Extend NextAuth's types for TypeScript for added custom fields to session/JWT
 declare module "next-auth" {
     interface Session {
-        user: {
-            id: string;
-            name?: string | null;
-            email?: string | null;
-            image?: string | null;
-            roles: UserRole[];
-            bio?: string | null;
-            isActive: boolean;
-            isEmailVerified: boolean;
-        };
+        user: UserDto
     }
+    
     interface JWT {
         id: string;
         roles: UserRole[];

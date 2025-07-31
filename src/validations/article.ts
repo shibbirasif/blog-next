@@ -1,4 +1,4 @@
-import z from "zod";
+import { z } from "zod";
 import { isPlainTextValid, isHtmlContentValid } from '@/utils/sanitization';
 
 export const createArticleSchema = z.object({

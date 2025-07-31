@@ -16,7 +16,7 @@ export const APP_ROUTES = {
         },
         MY_ARTICLES: (id: string | undefined) => id ? `/user/${id}/my-articles` : '#',
         PREFERENCES: (id: string | undefined) => id ? `/user/${id}/preferences` : '#',
-        ABOUT_ME: (id: string | undefined) => id ? `/user/${id}/about-me` : '#',
+        EDIT_PROFILE: (id: string | undefined) => id ? `/user/${id}/edit-profile` : '#',
         CHANGE_PASSWORD: (id: string | undefined) => id ? `/user/${id}/change-password` : '#',
     },
     ARTICLE: {

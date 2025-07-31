@@ -29,7 +29,7 @@ import {
 import dynamic from 'next/dynamic';
 import { Theme } from 'emoji-picker-react';
 import { ImageUploadHandler } from './ImageUploadHandler';
-import { uploadArticleFileSchema } from '@/validations/upload';
+import { uploadArticleFileSchema } from '@/validations/articleFileUpload';
 
 
 const EmojiPicker = dynamic(() => import('emoji-picker-react'), { ssr: false });

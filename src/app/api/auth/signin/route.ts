@@ -1,4 +1,3 @@
-// app/api/auth/login/route.ts
 import { NextResponse } from 'next/server';
 import { dbConnect } from '@/lib/db';
 import { authService } from '@/services/authService';
@@ -19,7 +18,7 @@ export async function POST(request: Request) {
         }
 
         const authenticatedUser = {
-            id: user._id.toString(),
+            id: user.id.toString(),
             email: user.email,
             name: user.name,
             image: user.avatar || null,
@@ -28,7 +27,6 @@ export async function POST(request: Request) {
             isEmailVerified: user.isEmailVerified,
         };
 
-        console.log('authenticatedUser', authenticatedUser);
         return NextResponse.json(authenticatedUser, { status: 200 });
 
     } catch (error) {

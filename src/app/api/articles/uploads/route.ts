@@ -6,7 +6,7 @@ import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import crypto from 'crypto';
 import { PRIVATE_UPLOAD_DIR } from '@/constants/uploads';
-import { uploadArticleFileSchema } from '@/validations/upload';
+import { uploadArticleFileSchema } from '@/validations/articleFileUpload';
 import { getUploadedFileUrl } from '@/utils/fileUpload';
 
 export async function POST(request: NextRequest) {

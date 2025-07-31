@@ -16,9 +16,9 @@ export default function UserSettingsSidebar() {
             <SidebarItems>
                 <SidebarItemGroup>
                     <SidebarItem
-                        href={APP_ROUTES.USER.ABOUT_ME(session?.user?.id)}
+                        href={APP_ROUTES.USER.EDIT_PROFILE(session?.user?.id)}
                         icon={RxAvatar}
-                        active={pathname === APP_ROUTES.USER.ABOUT_ME(session?.user?.id)}
+                        active={pathname === APP_ROUTES.USER.EDIT_PROFILE(session?.user?.id)}
                     >
                         About Me
                     </SidebarItem>

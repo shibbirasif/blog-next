@@ -1,4 +1,5 @@
-import z from "zod";
+import { z } from "zod";
+import { userNameSchema } from './userName';
 
 export const loginSchema = z.object({
     email: z.string().email("Invalid email format"),
@@ -6,9 +7,7 @@ export const loginSchema = z.object({
 });
 
 export const serverSignupSchema = z.object({
-    name: z.string()
-        .min(1, "You must put your name.")
-        .max(100, "Name cannot exceed 100 characters"),
+    name: userNameSchema.shape.name,
     email: z.string().email("Invalid email format"),
     password: z.string().min(8, "Password must be at least 8 characters").max(50, "Password cannot exceed 50 characters"),
 });

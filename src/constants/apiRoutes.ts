@@ -9,6 +9,8 @@ const buildApiUrl = (path: string, isServerComponent = false) => {
 
 export const API_ROUTES = {
     AUTH: {
+        SIGN_IN: (isServerComponent = false) => buildApiUrl('/api/auth/signin', isServerComponent),
+        SIGN_OUT: (isServerComponent = false) => buildApiUrl('/api/auth/signout', isServerComponent),
     },
     ARTICLE: {
         SHOW: (id: string, isServerComponent = false) => buildApiUrl(`/api/articles/${id}`, isServerComponent),
