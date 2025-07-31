@@ -6,10 +6,11 @@ import { ProfileEditInput, profileEditSchema } from "@/validations/profileEdit";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Alert, TextInput, Textarea, Button, Label } from "flowbite-react";
 import { useRef, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { FaPencilAlt } from "react-icons/fa";
 import Cropper from "react-easy-crop";
 import { getCroppedImg } from "@/utils/imageCropper";
+import RichTextEditor from "../richTextEditor/RichTextEditor";
 
 interface EditProfileFormProps {
     user: UserDto;
@@ -21,10 +22,12 @@ export default function EditProfileForm({ user }: EditProfileFormProps) {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [uploadedFileIds, setUploadedFileIds] = useState<string[]>([]);
 
     const {
         register,
         handleSubmit,
+        control,
         setValue,
         watch,
         formState: { errors, isSubmitting }
@@ -186,13 +189,17 @@ export default function EditProfileForm({ user }: EditProfileFormProps) {
                 {/* Bio */}
                 <div>
                     <Label htmlFor="bio" className="mb-2 block">Bio</Label>
-                    <Textarea
-                        id="bio"
-                        {...register("bio")}
-                        placeholder="Your bio"
-                        disabled={isSubmitting}
-                        color={errors.bio ? "failure" : "gray"}
-                        rows={4}
+                    <Controller
+                        name="bio"
+                        control={control}
+                        render={({ field }) => (
+                            <RichTextEditor
+                                content={field.value || ''}
+                                onContentChange={field.onChange}
+                                hasError={!!errors.bio}
+                                onImageUpload={fileId => setUploadedFileIds(ids => [...ids, fileId])}
+                            />
+                        )}
                     />
                     {errors.bio && <span className="text-red-600 text-sm">{errors.bio.message}</span>}
                 </div>

@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { uploadedFileService } from '@/services/UploadedFileService';
-import { AttachableType, FileType } from '@/models/UploadedFile';
+import { FileType } from '@/models/UploadedFile';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import crypto from 'crypto';
 import { PRIVATE_UPLOAD_DIR } from '@/constants/uploads';
-import { uploadArticleFileSchema } from '@/validations/articleFileUpload';
+import { fileUploadSchema } from '@/validations/fileUpload';
 import { getUploadedFileUrl } from '@/utils/fileUpload';
 
 export async function POST(request: NextRequest) {
@@ -23,13 +23,11 @@ export async function POST(request: NextRequest) {
         const formData = await request.formData();
         const file = formData.get('file') as File;
         const altText = formData.get('altText') as (string | null | undefined);
-        const articleId = formData.get('articleId') as (string | null | undefined);
 
         // Validate input using Zod
-        const validationResult = uploadArticleFileSchema.safeParse({
+        const validationResult = fileUploadSchema.safeParse({
             file,
             altText: altText ?? undefined,
-            articleId: articleId ?? undefined
         });
 
         if (!validationResult.success) {
@@ -62,8 +60,6 @@ export async function POST(request: NextRequest) {
             url: 'pending',
             checksum,
             uploadedBy: session.user.id,
-            attachableType: validatedData.articleId ? AttachableType.ARTICLE : undefined,
-            attachableId: validatedData.articleId ? validatedData.articleId : undefined,
         };
 
         const uploadedFile = await uploadedFileService.uploadFile(fileData);

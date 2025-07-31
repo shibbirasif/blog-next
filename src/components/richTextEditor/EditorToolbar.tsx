@@ -29,7 +29,8 @@ import {
 import dynamic from 'next/dynamic';
 import { Theme } from 'emoji-picker-react';
 import { ImageUploadHandler } from './ImageUploadHandler';
-import { uploadArticleFileSchema } from '@/validations/articleFileUpload';
+import { fileUploadSchema } from '@/validations/fileUpload';
+import { API_ROUTES } from '@/constants/apiRoutes';
 
 
 const EmojiPicker = dynamic(() => import('emoji-picker-react'), { ssr: false });
@@ -75,7 +76,7 @@ export default function EditorToolbar({ editor, imageUploadConfig, onImageUpload
         setIsUploading(true);
         setUploadError(null);
 
-        const result = uploadArticleFileSchema.safeParse(file);
+        const result = fileUploadSchema.safeParse(file);
         if (!result.success) {
             setUploadError(result.error.errors[0]?.message || 'Invalid file');
             setIsUploading(false);
@@ -83,7 +84,7 @@ export default function EditorToolbar({ editor, imageUploadConfig, onImageUpload
         }
 
         try {
-            const uploadUrl = imageUploadConfig?.uploadUrl || '/api/articles/uploads';
+            const uploadUrl = imageUploadConfig?.uploadUrl || API_ROUTES.UPLOAD();
             const result = await ImageUploadHandler.uploadToServer(file, uploadUrl, altText);
             if (result.success && result.src && result.uploadedFileId) {
                 editor?.chain().focus().setImage({ src: result.src, alt: altText }).run();

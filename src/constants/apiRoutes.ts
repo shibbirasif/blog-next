@@ -27,5 +27,6 @@ export const API_ROUTES = {
     },
     USERS: {
         LIST: (isServerComponent = false) => buildApiUrl('/api/users', isServerComponent),
-    }
+    },
+    UPLOAD: (isServerComponent = false) => buildApiUrl('/api/file/upload', isServerComponent),
 };

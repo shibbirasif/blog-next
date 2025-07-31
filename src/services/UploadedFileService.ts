@@ -85,6 +85,21 @@ export class UploadedFileService {
         }
     }
 
+    async attachAllToEntity(fileIds: string[], entityType: AttachableType, entityId: string, userId?: string): Promise<void> {
+        if (fileIds.length > 0) {
+            const attachPromises = fileIds.map(fileId =>
+                uploadedFileService.attachToEntity(
+                    fileId,
+                    entityType,
+                    entityId,
+                    userId
+                )
+            );
+
+            await Promise.all(attachPromises);
+        }
+     }
+
 
     async findOrphanedFiles(olderThan?: Date): Promise<UploadedFileDto[]> {
         try {

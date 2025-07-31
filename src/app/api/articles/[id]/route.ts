@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { articleService } from '@/services/articleService';
 import { updateArticleSchema, publishArticleSchema } from '@/validations/article';
+import { AttachableType } from '@/models/UploadedFile';
+import { uploadedFileService } from '@/services/UploadedFileService';
 
 interface RouteParams {
     params: Promise<{ id: string }>;
@@ -78,33 +80,6 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
         const body = await request.json();
 
-        if ('isPublished' in body && Object.keys(body).length === 1) {
-            const validationResult = publishArticleSchema.safeParse({
-                id: id,
-                isPublished: body.isPublished
-            });
-
-            if (!validationResult.success) {
-                return NextResponse.json(
-                    {
-                        error: 'Validation failed',
-                        details: validationResult.error.errors
-                    },
-                    { status: 400 }
-                );
-            }
-
-            const article = await articleService.togglePublishStatus(
-                id,
-                body.isPublished
-            );
-
-            return NextResponse.json({
-                message: `Article ${body.isPublished ? 'published' : 'unpublished'} successfully`,
-                article
-            });
-        }
-
         const validationResult = updateArticleSchema.safeParse({
             ...body,
             id: id
@@ -130,6 +105,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
                 { status: 404 }
             );
         }
+
+        // Extract uploadedFileIds from body (client schema)
+        const uploadedFileIds: string[] = Array.isArray(body.uploadedFileIds) ? body.uploadedFileIds : [];
+        uploadedFileService.attachAllToEntity(uploadedFileIds, AttachableType.ARTICLE, article.id, session.user.id);
 
         return NextResponse.json({
             message: 'Article updated successfully',

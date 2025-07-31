@@ -41,21 +41,11 @@ export async function POST(request: NextRequest) {
             );
         }
 
+        const article = await articleService.createArticle(articleData);
+
         // Extract uploadedFileIds from body (client schema)
         const uploadedFileIds: string[] = Array.isArray(body.uploadedFileIds) ? body.uploadedFileIds : [];
-
-        const article = await articleService.createArticle(articleData);
-        if (uploadedFileIds.length > 0) {
-            const attachPromises = uploadedFileIds.map(fileId =>
-                uploadedFileService.attachToEntity(
-                    fileId,
-                    AttachableType.ARTICLE,
-                    article.id,
-                    session.user.id
-                )
-            );
-            await Promise.all(attachPromises);
-        }
+        uploadedFileService.attachAllToEntity(uploadedFileIds, AttachableType.ARTICLE, article.id, session.user.id);
 
         return NextResponse.json({
             message: 'Article created successfully',
