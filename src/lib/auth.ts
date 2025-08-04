@@ -3,16 +3,14 @@ import Credentials from "next-auth/providers/credentials";
 import UserRole from '@/models/UserRole';
 import { apiFetcher } from '@/utils/apiFetcher';
 import { API_ROUTES } from "@/constants/apiRoutes";
-import { UserDto } from "@/dtos/UserDto";
 
 
 export interface AuthUser {
     id: string;
     email: string;
     name: string;
-    image?: string | null;
+    avatar: string;
     roles: UserRole[];
-    bio?: string | null;
     isActive: boolean;
     isEmailVerified: boolean;
 }
@@ -47,16 +45,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     ],
 
     callbacks: {
-        async jwt({ token, user }) {
+        async jwt({ token, user, trigger, session }) {
             if (user) {
                 token.id = user.id;
                 token.email = user.email;
-                token.name = user.name;
-                token.picture = user.image;
+                token.name = (user as AuthUser).name;
+                token.avatar = (user as AuthUser).avatar;
                 token.roles = (user as AuthUser).roles;
-                token.bio = (user as AuthUser).bio;
                 token.isActive = (user as AuthUser).isActive;
-                token.isEmailVerified = (user as AuthUser).isEmailVerified;
+                token.emailVerified = (user as AuthUser).isEmailVerified;
+            }
+            if (trigger === "update" && session?.user) {
+                console.log('Updating token name:', session.user.name);
+                console.log('Updating token avatar:', session.user.avatar);
+                token.name = session.user.name;
+                token.avatar = session.user.avatar;
             }
             return token;
         },
@@ -64,11 +67,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             session.user.id = token.id as string;
             session.user.email = token.email as string;
             session.user.name = token.name as string;
-            session.user.image = token.picture as string | null | undefined;
+            session.user.avatar = token.avatar as string;
             session.user.roles = token.roles as UserRole[];
-            session.user.bio = token.bio as string | undefined;
             session.user.isActive = token.isActive as boolean;
-            session.user.isEmailVerified = token.isEmailVerified as boolean;
+            session.user.isEmailVerified = token.emailVerified as boolean;
             return session;
         },
     },
@@ -82,13 +84,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 // Extend NextAuth's types for TypeScript for added custom fields to session/JWT
 declare module "next-auth" {
     interface Session {
-        user: UserDto
+        user: AuthUser
     }
-    
+
     interface JWT {
         id: string;
+        email: string;
+        name: string;
+        avatar: string;
         roles: UserRole[];
-        bio?: string | null;
         isActive: boolean;
         isEmailVerified: boolean;
     }

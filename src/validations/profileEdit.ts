@@ -17,7 +17,8 @@ export const profileEditSchema = z.object({
         .refine(
             (file) => ALLOWED_IMAGE_TYPES.includes(file.type),
             "Invalid file type. Only images are allowed."
-        ).optional(),
+    ).optional(),
+    uploadedFileIds: z.array(z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid file ID format")).optional()
 });
 
 export type ProfileEditInput = z.infer<typeof profileEditSchema>;

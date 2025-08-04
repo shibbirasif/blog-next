@@ -26,7 +26,9 @@ export const API_ROUTES = {
         LIST: (isServerComponent = false) => buildApiUrl('/api/tags', isServerComponent),
     },
     USERS: {
+        SHOW: (id: string, isServerComponent = false) => buildApiUrl(`/api/users/${id}`, isServerComponent),
         LIST: (isServerComponent = false) => buildApiUrl('/api/users', isServerComponent),
+        UPDATE: (id: string, isServerComponent = false) => buildApiUrl(`/api/users/${id}`, isServerComponent),
     },
     UPLOAD: (isServerComponent = false) => buildApiUrl('/api/file/upload', isServerComponent),
 };

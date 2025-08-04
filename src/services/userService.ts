@@ -3,9 +3,10 @@ import { dbConnect } from '@/lib/db';
 import User, { IUser } from '@/models/User';
 import { PAGINATION } from '@/constants/common';
 import mongoose from 'mongoose';
+import { ProfileEditInput } from '@/validations/profileEdit';
 
 class UserService {
-    public async updateUser(id: string, updateData: Partial<IUser>): Promise<UserDto | null> {
+    public async updateUser(id: string, updateData: Partial<ProfileEditInput>): Promise<UserDto | null> {
         await dbConnect();
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -67,8 +68,6 @@ class UserService {
 
         try {
             const user = await User.findById(id).lean() as IUser | null; // Added .lean() for consistency with updateUser
-
-            console.log(`UserService.getUserById(${id}) user:`, user);
 
             if (!user) {
                 return null;

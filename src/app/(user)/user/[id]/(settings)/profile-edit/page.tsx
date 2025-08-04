@@ -20,14 +20,13 @@ export default async function ProfileEditPage({ params }: PageProps) {
         redirect('/404');
     }
 
-
     return (
         <>
             <H1 className='text-center'>Start Writing</H1>
-            <p className="text-center text-gray-500">
-                Share your thoughts and ideas with the world
+            <p className="text-center text-gray-500 mb-5">
+                Share your thoughts and ideas with the world {session.user.name}.
             </p>
-                <EditProfileForm user={session.user!} />
+            <EditProfileForm />
         </>
     );
 

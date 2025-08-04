@@ -43,8 +43,8 @@ export default async function Topbar({ sidebarId }: TopbarProps) {
                         }
                     >
                         <DropdownHeader>
-                            <span className="block text-sm">Bonnie Green</span>
-                            <span className="block truncate text-sm font-medium">name@flowbite.com</span>
+                            <span className="block text-sm">{session.user.name}</span>
+                            <span className="block truncate text-sm font-medium">{session.user.email}</span>
                         </DropdownHeader>
                         <DropdownItem><Link href={APP_ROUTES.USER.FEED(session.user.id)}>Dashboard</Link></DropdownItem>
                         <DropdownItem><Link href={APP_ROUTES.USER.PROFILE_EDIT(session.user.id)}>Settings</Link></DropdownItem>

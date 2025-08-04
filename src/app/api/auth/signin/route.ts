@@ -21,7 +21,7 @@ export async function POST(request: Request) {
             id: user.id.toString(),
             email: user.email,
             name: user.name,
-            image: user.avatar || null,
+            avatar: user.avatar,
             roles: user.roles,
             isActive: user.isActive,
             isEmailVerified: user.isEmailVerified,
