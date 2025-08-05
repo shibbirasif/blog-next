@@ -83,7 +83,6 @@ export function generateArticleJsonLd(article: ArticleDto) {
         "author": {
             "@type": "Person",
             "name": article.author.name,
-            ...(article.author.bio && { "description": article.author.bio })
         },
         "datePublished": new Date(article.createdAt).toISOString(),
         "dateModified": new Date(article.updatedAt).toISOString(),
@@ -150,7 +149,7 @@ export function generateHomeJsonLd(articles: ArticleListDto[]) {
             },
             datePublished: article.createdAt,
             dateModified: article.updatedAt,
-            url: `${process.env.BASE_URL || 'http://localhost:3000'}/article/${article.slug || article._id}`,
+            url: `${process.env.BASE_URL || 'http://localhost:3000'}/article/${article.slug || article.id}`,
         })),
     };
 }

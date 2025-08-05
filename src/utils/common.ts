@@ -1,5 +1,5 @@
 export function getBaseUrl(): string {
-    return process.env.NEXTAUTH_URL || 'http://localhost:3000';
+    return process.env.BASE_URL || 'http://localhost:3000';
 }
 
 export function getPlatformName(): string {

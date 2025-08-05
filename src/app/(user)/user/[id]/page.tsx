@@ -1,6 +1,9 @@
 import { userService } from '@/services/userService';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
+import { apiFetcher } from '@/utils/apiFetcher';
+import { UserDto } from '@/dtos/UserDto';
+import { API_ROUTES } from '@/constants/apiRoutes';
 
 interface UserProfilePageProps {
     params: Promise<{
@@ -12,7 +15,7 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
     const { id } = await params;
 
     try {
-        const user = await userService.getUserById(id);
+        const user = await apiFetcher<UserDto>(API_ROUTES.USERS.SHOW(id, true));
 
         if (!user) {
             notFound();

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { articleService } from '@/services/articleService';
-import { updateArticleSchema, publishArticleSchema } from '@/validations/article';
+import { updateArticleSchema } from '@/validations/article';
 import { AttachableType } from '@/models/UploadedFile';
 import { uploadedFileService } from '@/services/UploadedFileService';
 
@@ -12,7 +12,6 @@ interface RouteParams {
 export async function GET(_: NextRequest, { params }: RouteParams) {
     try {
         const { id } = await params;
-        console.log('Fetching article with ID:', id);
 
         let article = await articleService.getArticleBySlug(id);
         if (!article) {

@@ -8,7 +8,6 @@ import { ArticleDto } from '@/dtos/ArticleDto';
 import { apiFetcher } from '@/utils/apiFetcher';
 import { API_ROUTES } from '@/constants/apiRoutes';
 import { generateArticleMetadata, generateArticleJsonLd } from '@/lib/metadata';
-import { TagDto } from '@/dtos/TagDto';
 
 interface PageProps {
     params: Promise<{
