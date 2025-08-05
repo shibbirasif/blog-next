@@ -107,7 +107,7 @@ Create a `.env.local` file in the root directory:
 ```env
 # Database Configuration
 MONGODB_URI=mongodb://localhost:27017/blog-next
-# For MongoDB Atlas: mongodb+srv://username:password@cluster.mongodb.net/blog-next
+# For MongoDB Atlas: mongodb+srv://<your mongodb atlas db uri>
 
 # NextAuth Configuration
 NEXTAUTH_SECRET=your-super-secret-jwt-key-here
