@@ -53,35 +53,6 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
                                 <p className="text-gray-600 dark:text-gray-400 mt-1">
                                     {user.email}
                                 </p>
-
-                                {/* User Status */}
-                                <div className="flex items-center gap-3 mt-3">
-                                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${user.isActive
-                                        ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
-                                        : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
-                                        }`}>
-                                        {user.isActive ? 'Active' : 'Inactive'}
-                                    </span>
-
-                                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${user.isEmailVerified
-                                        ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
-                                        : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
-                                        }`}>
-                                        {user.isEmailVerified ? 'Email Verified' : 'Email Pending'}
-                                    </span>
-                                </div>
-
-                                {/* User Roles */}
-                                <div className="flex flex-wrap gap-2 mt-3">
-                                    {user.roles.map((role, index) => (
-                                        <span
-                                            key={index}
-                                            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300"
-                                        >
-                                            {role}
-                                        </span>
-                                    ))}
-                                </div>
                             </div>
                         </div>
 
@@ -91,9 +62,12 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
                                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
                                     About
                                 </h2>
-                                <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                                    {user.bio}
-                                </p>
+                                <div className="prose prose-lg max-w-none dark:prose-invert">
+                                    <div
+                                        dangerouslySetInnerHTML={{ __html: user.bio }}
+                                        className="break-words"
+                                    />
+                                </div>
                             </div>
                         )}
 
