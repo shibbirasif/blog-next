@@ -15,7 +15,7 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
     const { id } = await params;
 
     try {
-        const user = await apiFetcher<UserDto>(API_ROUTES.USERS.SHOW(id, true));
+        const user = await apiFetcher<UserDto>(API_ROUTES.USERS.SHOW(id));
 
         if (!user) {
             notFound();

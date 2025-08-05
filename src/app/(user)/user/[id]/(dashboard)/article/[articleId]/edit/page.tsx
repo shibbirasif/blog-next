@@ -22,8 +22,8 @@ export default async function EditArticlePage({ params }: PageProps) {
     try {
         // Fetch the article to edit and tags in parallel
         const [articleResponse, tags] = await Promise.all([
-            apiFetcher<{ article: ArticleDto }>(API_ROUTES.ARTICLE.SHOW(articleId, true)),
-            apiFetcher<TagDto[]>(API_ROUTES.TAGS.LIST(true))
+            apiFetcher<{ article: ArticleDto }>(API_ROUTES.ARTICLE.SHOW(articleId)),
+            apiFetcher<TagDto[]>(API_ROUTES.TAGS.LIST())
         ]);
 
         const article = articleResponse.article;

@@ -43,9 +43,9 @@ export default async function HomePage({ searchParams }: HomePageProps) {
     // Fetch data in parallel with individual error handling
     const [articlesData, tagsData] = await Promise.allSettled([
       apiFetcher<{ articles: ArticleListDto[]; total: number; pages: number }>(
-        `${API_ROUTES.ARTICLE.LIST(undefined, true)}?${apiParams.toString()}`
+        `${API_ROUTES.ARTICLE.LIST()}?${apiParams.toString()}`
       ),
-      apiFetcher<TagDto[]>(API_ROUTES.TAGS.LIST(true))
+      apiFetcher<TagDto[]>(API_ROUTES.TAGS.LIST())
     ]);
 
     // Handle settled promises with fallbacks

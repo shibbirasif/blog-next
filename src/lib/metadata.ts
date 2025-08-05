@@ -20,7 +20,7 @@ interface ArticleMetadataParams {
 export async function generateArticleMetadata({ params }: ArticleMetadataParams): Promise<Metadata> {
     try {
         const { slug } = await params;
-        const data = await apiFetcher<{ article: ArticleDto }>(API_ROUTES.ARTICLE.SHOW(slug, true));
+        const data = await apiFetcher<{ article: ArticleDto }>(API_ROUTES.ARTICLE.SHOW(slug));
         const article = data.article;
 
         if (!article) {

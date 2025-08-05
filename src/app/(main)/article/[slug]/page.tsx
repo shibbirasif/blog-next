@@ -31,7 +31,7 @@ export default async function ArticleDetailsPage({ params }: PageProps) {
     const { slug } = await params;
 
     try {
-        const data = await apiFetcher<{ article: ArticleDto }>(API_ROUTES.ARTICLE.SHOW(slug, true));
+        const data = await apiFetcher<{ article: ArticleDto }>(API_ROUTES.ARTICLE.SHOW(slug));
 
         const article: ArticleDto = data.article;
 

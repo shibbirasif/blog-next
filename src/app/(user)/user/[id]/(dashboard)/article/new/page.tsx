@@ -24,7 +24,7 @@ export default async function NewArticlePage({ params }: PageProps) {
     }
 
     try {
-        const tags = await apiFetcher<TagDto[]>(API_ROUTES.TAGS.LIST(true));
+        const tags = await apiFetcher<TagDto[]>(API_ROUTES.TAGS.LIST());
 
         return (
             <>

@@ -15,7 +15,7 @@ export default async function MyArticlesPage({ searchParams }: MyArticlesPagePro
     const page = typeof params.page === 'string' ? parseInt(params.page) : 1;
 
     const authorId = session?.user?.id || '';
-    const articlesData = await apiFetcher<{ articles: ArticleListDto[]; total: number; pages: number }>(API_ROUTES.ARTICLE.LIST(authorId, true)) ?? { articles: [], total: 0, pages: 1 };
+    const articlesData = await apiFetcher<{ articles: ArticleListDto[]; total: number; pages: number }>(API_ROUTES.ARTICLE.LIST(authorId)) ?? { articles: [], total: 0, pages: 1 };
 
     return (
         <>

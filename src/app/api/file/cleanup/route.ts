@@ -4,7 +4,6 @@ import { unlink } from 'fs/promises';
 import { join } from 'path';
 import { PRIVATE_UPLOAD_DIR } from '@/constants/uploads';
 
-// Helper: get date 24 hours ago
 function get24HoursAgo() {
     const now = new Date();
     now.setHours(now.getHours() - 24);
@@ -22,14 +21,6 @@ export async function DELETE(request: NextRequest) {
 
         for (const file of orphanedFiles) {
             try {
-                // Remove file from local disk if url is local
-                if (file.url && file.url.startsWith('/api/file/')) {
-                    const filePath = join(PRIVATE_UPLOAD_DIR, file.id, file.filename);
-                    await unlink(filePath);
-                } else if (file.url && file.url.startsWith('https://')) {
-                    // await deleteFromCloud(file.url)
-                }
-                
                 await uploadedFileService.deleteFile(file.id);
                 deleted.push(file.id);
             } catch (err) {

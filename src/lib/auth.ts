@@ -32,7 +32,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 }
 
                 try {
-                    return await apiFetcher<AuthUser>(API_ROUTES.AUTH.SIGN_IN(true), {
+                    return await apiFetcher<AuthUser>(API_ROUTES.AUTH.SIGN_IN(), {
                         method: 'POST',
                         body: { email, password }
                     });

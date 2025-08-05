@@ -29,7 +29,7 @@ export async function GET(request: Request, { params }: RouteParams) {
         return NextResponse.json({
             message: 'Reset token is valid',
             user: {
-                id: user._id,
+                id: user.id,
                 email: user.email,
                 name: user.name
             }
