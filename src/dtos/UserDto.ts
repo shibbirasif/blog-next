@@ -1,5 +1,7 @@
 import { IUser } from "@/models/User";
 import UserRole from "@/models/UserRole";
+import { getUploadedFileUrl } from "@/utils/fileUpload";
+import mongoose from "mongoose";
 
 export interface UserDto {
     id: string;
@@ -16,6 +18,8 @@ export interface UserDto {
 }
 
 export function buildUserDto(userDoc: IUser): UserDto {
+    const avatar = userDoc.avatar as unknown as { _id: mongoose.Types.ObjectId; url: string }; // Populated author
+
     return {
         id: userDoc._id.toString(),
         name: userDoc.name,
@@ -25,7 +29,7 @@ export function buildUserDto(userDoc: IUser): UserDto {
         emailVerificationToken: userDoc.isEmailVerified? undefined: userDoc.emailVerificationToken,
         roles: userDoc.roles as UserRole[],
         bio: userDoc.bio || '',
-        avatar: userDoc.avatar || '',
+        avatar: userDoc.avatar ? getUploadedFileUrl({ id: avatar._id.toString(), url: avatar.url }) : '',
         createdAt: userDoc.createdAt,
         updatedAt: userDoc.updatedAt,
     };

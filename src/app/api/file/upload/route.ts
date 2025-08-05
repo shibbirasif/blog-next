@@ -2,10 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { uploadedFileService } from '@/services/UploadedFileService';
 import { FileType } from '@/models/UploadedFile';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
-import crypto from 'crypto';
-import { PRIVATE_UPLOAD_DIR } from '@/constants/uploads';
 import { fileUploadSchema } from '@/validations/fileUpload';
 import { getUploadedFileUrl } from '@/utils/fileUpload';
 
@@ -42,57 +38,24 @@ export async function POST(request: NextRequest) {
 
         const validatedData = validationResult.data;
 
-        const bytes = await validatedData.file.arrayBuffer();
-        const buffer = Buffer.from(bytes);
-        const checksum = crypto.createHash('md5').update(buffer).digest('hex');
-
-        const fileExtension = validatedData.file.name.split('.').pop();
-        const uniqueFilename = `${crypto.randomUUID()}.${fileExtension}`;
-
-        const fileData = {
-            filename: uniqueFilename,
-            originalName: validatedData.file.name,
+        const uploadedFile = await uploadedFileService.uploadFile({
+            file: validatedData.file,
             altText: validatedData.altText || '',
             fileType: FileType.IMAGE,
-            mimeType: validatedData.file.type,
-            size: validatedData.file.size,
-            path: 'pending',
-            url: 'pending',
-            checksum,
-            uploadedBy: session.user.id,
-        };
-
-        const uploadedFile = await uploadedFileService.uploadFile(fileData);
-
-        const fileDir = join(PRIVATE_UPLOAD_DIR, uploadedFile.id);
-        await mkdir(fileDir, { recursive: true });
-
-        const filePath = join(fileDir, uniqueFilename);
-        await writeFile(filePath, buffer);
-
-        const fileUrl = getUploadedFileUrl(uploadedFile);
-
-        const updatedFile = await uploadedFileService.updateFilePathAndUrl(
-            uploadedFile.id,
-            filePath,
-            fileUrl
-        );
-
-        if (!updatedFile) {
-            throw new Error('Failed to update file record');
-        }
+            uploadedBy: session.user.id
+        });
 
         return NextResponse.json({
             message: 'File uploaded successfully',
             file: {
-                id: updatedFile.id,
-                filename: updatedFile.filename,
-                originalName: updatedFile.originalName,
-                url: updatedFile.url,
-                altText: updatedFile.altText,
-                size: updatedFile.size,
-                mimeType: updatedFile.mimeType,
-                status: updatedFile.status
+                id: uploadedFile.id,
+                filename: uploadedFile.filename,
+                originalName: uploadedFile.originalName,
+                url: getUploadedFileUrl({ id: uploadedFile.id, url: uploadedFile.url }),
+                altText: uploadedFile.altText,
+                size: uploadedFile.size,
+                mimeType: uploadedFile.mimeType,
+                status: uploadedFile.status
             }
         });
 

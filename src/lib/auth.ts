@@ -56,8 +56,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 token.emailVerified = (user as AuthUser).isEmailVerified;
             }
             if (trigger === "update" && session?.user) {
-                console.log('Updating token name:', session.user.name);
-                console.log('Updating token avatar:', session.user.avatar);
                 token.name = session.user.name;
                 token.avatar = session.user.avatar;
             }

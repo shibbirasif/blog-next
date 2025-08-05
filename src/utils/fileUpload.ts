@@ -23,11 +23,9 @@ export async function deleteFromCloud(url: string): Promise<void> {
     throw new Error('Cloud deletion not implemented for this URL: ' + url);
 }
 
-export function getUploadedFileUrl(file: UploadedFileDto): string {
-    // If file.url is set (e.g. by cloud upload), use it
+export function getUploadedFileUrl(file: Pick<UploadedFileDto, 'id' | 'url'>): string {
     if (file.url && file.url.startsWith('http')) {
         return file.url;
     }
-    // Otherwise, use local API route
     return `/api/file/${file.id}`;
 }

@@ -16,7 +16,7 @@ export default async function Topbar({ sidebarId }: TopbarProps) {
     const session = await auth();
 
     return (
-        <Navbar fluid rounded className="fixed top-0 w-full z-999 shadow-sm">
+        <Navbar fluid rounded className="fixed top-0 w-full z-49 shadow-sm">
             <div className="flex">
                 {sidebarId && <SidebarToggle sidebarId={sidebarId} />}
                 <NavbarBrand href={APP_ROUTES.HOME}>
@@ -39,7 +39,11 @@ export default async function Topbar({ sidebarId }: TopbarProps) {
                         arrowIcon={false}
                         inline
                         label={
-                            <Avatar alt="User settings" img="https://flowbite.com/docs/images/people/profile-picture-5.jpg" rounded />
+                            session?.user?.avatar && session.user.avatar !== '' ? (
+                                <Avatar alt="User settings" img={session.user.avatar} rounded />
+                            ) : (
+                                <Avatar placeholderInitials={session?.user ? session.user.name[0].toUpperCase() : "U"} rounded />
+                            )
                         }
                     >
                         <DropdownHeader>

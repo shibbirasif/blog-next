@@ -35,10 +35,8 @@ export default function NewArticle({ availableTags, userId }: NewArticleProps) {
 
         const article = response.article;
 
-        setTimeout(() => {
-            router.push(APP_ROUTES.ARTICLE.SHOW(article.slug));
-            router.refresh();
-        }, 1500);
+        router.push(APP_ROUTES.ARTICLE.SHOW(article.slug));
+        router.refresh();
     };
 
     return (

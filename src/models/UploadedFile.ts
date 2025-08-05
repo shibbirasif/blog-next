@@ -10,7 +10,8 @@ export enum FileType {
 
 export enum AttachableType {
     ARTICLE = 'Article',
-    USER = 'User'
+    USER_BIO = 'UserBio',
+    USER_AVATAR = 'UserAvatar',
 }
 
 export enum FileStatus {
@@ -26,7 +27,6 @@ export interface IUploadedFile extends Document {
     fileType: FileType;
     mimeType: string;
     size: number;
-    path: string;
     url: string;
     checksum: string;
     attachableType: AttachableType | null;
@@ -79,13 +79,6 @@ const UploadedFileSchema = new Schema<IUploadedFile>({
         required: true,
         min: 0,
         max: 100 * 1024 * 1024
-    },
-    path: {
-        type: String,
-        required: true,
-        trim: true,
-        unique: true,
-        maxlength: 500
     },
     url: {
         type: String,

@@ -5,8 +5,10 @@ import { PAGINATION } from '@/constants/common';
 import mongoose from 'mongoose';
 import { ProfileEditInput } from '@/validations/profileEdit';
 
+type UpdateUserInput = Omit<ProfileEditInput, 'avatar'> & { avatar?: string | undefined };
+
 class UserService {
-    public async updateUser(id: string, updateData: Partial<ProfileEditInput>): Promise<UserDto | null> {
+    public async updateUser(id: string, updateData: Partial<UpdateUserInput>): Promise<UserDto | null> {
         await dbConnect();
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -14,7 +16,8 @@ class UserService {
         }
 
         try {
-            const updatedUser = await User.findByIdAndUpdate(id, updateData, { new: true }).lean() as IUser | null;
+            const updatedUser = await User.findByIdAndUpdate(id, updateData, { new: true })
+                .populate('avatar', 'url').lean() as IUser | null;
 
             if (!updatedUser) {
                 return null;
@@ -32,7 +35,7 @@ class UserService {
         await dbConnect();
 
         try {
-            const users = await User.find({}).lean() as IUser[];
+            const users = await User.find({}).populate('avatar', 'url').lean() as IUser[];
             return users.map(user => (buildUserDto(user)));
 
         } catch (error) {
@@ -48,6 +51,7 @@ class UserService {
             const users = await User.find({
                 name: { $regex: search, $options: 'i' }
             })
+                .populate('avatar', 'url')
                 .limit(limit)
                 .lean() as IUser[];
 
@@ -67,7 +71,7 @@ class UserService {
         }
 
         try {
-            const user = await User.findById(id).lean() as IUser | null; // Added .lean() for consistency with updateUser
+            const user = await User.findById(id).populate('avatar', 'url').lean() as IUser | null; // Added .lean() for consistency with updateUser
 
             if (!user) {
                 return null;
@@ -88,7 +92,7 @@ class UserService {
             const user = await User.findOne({
                 emailVerificationToken: token,
                 emailVerificationExpires: { $gt: new Date() },
-            });
+            }).populate('avatar', 'url') as IUser | null;
 
             if (!user) {
                 return null;

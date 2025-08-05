@@ -12,7 +12,7 @@ export default function DashboardSidebar() {
 
     return (
         <>
-            <Sidebar id="dashboard-sidebar" aria-label="User dashboard sidebar" className="w-64 h-[90vh] hidden sm:block absolute sm:relative z-998">
+            <Sidebar id="dashboard-sidebar" aria-label="User dashboard sidebar" className="w-64 h-[90vh] hidden sm:block absolute sm:relative z-48">
                 <SidebarItems>
                     <SidebarItemGroup>
                         <SidebarItem

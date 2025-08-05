@@ -15,7 +15,7 @@ export interface IUser extends Document {
     resetPasswordExpires?: Date;
     roles: UserRole[];
     bio?: string;
-    avatar?: string;
+    avatar?: mongoose.Types.ObjectId;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -88,9 +88,8 @@ const UserSchema = new Schema<IUser>({
         maxlength: [1000, 'Bio cannot exceed 1000 characters'],
     },
     avatar: {
-        type: String,
-        default: '',
-        maxlength: [500, 'Avatar URL cannot exceed 500 characters'],
+        type: Schema.Types.ObjectId,
+        default: null,
     },
 }, {
     timestamps: true

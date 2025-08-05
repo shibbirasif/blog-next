@@ -3,6 +3,7 @@ import { uploadedFileService } from '@/services/UploadedFileService';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { PRIVATE_UPLOAD_DIR } from '@/constants/uploads';
+import { FileStatus } from '@/models/UploadedFile';
 
 interface RouteParams {
     params: Promise<{ fileId: string }>;
@@ -14,16 +15,9 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
         const fileRecord = await uploadedFileService.findFile(fileId);
 
-        if (!fileRecord || !fileRecord.path || !fileRecord.url) {
+        if (!fileRecord || fileRecord.status === FileStatus.TEMPORARY) {
             return NextResponse.json(
-                { error: 'File not found or incomplete metadata' },
-                { status: 404 }
-            );
-        }
-        // Check for placeholder values
-        if (fileRecord.path === 'pending' || fileRecord.url === 'pending') {
-            return NextResponse.json(
-                { error: 'File not ready yet' },
+                { error: 'File not found or not ready yet' },
                 { status: 404 }
             );
         }
@@ -33,7 +27,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
             const filePath = join(PRIVATE_UPLOAD_DIR, fileId, fileRecord.filename);
             if (!filePath || typeof filePath !== 'string') {
                 return NextResponse.json(
-                    { error: 'File path missing or invalid' },
+                    { error: 'File not found or inaccessible' },
                     { status: 404 }
                 );
             }

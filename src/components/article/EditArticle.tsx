@@ -43,9 +43,8 @@ export default function EditArticle({ article, availableTags, userId }: EditArti
                 }
             });
 
-            setTimeout(() => {
-                router.refresh();
-            }, 1000);
+            router.push(APP_ROUTES.ARTICLE.SHOW(article.slug));
+            router.refresh();
 
         } finally {
             setIsOperating(false);

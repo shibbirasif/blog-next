@@ -12,7 +12,7 @@ export default function UserSettingsSidebar() {
     const pathname = usePathname();
 
     return (
-        <Sidebar id="user-settings-sidebar" aria-label="User settings sidebar" className="w-64 h-[90vh] hidden sm:block absolute sm:relative z-998">
+        <Sidebar id="user-settings-sidebar" aria-label="User settings sidebar" className="w-64 h-[90vh] hidden sm:block absolute sm:relative z-48">
             <SidebarItems>
                 <SidebarItemGroup>
                     <SidebarItem

@@ -13,7 +13,8 @@ import {
     ModalBody,
     ModalFooter,
     Alert,
-    FileInput
+    FileInput,
+    Label
 } from 'flowbite-react';
 import {
     FaBold,
@@ -69,14 +70,10 @@ export default function EditorToolbar({ editor, imageUploadConfig, onImageUpload
         const file = event.target.files?.[0];
         if (!file) return;
 
-        // Default altText to file name without extension
-        const nameWithoutExt = file.name.replace(/\.[^/.]+$/, "");
-        setAltText(nameWithoutExt);
-
         setIsUploading(true);
         setUploadError(null);
 
-        const result = fileUploadSchema.safeParse(file);
+        const result = fileUploadSchema.safeParse({file, altText});
         if (!result.success) {
             setUploadError(result.error.errors[0]?.message || 'Invalid file');
             setIsUploading(false);
@@ -268,6 +265,14 @@ export default function EditorToolbar({ editor, imageUploadConfig, onImageUpload
                                     }}
                                     disabled={isUploading}
                                 />
+
+                                <p className="my-2 text-sm text-gray-500">
+                                    Supported formats: JPEG, PNG, GIF, WebP (max 5MB)
+                                </p>
+
+                                <Label htmlFor="alt-text" className="mb-2 block">
+                                    Alt Text (optional)
+                                </Label>
                                 <TextInput
                                     id="alt-text"
                                     placeholder="Image alt text"
@@ -276,10 +281,6 @@ export default function EditorToolbar({ editor, imageUploadConfig, onImageUpload
                                     className="mt-2"
                                     disabled={isUploading}
                                 />
-
-                                <p className="mt-2 text-sm text-gray-500">
-                                    Supported formats: JPEG, PNG, GIF, WebP (max 5MB)
-                                </p>
                             </div>
                         )}
 

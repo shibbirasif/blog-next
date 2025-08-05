@@ -9,15 +9,12 @@ export interface UploadedFileDto {
     fileType: FileType;
     mimeType: string;
     size: number;
-    path: string;
     url: string;
     checksum: string;
     attachableType: AttachableType | null;
     attachableId: string | null;
     uploadedBy: {
         id: string;
-        name?: string;
-        email?: string;
     };
     status: FileStatus;
     metadata?: Record<string, any>[];
@@ -34,15 +31,12 @@ export function buildUploadedFileDto(file: IUploadedFile): UploadedFileDto {
         fileType: file.fileType,
         mimeType: file.mimeType,
         size: file.size,
-        path: file.path,
         url: file.url,
         checksum: file.checksum,
         attachableType: file.attachableType,
         attachableId: file.attachableId?.toString() || null,
         uploadedBy: {
             id: file.uploadedBy._id?.toString() || file.uploadedBy.toString(),
-            name: (file.uploadedBy as any).name,
-            email: (file.uploadedBy as any).email
         },
         status: file.status,
         metadata: file.metadata,
