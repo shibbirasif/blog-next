@@ -7,13 +7,14 @@ import { Alert, TextInput, Button, Label } from "flowbite-react";
 import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { FaPencilAlt } from "react-icons/fa";
-import Cropper from "react-easy-crop";
+import Cropper, { Area } from "react-easy-crop";
 import { getCroppedImg } from "@/utils/imageCropper";
 import RichTextEditor from "../richTextEditor/RichTextEditor";
 import { API_ROUTES } from "@/constants/apiRoutes";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { apiFetcher } from "@/utils/apiFetcher";
+import Image from "next/image";
 
 export default function EditProfileForm() {
     const router = useRouter();
@@ -44,7 +45,7 @@ export default function EditProfileForm() {
     // Avatar cropping states
     const [crop, setCrop] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1);
-    const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
+    const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
     const [avatarPreview, setAvatarPreview] = useState<string | undefined>(undefined);
     const [croppedAvatarFile, setCroppedAvatarFile] = useState<File | undefined>(undefined);
 
@@ -60,7 +61,7 @@ export default function EditProfileForm() {
         reader.readAsDataURL(file);
     };
 
-    const onCropComplete = (_: any, croppedAreaPixels: any) => {
+    const onCropComplete = (_: Area, croppedAreaPixels: Area) => {
         setCroppedAreaPixels(croppedAreaPixels);
     };
 
@@ -96,7 +97,7 @@ export default function EditProfileForm() {
             const response = await fetch(API_ROUTES.USERS.UPDATE(session!.user.id), {
                 method: 'PUT',
                 body: submitData,
-            }) as any;
+            });
 
             const data = await response.json();
 
@@ -170,7 +171,13 @@ export default function EditProfileForm() {
                         <div className="flex flex-col items-center gap-2">
                             <div className="relative inline-flex items-center justify-center w-36 h-36 bg-gray-100 rounded-full dark:bg-gray-600">
                                 {avatarPreview ? (
-                                    <img src={avatarPreview} alt="Avatar" className="w-full h-full object-cover rounded-full" />
+                                    <Image
+                                        src={avatarPreview}
+                                        alt="Avatar"
+                                        fill
+                                        style={{ objectFit: 'cover' }}
+                                        className="rounded-full"
+                                    />
                                 ) : (
                                     <span className="font-medium text-gray-600 dark:text-gray-300 text-8xl">
                                         {watch("name") ? watch("name")[0].toUpperCase() : "U"}

@@ -1,6 +1,13 @@
 import sanitizeHtml from 'sanitize-html';
 import parse from 'html-parse-stringify';
 
+interface ASTNode {
+    type: string;
+    name?: string;
+    attrs?: { [key: string]: string };
+    children?: ASTNode[];
+}
+
 // Sanitization rules for plain text fields (no HTML allowed)
 export const plainTextSanitizationOptions: sanitizeHtml.IOptions = {
     allowedTags: [],
@@ -49,7 +56,7 @@ export const isHtmlContentValid = (content: string): boolean => {
     const astOriginal = parse.parse(content);
     const astSanitized = parse.parse(sanitized);
 
-    function minifyStyleAttributes(ast: any[]): any[] {
+    function minifyStyleAttributes(ast: ASTNode[]): ASTNode[] {
         return ast.map(node => {
             if (node.type === 'tag' && node.name === 'img' && node.attrs && node.attrs.style) {
                 node.attrs.style = node.attrs.style

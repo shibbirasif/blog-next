@@ -94,6 +94,7 @@ export default function EditorToolbar({ editor, imageUploadConfig, onImageUpload
             }
         } catch (error) {
             setUploadError('Upload failed. Please try again.');
+            console.error('Image upload error:', error);
         } finally {
             setIsUploading(false);
         }

@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { FileType, AttachableType, FileStatus } from '../models/UploadedFile';
 import type { IUploadedFile } from '../models/UploadedFile';
 
@@ -17,14 +18,14 @@ export interface UploadedFileDto {
         id: string;
     };
     status: FileStatus;
-    metadata?: Record<string, any>[];
+    metadata?: Record<string, unknown>[];
     uploadedAt: Date;
     updatedAt: Date;
 }
 
 export function buildUploadedFileDto(file: IUploadedFile): UploadedFileDto {
     return {
-        id: (file._id as any).toString(),
+        id: (file._id as mongoose.Types.ObjectId).toString(),
         filename: file.filename,
         originalName: file.originalName,
         altText: file.altText,
@@ -58,7 +59,7 @@ export interface CreateUploadedFileDto {
     uploadedBy: string;
     attachableType?: AttachableType;
     attachableId?: string;
-    metadata?: Record<string, any>[];
+    metadata?: Record<string, unknown>[];
 }
 
 export interface DeleteFilesResultDto {

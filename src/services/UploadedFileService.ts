@@ -1,5 +1,5 @@
 import UploadedFile, { AttachableType, FileStatus, FileType, IUploadedFile } from '../models/UploadedFile';
-import { UploadedFileDto, buildUploadedFileDto, CreateUploadedFileDto } from '../dtos/UploadedFileDto';
+import { UploadedFileDto, buildUploadedFileDto } from '../dtos/UploadedFileDto';
 import mongoose from 'mongoose';
 import crypto from 'crypto';
 import { PRIVATE_UPLOAD_DIR } from '@/constants/uploads';
@@ -114,7 +114,10 @@ export class UploadedFileService {
                 return null;
             }
 
-            const filter: any = { _id: fileId };
+            const filter: {
+                _id: string;
+                uploadedBy?: mongoose.Types.ObjectId;
+            } = { _id: fileId };
 
             if (userId) {
                 filter.uploadedBy = new mongoose.Types.ObjectId(userId);
@@ -148,10 +151,9 @@ export class UploadedFileService {
         }
     }
 
-
     async findOrphanedFiles(olderThan?: Date): Promise<UploadedFileDto[]> {
         try {
-            const filter: any = {
+            const filter: Record<string, unknown> = {
                 attachableType: null,
                 attachableId: null,
                 status: FileStatus.TEMPORARY

@@ -3,47 +3,38 @@ import { loadModels } from "@/models/modelLoader";
 
 const MONGODB_URI = process.env.MONGODB_URI!;
 
-if (!MONGODB_URI) {
-    console.log("Mongodb URI :", MONGODB_URI);
-    // throw new Error("⚠️ MONGODB_URI not defined in .env.local");
-}
-
 interface CachedConnection {
-    conn: typeof import('mongoose') | null;
-    promise: Promise<typeof import('mongoose')> | null;
+    conn: typeof mongoose | null;
+    promise: Promise<typeof mongoose> | null;
 }
 
-let cached = (global as { mongoose?: CachedConnection }).mongoose;
-if (!cached) {
-    cached = (global as { mongoose?: CachedConnection }).mongoose = { conn: null, promise: null };
+declare global {
+    var mongoose: CachedConnection | undefined;
 }
+
+global.mongoose ||= { conn: null, promise: null };
+
+const cached = global.mongoose;
 
 export async function dbConnect() {
-    if (!cached) {
-        throw new Error("Cached mongoose connection is undefined.");
-    }
-    if (cached.conn) {
-        return cached.conn;
-    }
+    if (cached.conn) return cached.conn;
 
     if (!cached.promise) {
         const opts = {
-            dbName: "blog-next"
+            dbName: "blog-next",
         };
 
+        mongoose.set("strictQuery", false); // Optional: silences deprecation warning
         cached.promise = mongoose.connect(MONGODB_URI, opts);
     }
 
     try {
         cached.conn = await cached.promise;
         console.log("✅ Connected to MongoDB");
-
-        // Load models after successful connection
         await loadModels();
-
         return cached.conn;
     } catch (error) {
-        console.error("⚠️ MongoDB connection error:", error);
+        console.error("⚠️ MongoDB connection error:", (error as Error).stack || error);
         cached.promise = null;
         throw error;
     }

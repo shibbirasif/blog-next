@@ -63,7 +63,11 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         const profileData = validationResult.data;
         console.log("Profile data to update:", profileData.avatar !== undefined ? "Has avatar" : "No avatar");
 
-        const updateData: any = {
+        const updateData: {
+            name: string,
+            bio?: string,
+            avatar?: string
+        } = {
             name: profileData.name,
             bio: profileData.bio,
         }

@@ -60,7 +60,7 @@ export default function AuthorSearchDropdown({
         setLoading(true);
         try {
             const searchedAuthors = await apiFetcher<UserDto[]>(
-                `${API_ROUTES.USERS.LIST(true)}?search=${encodeURIComponent(search)}&limit=${PAGINATION.USERS_SEARCH_LIMIT}`
+                `${API_ROUTES.USERS.LIST()}?search=${encodeURIComponent(search)}&limit=${PAGINATION.USERS_SEARCH_LIMIT}`
             );
             setAuthors(searchedAuthors);
         } catch (error) {

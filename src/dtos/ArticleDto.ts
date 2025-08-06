@@ -1,7 +1,5 @@
 import mongoose from "mongoose";
 import { IArticle } from "@/models/Article";
-import { UserDto } from "./UserDto";
-import { TagDto } from "./TagDto";
 
 export interface ArticleDto {
     id: string;

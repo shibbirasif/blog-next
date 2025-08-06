@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema, Model } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 
 export enum FileType {
     IMAGE = 'image',
@@ -33,7 +33,7 @@ export interface IUploadedFile extends Document {
     attachableId: mongoose.Types.ObjectId | null;
     uploadedBy: mongoose.Types.ObjectId;
     status: FileStatus;
-    metadata?: Record<string, any>[];
+    metadata?: Record<string, unknown>[];
     uploadedAt: Date;
     updatedAt: Date;
 

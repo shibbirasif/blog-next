@@ -1,8 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { uploadedFileService } from '@/services/UploadedFileService';
-import { unlink } from 'fs/promises';
-import { join } from 'path';
-import { PRIVATE_UPLOAD_DIR } from '@/constants/uploads';
 
 function get24HoursAgo() {
     const now = new Date();
@@ -10,14 +7,14 @@ function get24HoursAgo() {
     return now;
 }
 
-export async function DELETE(request: NextRequest) {
+export async function DELETE() {
     try {
         // Find orphaned files older than 24 hours
         // You may need to implement findOrphanedFiles in UploadedFileService
         const orphanedFiles = await uploadedFileService.findOrphanedFiles(get24HoursAgo());
 
-        let deleted = [];
-        let failed = [];
+        const deleted = [];
+        const failed = [];
 
         for (const file of orphanedFiles) {
             try {
