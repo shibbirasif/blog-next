@@ -1,15 +1,11 @@
-import UploadedFile, { AttachableType, FileStatus, FileType, IUploadedFile } from '../models/UploadedFile';
+import UploadedFile, { AttachableType, FileStatus, IUploadedFile } from '../models/UploadedFile';
 import { UploadedFileDto, buildUploadedFileDto } from '../dtos/UploadedFileDto';
 import mongoose from 'mongoose';
-import crypto from 'crypto';
-import { PRIVATE_UPLOAD_DIR } from '@/constants/uploads';
-import { join } from 'path';
-import { mkdir, rmdir, writeFile } from 'fs/promises';
+import { deleteFile, uploadFile } from '@/utils/fileUpload';
 
 interface uploadFileParams {
     file: File;
     altText: string;
-    fileType: FileType;
     uploadedBy: string;
     attachableType?: AttachableType;
     attachableId?: string;
@@ -18,38 +14,33 @@ interface uploadFileParams {
 export class UploadedFileService {
     async uploadFile(data: uploadFileParams): Promise<UploadedFileDto> {
         try {
-            const { file, altText, fileType = FileType.IMAGE, uploadedBy } = data;
-            const bytes = await file.arrayBuffer();
-            const buffer = Buffer.from(bytes);
-            const checksum = crypto.createHash('md5').update(buffer).digest('hex');
+            const { file, altText = '', uploadedBy } = data;
+            const {
+                filename,
+                originalName,
+                mimeType,
+                size,
+                checksum,
+                url,
+                fileType
+            } = await uploadFile(file);
 
-            const fileExtension = file.name.split('.').pop();
-            const uniqueFilename = `${crypto.randomUUID()}.${fileExtension}`;
-
-            const fileData = {
-                filename: uniqueFilename,
-                originalName: file.name,
-                altText: altText || '',
-                fileType: fileType,
-                mimeType: file.type,
-                size: file.size,
+            const uploadedFile = new UploadedFile({
+                filename,
+                originalName,
+                altText,
+                fileType,
+                mimeType,
+                size,
                 checksum,
                 uploadedBy,
-                url: 'pending',
+                url,
+                status: FileStatus.PERMANENT,
                 attachableType: data.attachableType || null,
                 attachableId: data.attachableId ? new mongoose.Types.ObjectId(data.attachableId) : null,
-            };
+            }) as IUploadedFile;
 
-            const uploadedFile = new UploadedFile(fileData) as IUploadedFile;
             const savedFile = await uploadedFile.save();
-
-            const fileDir = join(PRIVATE_UPLOAD_DIR, savedFile.id);
-            await mkdir(fileDir, { recursive: true });
-
-            const filePath = join(fileDir, uniqueFilename);
-            await writeFile(filePath, buffer);
-
-            savedFile.markAsPermanent();
 
             return buildUploadedFileDto(savedFile);
         } catch (error) {
@@ -78,8 +69,7 @@ export class UploadedFileService {
             if (!file) {
                 return false;
             }
-            const fileDir = join(PRIVATE_UPLOAD_DIR, fileId);
-            await rmdir(fileDir, { recursive: true });
+            await deleteFile(file.filename);
             await file.delete();
             return true;
         } catch (error) {

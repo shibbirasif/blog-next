@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { uploadedFileService } from '@/services/UploadedFileService';
-import { FileType } from '@/models/UploadedFile';
 import { fileUploadSchema } from '@/validations/fileUpload';
 import { getUploadedFileUrl } from '@/utils/fileUpload';
 
@@ -41,7 +40,6 @@ export async function POST(request: NextRequest) {
         const uploadedFile = await uploadedFileService.uploadFile({
             file: validatedData.file,
             altText: validatedData.altText || '',
-            fileType: FileType.IMAGE,
             uploadedBy: session.user.id
         });
 

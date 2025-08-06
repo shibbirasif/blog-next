@@ -3,7 +3,7 @@ import { userService } from "@/services/userService";
 import { profileEditSchema } from "@/validations/profileEdit";
 import { NextRequest, NextResponse } from "next/server";
 import { uploadedFileService } from "@/services/UploadedFileService";
-import { FileType, AttachableType } from "@/models/UploadedFile";
+import { AttachableType } from "@/models/UploadedFile";
 
 interface RouteParams {
     params: Promise<{ id: string }>;
@@ -81,7 +81,6 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
             const avatar = await uploadedFileService.uploadFile({
                 file: profileData.avatar,
                 altText: `Avatar for user ${id}`,
-                fileType: FileType.IMAGE,
                 uploadedBy: id,
                 attachableType: AttachableType.USER_AVATAR,
                 attachableId: id
