@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { uploadedFileService } from '@/services/UploadedFileService';
+import { uploadedFileService } from '@/services/uploadedFileService';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { PRIVATE_UPLOAD_DIR } from '@/constants/uploads';
@@ -23,8 +23,8 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         }
 
         try {
-            // Read file from private directory
-            const filePath = join(PRIVATE_UPLOAD_DIR, fileId, fileRecord.filename);
+            const filePath = join(PRIVATE_UPLOAD_DIR, fileRecord.filename);
+            console.log('Serving file from:', filePath);
             if (!filePath || typeof filePath !== 'string') {
                 return NextResponse.json(
                     { error: 'File not found or inaccessible' },

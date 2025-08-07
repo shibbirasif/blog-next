@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { uploadedFileService } from '@/services/UploadedFileService';
+import { uploadedFileService } from '@/services/uploadedFileService';
 
 function get24HoursAgo() {
     const now = new Date();

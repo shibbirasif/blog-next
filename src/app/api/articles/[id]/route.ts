@@ -3,7 +3,7 @@ import { auth } from '@/lib/auth';
 import { articleService } from '@/services/articleService';
 import { updateArticleSchema } from '@/validations/article';
 import { AttachableType } from '@/models/UploadedFile';
-import { uploadedFileService } from '@/services/UploadedFileService';
+import { uploadedFileService } from '@/services/uploadedFileService';
 
 interface RouteParams {
     params: Promise<{ id: string }>;
