@@ -2,6 +2,7 @@ import UploadedFile, { AttachableType, FileStatus, IUploadedFile } from '../mode
 import { UploadedFileDto, buildUploadedFileDto } from '../dtos/UploadedFileDto';
 import mongoose from 'mongoose';
 import { deleteFile, uploadFile } from '@/utils/fileUpload';
+import { dbConnect } from '@/lib/db';
 
 interface uploadFileParams {
     file: File;
@@ -14,6 +15,7 @@ interface uploadFileParams {
 export class UploadedFileService {
     async uploadFile(data: uploadFileParams): Promise<UploadedFileDto> {
         try {
+            await dbConnect();
             const { file, altText = '', uploadedBy } = data;
             const {
                 filename,
@@ -24,6 +26,16 @@ export class UploadedFileService {
                 url,
                 fileType
             } = await uploadFile(file);
+
+            console.log('File uploaded successfully:', {
+                filename,
+                originalName,
+                mimeType,
+                size,
+                checksum,
+                url,
+                fileType
+            });
 
             const uploadedFile = new UploadedFile({
                 filename,
@@ -50,6 +62,7 @@ export class UploadedFileService {
     }
 
     async findUserAvatars(userId: string): Promise<UploadedFileDto[]> {
+        await dbConnect();
         try {
             const files = await UploadedFile.find({
                 attachableId: userId,
@@ -65,6 +78,7 @@ export class UploadedFileService {
 
     async deleteFile(fileId: string): Promise<boolean> {
         try {
+            await dbConnect();
             const file = await UploadedFile.findById(fileId);
             if (!file) {
                 return false;
@@ -80,6 +94,7 @@ export class UploadedFileService {
 
     async findFile(fileId: string): Promise<UploadedFileDto | null> {
         try {
+            await dbConnect();
             if (!mongoose.Types.ObjectId.isValid(fileId)) {
                 return null;
             }
@@ -100,6 +115,7 @@ export class UploadedFileService {
         userId?: string
     ): Promise<UploadedFileDto | null> {
         try {
+            await dbConnect();
             if (!mongoose.Types.ObjectId.isValid(fileId) || !mongoose.Types.ObjectId.isValid(entityId)) {
                 return null;
             }

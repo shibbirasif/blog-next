@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
-import { uploadedFileService } from '@/services/UploadedFileService';
+import { uploadedFileService } from '@/services/uploadedFileService';
 import { fileUploadSchema } from '@/validations/fileUpload';
 import { getUploadedFileUrl } from '@/utils/fileUpload';
 

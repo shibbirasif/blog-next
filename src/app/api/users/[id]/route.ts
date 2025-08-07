@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { userService } from "@/services/userService";
 import { profileEditSchema } from "@/validations/profileEdit";
 import { NextRequest, NextResponse } from "next/server";
-import { uploadedFileService } from "@/services/UploadedFileService";
+import { uploadedFileService } from "@/services/uploadedFileService";
 import { AttachableType } from "@/models/UploadedFile";
 
 interface RouteParams {

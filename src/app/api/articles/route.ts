@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { articleService } from '@/services/articleService';
-import { uploadedFileService } from '@/services/UploadedFileService';
+import { uploadedFileService } from '@/services/uploadedFileService';
 import { AttachableType } from '@/models/UploadedFile';
 import { createArticleSchema } from '@/validations/article';
 import { ArticleSortOrder } from '@/constants/enums';
