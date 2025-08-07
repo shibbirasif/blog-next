@@ -2,6 +2,8 @@
 
 A modern, full-featured blog platform built with Next.js 15, featuring user authentication, rich text editing, image uploads, profile management, and AI-powered writing assistance.
 
+### Staging url: [https://blog-next-pied-eight.vercel.app/](https://blog-next-pied-eight.vercel.app/)
+
 ## 🚀 Features
 
 ### ✅ Completed Features
