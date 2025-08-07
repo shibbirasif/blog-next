@@ -23,7 +23,6 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         }
 
         try {
-            // Read file from private directory
             const filePath = join(PRIVATE_UPLOAD_DIR, fileRecord.filename);
             console.log('Serving file from:', filePath);
             if (!filePath || typeof filePath !== 'string') {
