@@ -29,7 +29,7 @@ export function buildUserDto(userDoc: IUser): UserDto {
         emailVerificationToken: userDoc.isEmailVerified? undefined: userDoc.emailVerificationToken,
         roles: userDoc.roles as UserRole[],
         bio: userDoc.bio || '',
-        avatar: userDoc.avatar ? getUploadedFileUrl({ id: avatar._id.toString(), url: avatar.url }) : '',
+        avatar: avatar && avatar._id ? getUploadedFileUrl({ id: avatar._id.toString(), url: avatar.url }) : '',
         createdAt: userDoc.createdAt,
         updatedAt: userDoc.updatedAt,
     };

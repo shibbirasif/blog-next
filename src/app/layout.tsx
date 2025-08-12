@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeModeScript } from "flowbite-react";
 import ProgressWrapper from "../components/ProgressWrapper";
 import { SessionProvider } from "next-auth/react";
+import AlertContainer from "@/components/AlertContainer";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -30,7 +31,9 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <ProgressWrapper>
           <SessionProvider>
             <div id="main-wrapper">
-              {children}
+              <AlertContainer>
+                {children}
+              </AlertContainer>
             </div>
           </SessionProvider>
         </ProgressWrapper>

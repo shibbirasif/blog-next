@@ -15,6 +15,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { apiFetcher } from "@/utils/apiFetcher";
 import Image from "next/image";
+import { alerts } from "@/utils/alerts";
 
 export default function EditProfileForm() {
     const router = useRouter();
@@ -82,9 +83,6 @@ export default function EditProfileForm() {
     const onSubmit = async (formData: ProfileEditInput) => {
         if (isSubmitting) return;
 
-        setSuccessMessage(null);
-        setErrorMessage(null);
-
         try {
             const submitData = new FormData();
             submitData.append("name", formData.name);
@@ -102,9 +100,8 @@ export default function EditProfileForm() {
             const data = await response.json();
 
             if (data.user) {
-                setSuccessMessage("Profile updated successfully!");
-
-                await update({
+                alerts.success("Profile updated successfully!");
+                await update({ // Update session with new user data
                     user: {
                         name: data.user.name,
                         avatar: data.user.avatar,
@@ -117,7 +114,7 @@ export default function EditProfileForm() {
             }
         } catch (error) {
             console.error("Error updating profile:", error);
-            setErrorMessage(error instanceof Error ? error.message : "An unexpected error occurred");
+            alerts.error(error instanceof Error ? error.message : "An unexpected error occurred");
         }
     };
 
