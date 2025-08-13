@@ -22,4 +22,9 @@ export const API_ROUTES = {
         UPDATE: (id: string) => `/api/users/${id}`,
     },
     UPLOAD: () => '/api/file/upload',
+    AI: {
+        GENERATE: () => '/api/ai/generate',
+        COMPLETE: () => '/api/ai/complete',
+        ENHANCE: () => '/api/ai/enhance',
+    },
 };

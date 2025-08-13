@@ -3,7 +3,7 @@
 import { UserDto } from "@/dtos/UserDto";
 import { ProfileEditInput, profileEditSchema } from "@/validations/profileEdit";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Alert, TextInput, Button, Label } from "flowbite-react";
+import { TextInput, Button, Label } from "flowbite-react";
 import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { FaPencilAlt } from "react-icons/fa";
@@ -23,8 +23,6 @@ export default function EditProfileForm() {
     const [showCropper, setShowCropper] = useState(false);
     const [imageSrc, setImageSrc] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const [successMessage, setSuccessMessage] = useState<string | null>(null);
-    const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [uploadedFileIds, setUploadedFileIds] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -152,17 +150,6 @@ export default function EditProfileForm() {
 
             ) : (
                 <div className="w-full">
-                    {successMessage && (
-                        <Alert color="success">
-                            <span className="font-medium">Success!</span> {successMessage}
-                        </Alert>
-                    )}
-                    {errorMessage && (
-                        <Alert color="failure">
-                            <span className="font-medium">Error!</span> {errorMessage}
-                        </Alert>
-                    )}
-
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                         {/* Avatar */}
                         <div className="flex flex-col items-center gap-2">

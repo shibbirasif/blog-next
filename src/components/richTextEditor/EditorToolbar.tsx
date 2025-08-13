@@ -25,7 +25,8 @@ import {
     FaSmile,
     FaHeading,
     FaUpload,
-    FaLink
+    FaLink,
+    FaRobot
 } from 'react-icons/fa';
 import dynamic from 'next/dynamic';
 import { Theme } from 'emoji-picker-react';
@@ -33,8 +34,8 @@ import { ImageUploadHandler } from './ImageUploadHandler';
 import { fileUploadSchema } from '@/validations/fileUpload';
 import { API_ROUTES } from '@/constants/apiRoutes';
 
-
 const EmojiPicker = dynamic(() => import('emoji-picker-react'), { ssr: false });
+const AIAssistantModal = dynamic(() => import('./AIAssistantModal'), { ssr: false });
 
 type Props = {
     editor: Editor | null;
@@ -47,6 +48,7 @@ type Props = {
 export default function EditorToolbar({ editor, imageUploadConfig, onImageUpload }: Props) {
     const [imageModalOpen, setImageModalOpen] = useState(false);
     const [videoModalOpen, setVideoModalOpen] = useState(false);
+    const [aiModalOpen, setAiModalOpen] = useState(false);
     const [imageUrl, setImageUrl] = useState('');
     const [altText, setAltText] = useState('');
     const [videoUrl, setVideoUrl] = useState('');
@@ -73,7 +75,7 @@ export default function EditorToolbar({ editor, imageUploadConfig, onImageUpload
         setIsUploading(true);
         setUploadError(null);
 
-        const result = fileUploadSchema.safeParse({file, altText});
+        const result = fileUploadSchema.safeParse({ file, altText });
         if (!result.success) {
             setUploadError(result.error.errors[0]?.message || 'Invalid file');
             setIsUploading(false);
@@ -180,6 +182,12 @@ export default function EditorToolbar({ editor, imageUploadConfig, onImageUpload
                 <Tooltip content="Embed Video">
                     <Button size="xs" color="light" onClick={() => setVideoModalOpen(true)}>
                         <FaVideo />
+                    </Button>
+                </Tooltip>
+
+                <Tooltip content="AI Writing Assistant">
+                    <Button size="xs" color="blue" onClick={() => setAiModalOpen(true)}>
+                        <FaRobot />
                     </Button>
                 </Tooltip>
 
@@ -342,6 +350,15 @@ export default function EditorToolbar({ editor, imageUploadConfig, onImageUpload
                     <Button color="gray" onClick={() => setVideoModalOpen(false)}>Cancel</Button>
                 </ModalFooter>
             </Modal>
+
+            {/* AI Assistant Modal */}
+            {editor && (
+                <AIAssistantModal
+                    isOpen={aiModalOpen}
+                    onClose={() => setAiModalOpen(false)}
+                    editor={editor}
+                />
+            )}
         </>
     );
 };
