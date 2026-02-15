@@ -37,5 +37,5 @@ export const logAuthError = (
         ...additionalData,
     };
 
-    authLogger[level](message, metadata);
+    authLogger[level]({ msg: message, ...metadata });
 }; export default logger;

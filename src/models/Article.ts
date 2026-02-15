@@ -92,7 +92,7 @@ const ArticleSchema = new Schema<IArticle>({
     timestamps: true
 });
 
-ArticleSchema.pre('validate', async function (next) {
+ArticleSchema.pre('validate', async function () {
     if (this.isNew && !this.slug && this.title) {
         const baseSlug = generateSlug(this.title);
 
@@ -107,7 +107,6 @@ ArticleSchema.pre('validate', async function (next) {
 
         this.slug = uniqueSlug;
     }
-    next();
 });
 
 ArticleSchema.index({ isPublished: 1, createdAt: -1 });

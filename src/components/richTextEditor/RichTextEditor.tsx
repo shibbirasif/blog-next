@@ -3,6 +3,7 @@
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Youtube from '@tiptap/extension-youtube';
+import Image from '@tiptap/extension-image';
 import React from 'react';
 import Underline from '@tiptap/extension-underline';
 import Placeholder from '@tiptap/extension-placeholder';
@@ -36,7 +37,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
                 heading: { levels: [1, 2, 3, 4] },
             }),
             Underline,
-            // Removed custom ResizableImage extension
+            Image,
             Youtube.configure({
                 controls: true,
                 nocookie: true,

@@ -162,19 +162,17 @@ UploadedFileSchema.methods.detach = async function (): Promise<IUploadedFile> {
     return await this.save();
 };
 
-UploadedFileSchema.pre('save', function (next) {
+UploadedFileSchema.pre('save', function () {
     if (this.attachableType && !this.attachableId) {
-        return next(new Error('attachableId is required when attachableType is set'));
+        throw new Error('attachableId is required when attachableType is set');
     }
     if (!this.attachableType && this.attachableId) {
-        return next(new Error('attachableType is required when attachableId is set'));
+        throw new Error('attachableType is required when attachableId is set');
     }
 
     if (this.attachableType && this.attachableId && this.status === FileStatus.TEMPORARY) {
         this.status = FileStatus.PERMANENT;
     }
-
-    next();
 });
 
 const UploadedFile = mongoose.models.UploadedFile || mongoose.model<IUploadedFile>('UploadedFile', UploadedFileSchema);
